@@ -17,7 +17,7 @@ hinzugefügt, zuletzt gesehen, alphanumerisch, Label, ...).
 
 ## Technologien
 - Java 25
-- Spring Boot mit Spring Modulith, Spring Data JPA, Spring Web, SpringDoc-OpenAPI
+- Spring Boot mit Spring Modulith, Spring Data JPA (instead: JDBC), Spring Web, SpringDoc-OpenAPI
 - Eventl. jMolecules 2 für Dev UX (Not used)
 - Maven
 - Eventl. Lombok für Dev UX (Not used)
