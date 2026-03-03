@@ -29,7 +29,7 @@
 - **Language**: Java 25
 - **Framework**: Spring Boot
   - Spring Modulith (Modular Monolith Architecture)
-  - Spring Data JDBC (Persistence)
+  - jOOQ (Persistence)
   - Spring Web (REST API)
   - SpringDoc-OpenAPI (Documentation)
 - **Database**: PostgreSQL (managed via Flyway migrations)
@@ -53,7 +53,7 @@ The project should follow a **Modular Monolith** approach using Spring Modulith
 2.  **Database Setup**:
     - Configuration for PostgreSQL (e.g., in `compose.yaml`).
     - Flyway migration scripts for initial schema.
-3.  **Repositories**: Spring Data JDBC repositories for all entities.
+3.  **Repositories**: jOOQ repositories for all entities.
 4.  **Services**: Business logic for CRUD, sorting, and list management.
 5.  **Controllers**: REST endpoints for the frontend/API consumers.
 6.  **API Documentation**: OpenAPI configuration.
