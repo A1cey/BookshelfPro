@@ -19,7 +19,7 @@ public abstract sealed class MediaItem permits Book {
     private final String title;
     private final @Nullable URI coverImageUrl;
     private final String description;
-    private final List<Label> labels;
+    private final List<@Valid Label> labels;
 
     protected MediaItem(
             ID id,
