@@ -15,17 +15,17 @@ public interface BookRepository {
 
     Optional<Book> findByISBN(ISBN isbn);
 
-    Optional<Book> findByTitleContaining(String titleFragment);
+    List<Book> findByTitleContaining(String titleFragment);
 
-    Optional<Book> findByAuthors(List<String> authors);
+    List<Book> findByAuthors(List<String> authors);
 
-    Optional<Book> findByPublishDate(LocalDate publishDate);
+    List<Book> findByPublishDate(LocalDate publishDate);
 
-    Optional<Book> findByPublisher(String publisher);
+    List<Book> findByPublisher(String publisher);
 
-    Optional<Book> findByPublishPlace(String publishPlace);
+    List<Book> findByPublishPlace(String publishPlace);
 
-    Optional<Book> findByPageCount(int pageCount);
+    List<Book> findByPageCount(int pageCount);
 
     List<Book> findAll();
 
