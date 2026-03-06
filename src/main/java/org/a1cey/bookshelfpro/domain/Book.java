@@ -3,14 +3,14 @@ package org.a1cey.bookshelfpro.domain;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
-import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Entity;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-@AggregateRoot
+@Entity
 public final class Book extends MediaItem {
 
     @Valid

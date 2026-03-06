@@ -32,5 +32,4 @@ public interface BookRepository {
     void deleteByID(ID id);
 
     void deleteByISBN(ISBN isbn);
-
 }
