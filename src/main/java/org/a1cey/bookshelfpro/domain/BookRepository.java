@@ -7,15 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BookRepository {
+public non-sealed interface BookRepository extends MediaItemRepository {
 
     Book save(Book book);
 
-    Optional<Book> findByID(ID id);
-
     Optional<Book> findByISBN(ISBN isbn);
-
-    List<Book> findByTitleContaining(String titleFragment);
 
     List<Book> findByAuthors(List<String> authors);
 
@@ -27,9 +23,8 @@ public interface BookRepository {
 
     List<Book> findByPageCount(int pageCount);
 
-    List<Book> findAll();
-
     void deleteByID(ID id);
 
     void deleteByISBN(ISBN isbn);
+
 }

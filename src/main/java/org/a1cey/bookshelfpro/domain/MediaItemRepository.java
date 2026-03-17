@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MediaItemRepository {
+public sealed interface MediaItemRepository permits BookRepository {
 
     Optional<MediaItem> findByID(ID id);
 
