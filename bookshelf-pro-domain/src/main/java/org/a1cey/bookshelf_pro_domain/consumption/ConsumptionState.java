@@ -1,0 +1,32 @@
+package org.a1cey.bookshelf_pro_domain.consumption;
+
+import org.jmolecules.ddd.annotation.ValueObject;
+
+@ValueObject
+public enum ConsumptionState {
+    NOT_STARTED,
+    STARTED,
+    COMPLETED;
+
+    public ConsumptionState nextState(ConsumptionProgress progress) {
+        ConsumptionState targetState = calculateState(progress);
+
+        // Even if progress is 0, if we were already started/finished,
+        // we stay in STARTED (representing a "Reset" or "Re-consumption" start)
+        if (this != NOT_STARTED && targetState == NOT_STARTED) {
+            return STARTED;
+        }
+
+        return targetState;
+    }
+
+    private static ConsumptionState calculateState(ConsumptionProgress progress) {
+        if (progress.isCompleted()) {
+            return COMPLETED;
+        }
+        if (progress.isEmpty()) {
+            return NOT_STARTED;
+        }
+        return STARTED;
+    }
+}
