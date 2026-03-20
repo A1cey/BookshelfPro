@@ -125,6 +125,18 @@ Mögliche Erweiterungen:
 - Benutzer anmelden
 - Private Bibliothek anzeigen
 
+## Changes
+
+- LibraryEntry Aggregate
+    - ID
+    - MediaItemID
+    - Progress -> Moved from MediaItems
+    - Labels -> Moved from MediaItems
+- MediaItems Aggregates
+    - ID
+    - Reviews
+    - ...
+
 ## Technologien
 
 - Java 25
