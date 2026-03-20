@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_application;
+package org.a1cey.bookshelf_pro_plugins;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
