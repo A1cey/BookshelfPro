@@ -1,6 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.book;
 
 import org.a1cey.bookshelf_pro_domain.ID;
+import org.a1cey.bookshelf_pro_domain.PublishPlace;
+import org.a1cey.bookshelf_pro_domain.Publisher;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.jmolecules.ddd.annotation.Repository;
 
@@ -15,15 +17,15 @@ public interface BookRepository extends MediaItemRepository {
 
     Optional<Book> findByISBN(ISBN isbn);
 
-    List<Book> findByAuthors(List<String> authors);
+    List<Book> findByAuthors(List<Author> authors);
 
     List<Book> findByPublishDate(LocalDate publishDate);
 
-    List<Book> findByPublisher(String publisher);
+    List<Book> findByPublisher(Publisher publisher);
 
-    List<Book> findByPublishPlace(String publishPlace);
+    List<Book> findByPublishPlace(PublishPlace publishPlace);
 
-    List<Book> findByPageCount(int pageCount);
+    List<Book> findByPageCount(PageCount pageCount);
 
     void deleteByID(ID id);
 

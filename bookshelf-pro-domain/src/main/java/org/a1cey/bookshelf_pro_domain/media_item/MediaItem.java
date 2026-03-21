@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import jakarta.validation.Valid;
+import org.a1cey.bookshelf_pro_domain.Description;
 import org.a1cey.bookshelf_pro_domain.ID;
 import org.a1cey.bookshelf_pro_domain.Label;
 import org.a1cey.bookshelf_pro_domain.Title;
@@ -17,14 +18,14 @@ public abstract class MediaItem {
     private final ID id;
     private final @Valid Title title;
     private final @Nullable URI coverImageUrl;
-    private final String description;
+    private final Description description;
     private final List<@Valid Label> labels;
 
     protected MediaItem(
             ID id,
             Title title,
             @Nullable URI coverImageUrl,
-            String description,
+            Description description,
             List<Label> labels
     ) {
         this.id = id;
@@ -46,7 +47,7 @@ public abstract class MediaItem {
         return coverImageUrl;
     }
 
-    public String getDescription() {
+    public Description getDescription() {
         return description;
     }
 

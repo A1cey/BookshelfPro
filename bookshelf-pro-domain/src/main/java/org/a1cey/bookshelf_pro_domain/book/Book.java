@@ -1,9 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.book;
 
 import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.ID;
-import org.a1cey.bookshelf_pro_domain.Label;
-import org.a1cey.bookshelf_pro_domain.PublishDate;
+import org.a1cey.bookshelf_pro_domain.*;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItem;
 import org.jmolecules.ddd.annotation.AggregateRoot;
@@ -18,27 +16,27 @@ public final class Book extends MediaItem {
 
     @Valid
     private final ISBN isbn;
-    private final String subtitle;
+    private final Subtitle subtitle;
     private final List<Author> authors;
     @Valid
     @Nullable
     private final PublishDate publishDate;
-    private final String publisher;
-    private final String publishPlace;
+    private final Publisher publisher;
+    private final PublishPlace publishPlace;
     private final PageCount pageCount;
 
     private Book(
             ID id,
             Title title,
             @Nullable URI coverImageUrl,
-            String description,
+            Description description,
             List<Label> labels,
             ISBN isbn,
-            String subtitle,
+            Subtitle subtitle,
             List<Author> authors,
             @Nullable PublishDate publishDate,
-            String publisher,
-            String publishPlace,
+            Publisher publisher,
+            PublishPlace publishPlace,
             PageCount pageCount) {
 
 
@@ -56,7 +54,7 @@ public final class Book extends MediaItem {
         return isbn;
     }
 
-    public String getSubtitle() {
+    public Subtitle getSubtitle() {
         return subtitle;
     }
 
@@ -68,11 +66,11 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public String getPublisher() {
+    public Publisher getPublisher() {
         return publisher;
     }
 
-    public String getPublishPlace() {
+    public PublishPlace getPublishPlace() {
         return publishPlace;
     }
 
@@ -88,12 +86,12 @@ public final class Book extends MediaItem {
         private List<Author> authors = new ArrayList<>();
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
-        private String description = "";
+        private Description description = new Description("");
         private List<Label> labels = new ArrayList<>();
-        private String subtitle = "";
+        private Subtitle subtitle = new Subtitle("");
         private @Nullable PublishDate publishDate = null;
-        private String publisher = "";
-        private String publishPlace = "";
+        private Publisher publisher = new Publisher("");
+        private PublishPlace publishPlace = new PublishPlace("");
 
         public BookBuilder(ID id, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
@@ -117,7 +115,7 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder description(String description) {
+        public BookBuilder description(Description description) {
             this.description = description;
             return this;
         }
@@ -132,7 +130,7 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder subtitle(String subtitle) {
+        public BookBuilder subtitle(Subtitle subtitle) {
             this.subtitle = subtitle;
             return this;
         }
@@ -142,12 +140,12 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder publisher(String publisher) {
+        public BookBuilder publisher(Publisher publisher) {
             this.publisher = publisher;
             return this;
         }
 
-        public BookBuilder publishPlace(String publishPlace) {
+        public BookBuilder publishPlace(PublishPlace publishPlace) {
             this.publishPlace = publishPlace;
             return this;
         }
