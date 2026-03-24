@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_domain.book;
+package org.a1cey.bookshelf_pro_domain.media_item.book;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import org.jmolecules.ddd.annotation.ValueObject;

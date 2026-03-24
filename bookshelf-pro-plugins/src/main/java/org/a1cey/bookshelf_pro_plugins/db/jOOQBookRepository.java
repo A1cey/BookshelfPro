@@ -2,11 +2,10 @@ package org.a1cey.bookshelf_pro_plugins.db;
 
 
 import org.a1cey.bookshelf_pro_domain.ID;
-import org.a1cey.bookshelf_pro_domain.Label;
-import org.a1cey.bookshelf_pro_domain.book.Book;
-import org.a1cey.bookshelf_pro_domain.book.BookRepository;
-import org.a1cey.bookshelf_pro_domain.book.ISBN;
+import org.a1cey.bookshelf_pro_domain.label.Label;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItem;
+import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
+import org.a1cey.bookshelf_pro_domain.media_item.book.ISBN;
 
 import java.time.LocalDate;
 import java.util.List;

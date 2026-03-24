@@ -8,7 +8,7 @@ public enum ConsumptionState {
     STARTED,
     COMPLETED;
 
-    public ConsumptionState nextState(ConsumptionProgress progress) {
+    public ConsumptionState nextState(MediaItemConsumptionProgress progress) {
         ConsumptionState targetState = calculateState(progress);
 
         // Even if progress is 0, if we were already started/finished,
@@ -20,7 +20,7 @@ public enum ConsumptionState {
         return targetState;
     }
 
-    private static ConsumptionState calculateState(ConsumptionProgress progress) {
+    private static ConsumptionState calculateState(MediaItemConsumptionProgress progress) {
         if (progress.isCompleted()) {
             return COMPLETED;
         }

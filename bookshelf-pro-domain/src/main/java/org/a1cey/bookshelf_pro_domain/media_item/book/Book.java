@@ -1,9 +1,9 @@
-package org.a1cey.bookshelf_pro_domain.book;
+package org.a1cey.bookshelf_pro_domain.media_item.book;
 
 import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.*;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItem;
+import org.a1cey.bookshelf_pro_domain.media_item.*;
+import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
 
@@ -26,11 +26,11 @@ public final class Book extends MediaItem {
     private final PageCount pageCount;
 
     private Book(
-            ID id,
+            MediaItemID id,
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<Label> labels,
+            List<Review> reviews,
             ISBN isbn,
             Subtitle subtitle,
             List<Author> authors,
@@ -40,7 +40,7 @@ public final class Book extends MediaItem {
             PageCount pageCount) {
 
 
-        super(id, title, coverImageUrl, description, labels);
+        super(id, title, coverImageUrl, description, reviews);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = List.copyOf(authors); // prevent modification from outside
@@ -48,6 +48,11 @@ public final class Book extends MediaItem {
         this.publisher = publisher;
         this.publishPlace = publishPlace;
         this.pageCount = pageCount;
+    }
+
+    @Override
+    public MediaItemType getMediaItemType() {
+        return MediaItemType.BOOK;
     }
 
     public ISBN getIsbn() {
@@ -80,20 +85,20 @@ public final class Book extends MediaItem {
 
     public static class BookBuilder {
 
-        private final ID id;
+        private final MediaItemID id;
         private final Title title;
         private final ISBN isbn;
         private List<Author> authors = new ArrayList<>();
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
-        private List<Label> labels = new ArrayList<>();
+        private List<Review> reviews = new ArrayList<>();
         private Subtitle subtitle = new Subtitle("");
         private @Nullable PublishDate publishDate = null;
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
 
-        public BookBuilder(ID id, Title title, ISBN isbn, PageCount pageCount) {
+        public BookBuilder(MediaItemID id, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
             this.isbn = isbn;
             this.title = title;
@@ -120,13 +125,13 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder labels(List<Label> labels) {
-            this.labels = new ArrayList<>(labels); // Create a mutable defensive copy
+        public BookBuilder reviews(List<Review> reviews) {
+            this.reviews = new ArrayList<>(reviews); // Create a mutable defensive copy
             return this;
         }
 
-        public BookBuilder label(Label label) {
-            this.labels.add(label);
+        public BookBuilder review(Review review) {
+            this.reviews.add(review);
             return this;
         }
 
@@ -156,7 +161,7 @@ public final class Book extends MediaItem {
                     title,
                     coverImageUrl,
                     description,
-                    labels,
+                    reviews,
                     isbn,
                     subtitle,
                     authors,

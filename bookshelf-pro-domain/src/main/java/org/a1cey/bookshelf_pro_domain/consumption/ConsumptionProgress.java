@@ -1,11 +1,31 @@
 package org.a1cey.bookshelf_pro_domain.consumption;
 
-public interface ConsumptionProgress {
+import org.jmolecules.ddd.annotation.Entity;
 
-    double percentage();
+@Entity
+public final class ConsumptionProgress {
 
-    boolean isCompleted();
+    private final ConsumptionProgressID id;
+    private ConsumptionState state;
+    private MediaItemConsumptionProgress progress;
 
-    boolean isEmpty();
+    public ConsumptionProgress(ConsumptionProgressID id, MediaItemConsumptionProgress progress) {
+        this.id = id;
+        this.state = ConsumptionState.NOT_STARTED.nextState(progress);
+        this.progress = progress;
+    }
+
+    public void updateProgress(MediaItemConsumptionProgress newProgress) {
+        this.state = state.nextState(newProgress);
+        this.progress = newProgress;
+    }
+
+    public MediaItemConsumptionProgress getProgress() {
+        return progress;
+    }
+
+    public ConsumptionProgressID getID() {
+        return id;
+    }
 
 }

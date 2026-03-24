@@ -1,7 +1,6 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import org.a1cey.bookshelf_pro_domain.ID;
-import org.a1cey.bookshelf_pro_domain.Label;
 import org.jmolecules.ddd.annotation.Repository;
 
 import java.util.List;
@@ -12,10 +11,10 @@ public interface MediaItemRepository {
 
     Optional<MediaItem> findByID(ID id);
 
-    List<MediaItem> findAll();
+    void save(MediaItem mediaItem);
 
-    List<MediaItem> findByTitleContaining(String titleFragment);
+    List<MediaItem> search(MediaItemSearchCriteria searchCriteria);
 
-    List<MediaItem> findByLabels(List<Label> labels);
+    void delete(MediaItemID id);
 
 }

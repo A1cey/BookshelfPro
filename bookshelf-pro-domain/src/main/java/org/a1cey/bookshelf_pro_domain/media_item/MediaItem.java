@@ -1,41 +1,42 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.Description;
-import org.a1cey.bookshelf_pro_domain.ID;
-import org.a1cey.bookshelf_pro_domain.Label;
 import org.a1cey.bookshelf_pro_domain.Title;
+import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
+import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
+@AggregateRoot
 public abstract class MediaItem {
 
     @Identity
     @Valid
-    private final ID id;
+    private final MediaItemID id;
     private final @Valid Title title;
     private final @Nullable URI coverImageUrl;
     private final Description description;
-    private final List<@Valid Label> labels;
+    private final List<@Valid Review> reviews;
 
     protected MediaItem(
-            ID id,
+            MediaItemID id,
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<Label> labels
+            List<Review> reviews
     ) {
         this.id = id;
         this.title = title;
-        this.labels = List.copyOf(labels); // prevent modification from outside
+        this.reviews = new ArrayList<>(reviews); // prevent modification from outside
         this.coverImageUrl = coverImageUrl;
         this.description = description;
     }
 
-    public ID getID() {
+    public MediaItemID getID() {
         return id;
     }
 
@@ -51,8 +52,10 @@ public abstract class MediaItem {
         return description;
     }
 
-    public List<Label> getLabels() {
-        return labels;
+    public List<Review> getReviews() {
+        return reviews;
     }
+
+    public abstract MediaItemType getMediaItemType();
 
 }
