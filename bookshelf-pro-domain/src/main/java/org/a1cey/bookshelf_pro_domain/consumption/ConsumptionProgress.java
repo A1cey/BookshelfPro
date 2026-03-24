@@ -20,13 +20,13 @@ public final class ConsumptionProgress {
         this.progress = newProgress;
     }
 
-    public MediaItemConsumptionProgress getProgress() {
+    public MediaItemConsumptionProgress progress() {
         return progress;
     }
 
-    public ConsumptionState getState() {return state;}
+    public ConsumptionState state() {return state;}
 
-    public ConsumptionProgressID getID() {
+    public ConsumptionProgressID id() {
         return id;
     }
 

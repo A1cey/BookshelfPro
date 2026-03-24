@@ -15,7 +15,7 @@ public class WatchlistItem {
     }
 
     public static WatchlistItem of(BookshelfEntry bookshelfEntry) {
-        if (bookshelfEntry.consumptionProgress().getState() == ConsumptionState.COMPLETED) {
+        if (bookshelfEntry.consumptionProgress().state() == ConsumptionState.COMPLETED) {
             // TODO: This should have the name
             throw new IllegalArgumentException(
                     "Cannot add completed media item'" + bookshelfEntry.mediaItemID() + "' to a watchlist."

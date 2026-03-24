@@ -27,15 +27,15 @@ public class Playlist {
         this.items = new ArrayList<>(items);
     }
 
-    public PlaylistID getId() {
+    public PlaylistID id() {
         return id;
     }
 
-    public Title getTitle() {
+    public Title title() {
         return title;
     }
 
-    public List<MediaItemID> getItems() {
+    public List<MediaItemID> items() {
         return items;
     }
 

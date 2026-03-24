@@ -36,26 +36,26 @@ public abstract class MediaItem {
         this.description = description;
     }
 
-    public MediaItemID getID() {
+    public MediaItemID id() {
         return id;
     }
 
-    public Title getTitle() {
+    public Title title() {
         return title;
     }
 
-    public @Nullable URI getCoverImageUrl() {
+    public @Nullable URI coverImageUrl() {
         return coverImageUrl;
     }
 
-    public Description getDescription() {
+    public Description description() {
         return description;
     }
 
-    public List<Review> getReviews() {
+    public List<Review> reviews() {
         return reviews;
     }
 
-    public abstract MediaItemType getMediaItemType();
+    public abstract MediaItemType mediaItemType();
 
 }

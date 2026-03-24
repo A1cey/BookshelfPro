@@ -51,35 +51,35 @@ public final class Book extends MediaItem {
     }
 
     @Override
-    public MediaItemType getMediaItemType() {
+    public MediaItemType mediaItemType() {
         return MediaItemType.BOOK;
     }
 
-    public ISBN getIsbn() {
+    public ISBN isbn() {
         return isbn;
     }
 
-    public Subtitle getSubtitle() {
+    public Subtitle subtitle() {
         return subtitle;
     }
 
-    public List<Author> getAuthors() {
+    public List<Author> authors() {
         return authors;
     }
 
-    public @Nullable PublishDate getPublishDate() {
+    public @Nullable PublishDate publishDate() {
         return publishDate;
     }
 
-    public Publisher getPublisher() {
+    public Publisher publisher() {
         return publisher;
     }
 
-    public PublishPlace getPublishPlace() {
+    public PublishPlace publishPlace() {
         return publishPlace;
     }
 
-    public PageCount getPageCount() {
+    public PageCount pageCount() {
         return pageCount;
     }
 

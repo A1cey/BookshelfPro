@@ -26,11 +26,11 @@ public class Watchlist {
         this.items = new LinkedHashSet<>(items);
     }
 
-    public WatchlistID getId() {
+    public WatchlistID id() {
         return id;
     }
 
-    public Title getTitle() {
+    public Title title() {
         return title;
     }
 
@@ -38,7 +38,7 @@ public class Watchlist {
         title = newTitle;
     }
 
-    public SequencedSet<WatchlistItem> getItems() {
+    public SequencedSet<WatchlistItem> items() {
         return items;
     }
 
