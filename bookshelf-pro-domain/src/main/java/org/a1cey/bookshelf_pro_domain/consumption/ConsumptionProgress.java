@@ -30,4 +30,8 @@ public final class ConsumptionProgress {
         return id;
     }
 
+    public ConsumptionProgressSnapshot snapshot() {
+        return ConsumptionProgressSnapshot.of(this);
+    }
+
 }

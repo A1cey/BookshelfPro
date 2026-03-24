@@ -2,7 +2,7 @@ package org.a1cey.bookshelf_pro_domain.media_item;
 
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
+import org.a1cey.bookshelf_pro_domain.review.ReviewID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
@@ -20,14 +20,15 @@ public abstract class MediaItem {
     private final @Valid Title title;
     private final @Nullable URI coverImageUrl;
     private final Description description;
-    private final List<@Valid Review> reviews;
+    // not Review, this would bloat the Aggregate -> changing one review doesn't need to load all
+    private final List<@Valid ReviewID> reviews;
 
     protected MediaItem(
             MediaItemID id,
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<Review> reviews
+            List<ReviewID> reviews
     ) {
         this.id = id;
         this.title = title;
@@ -52,7 +53,7 @@ public abstract class MediaItem {
         return description;
     }
 
-    public List<Review> reviews() {
+    public List<ReviewID> reviews() {
         return reviews;
     }
 

@@ -3,7 +3,7 @@ package org.a1cey.bookshelf_pro_domain.media_item.book;
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
-import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
+import org.a1cey.bookshelf_pro_domain.review.Review;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
 

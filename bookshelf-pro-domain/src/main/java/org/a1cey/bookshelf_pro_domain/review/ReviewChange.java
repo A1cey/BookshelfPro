@@ -1,31 +1,30 @@
-package org.a1cey.bookshelf_pro_domain.media_item.review;
+package org.a1cey.bookshelf_pro_domain.review;
 
 import org.a1cey.bookshelf_pro_domain.consumption.MediaItemConsumptionProgress;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 import java.util.Date;
-import java.util.Optional;
 
 @ValueObject
 public class ReviewChange {
 
-    private final Optional<Rating> rating;
-    private final Optional<Comment> comment;
+    private final Rating rating;
+    private final Comment comment;
     private final Date reviewDate;
     private final MediaItemConsumptionProgress consumptionProgress;
 
-    public ReviewChange(Optional<Rating> rating, Optional<Comment> comment, MediaItemConsumptionProgress consumptionProgress) {
+    public ReviewChange(Rating rating, Comment comment, MediaItemConsumptionProgress consumptionProgress) {
         this.rating = rating;
         this.comment = comment;
         this.reviewDate = new Date();
         this.consumptionProgress = consumptionProgress;
     }
 
-    public Optional<Rating> rating() {
+    public Rating rating() {
         return rating;
     }
 
-    public Optional<Comment> comment() {
+    public Comment comment() {
         return comment;
     }
 
