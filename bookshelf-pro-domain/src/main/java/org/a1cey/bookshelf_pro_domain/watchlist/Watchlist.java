@@ -8,7 +8,6 @@ package org.a1cey.bookshelf_pro_domain.watchlist;
 //vom Nutzer geändert werden. Medien dürfen mehrmals in einer Playlist vorkommen.
 
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 
 import java.util.LinkedHashSet;
@@ -21,10 +20,10 @@ public class Watchlist {
     private Title title;
     private final LinkedHashSet<WatchlistItem> items;
 
-    public Watchlist(Title title, WatchlistID id, SequencedSet<MediaItemID> items) {
+    public Watchlist(Title title, WatchlistID id, SequencedSet<WatchlistItem> items) {
         this.title = title;
         this.id = id;
-        this.items = new LinkedHashSet<>(items); // TODO: Check that this set does not contain items which are already completed
+        this.items = new LinkedHashSet<>(items);
     }
 
     public WatchlistID getId() {
@@ -35,8 +34,16 @@ public class Watchlist {
         return title;
     }
 
-    public SequencedSet<MediaItemID> getItems() {
+    public void changeTitle(Title newTitle) {
+        title = newTitle;
+    }
+
+    public SequencedSet<WatchlistItem> getItems() {
         return items;
+    }
+
+    public boolean addItem(WatchlistItem item) {
+        return items.add(item);
     }
 
 }

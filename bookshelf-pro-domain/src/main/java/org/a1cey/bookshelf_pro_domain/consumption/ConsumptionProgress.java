@@ -24,6 +24,8 @@ public final class ConsumptionProgress {
         return progress;
     }
 
+    public ConsumptionState getState() {return state;}
+
     public ConsumptionProgressID getID() {
         return id;
     }
