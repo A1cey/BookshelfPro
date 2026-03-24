@@ -6,9 +6,13 @@ import org.a1cey.bookshelf_pro_domain.consumption.ConsumptionState;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject
-public record WatchlistItem(BookshelfEntryID bookshelfEntryID) {
+public class WatchlistItem {
 
-    private WatchlistItem {}
+    private final BookshelfEntryID bookshelfEntryID;
+
+    private WatchlistItem(BookshelfEntryID id) {
+        bookshelfEntryID = id;
+    }
 
     public static WatchlistItem of(BookshelfEntry bookshelfEntry) {
         if (bookshelfEntry.consumptionProgress().getState() == ConsumptionState.COMPLETED) {
@@ -18,6 +22,10 @@ public record WatchlistItem(BookshelfEntryID bookshelfEntryID) {
             );
         }
         return new WatchlistItem(bookshelfEntry.id());
+    }
+
+    BookshelfEntryID bookshelfEntryID() {
+        return bookshelfEntryID;
     }
 
 }
