@@ -7,7 +7,7 @@ import org.jmolecules.ddd.annotation.ValueObject;
 public record Label(@NotBlank String name) {
 
     public Label {
-        if (name.isBlank()) {
+        if (name.isBlank()) { // TODO: check label name constraints
             throw new IllegalArgumentException("Label name cannot be blank");
         }
     }
