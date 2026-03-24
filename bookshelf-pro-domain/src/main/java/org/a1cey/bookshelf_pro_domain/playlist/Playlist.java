@@ -28,6 +28,10 @@ public class Playlist {
         return title;
     }
 
+    public void changeTitle(Title newTitle) {
+        title = newTitle;
+    }
+
     public List<PlaylistItem> items() {
         return items;
     }

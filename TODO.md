@@ -1,3 +1,3 @@
-- LibraryEntry (id, consumptionProgress, mediaItemId, Labels)
+- LibraryEntry (id, consumptionProgress, mediaItemID, Labels)
 - Watchlist (id, attr..., mediaItems (unsorted))
 - Playlist (id, attr..., mediaItems (sorted))
