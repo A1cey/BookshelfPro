@@ -1,3 +1,2 @@
 - LibraryEntry (id, consumptionProgress, mediaItemID, Labels)
-- Watchlist (id, attr..., mediaItems (unsorted))
-- Playlist (id, attr..., mediaItems (sorted))
+- change Domain: Labels should be private not global as modifying existing labels should not affect everyone
