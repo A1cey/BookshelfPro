@@ -17,12 +17,13 @@ public final class Book extends MediaItem {
     @Valid
     private final ISBN isbn;
     private final Subtitle subtitle;
-    private final List<Author> authors;
+    private final List<@Valid Author> authors;
     @Valid
     @Nullable
     private final PublishDate publishDate;
     private final Publisher publisher;
     private final PublishPlace publishPlace;
+    @Valid
     private final PageCount pageCount;
 
     private Book(
@@ -39,8 +40,7 @@ public final class Book extends MediaItem {
             PublishPlace publishPlace,
             PageCount pageCount) {
 
-
-        super(id, title, coverImageUrl, description, reviews);
+        super(id, MediaItemType.BOOK, title, coverImageUrl, description, reviews);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = List.copyOf(authors); // prevent modification from outside
@@ -48,11 +48,6 @@ public final class Book extends MediaItem {
         this.publisher = publisher;
         this.publishPlace = publishPlace;
         this.pageCount = pageCount;
-    }
-
-    @Override
-    public MediaItemType mediaItemType() {
-        return MediaItemType.BOOK;
     }
 
     public ISBN isbn() {
@@ -90,9 +85,12 @@ public final class Book extends MediaItem {
     public static final class BookBuilder {
 
         private final MediaItemID id;
+        @Valid
         private final Title title;
+        @Valid
         private final ISBN isbn;
-        private List<Author> authors = new ArrayList<>();
+        private List<@Valid Author> authors = new ArrayList<>();
+        @Valid
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");

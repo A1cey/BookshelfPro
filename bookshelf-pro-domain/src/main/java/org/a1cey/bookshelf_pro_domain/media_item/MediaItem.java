@@ -17,20 +17,25 @@ public abstract class MediaItem {
     @Identity
     @Valid
     private final MediaItemID id;
-    private final @Valid Title title;
-    private final @Nullable URI coverImageUrl;
+    private final MediaItemType type;
+    @Valid
+    private final Title title;
+    @Nullable
+    private final URI coverImageUrl;
     private final Description description;
     // not Review, this would bloat the Aggregate -> changing one review doesn't need to load all
     private final List<@Valid ReviewID> reviews;
 
     protected MediaItem(
             MediaItemID id,
+            MediaItemType type,
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
             List<ReviewID> reviews
     ) {
         this.id = id;
+        this.type = type;
         this.title = title;
         this.reviews = new ArrayList<>(reviews); // prevent modification from outside
         this.coverImageUrl = coverImageUrl;
@@ -57,6 +62,8 @@ public abstract class MediaItem {
         return reviews;
     }
 
-    public abstract MediaItemType mediaItemType();
+    public MediaItemType type() {
+        return type;
+    }
 
 }
