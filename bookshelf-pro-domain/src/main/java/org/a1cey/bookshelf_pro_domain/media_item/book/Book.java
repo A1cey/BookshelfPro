@@ -3,7 +3,7 @@ package org.a1cey.bookshelf_pro_domain.media_item.book;
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
-import org.a1cey.bookshelf_pro_domain.review.Review;
+import org.a1cey.bookshelf_pro_domain.review.ReviewID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +30,7 @@ public final class Book extends MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<Review> reviews,
+            List<ReviewID> reviews,
             ISBN isbn,
             Subtitle subtitle,
             List<Author> authors,
@@ -83,7 +83,11 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public static class BookBuilder {
+    public static BookBuilder builder(MediaItemID id, Title title, ISBN isbn, PageCount pageCount) {
+        return new BookBuilder(id, title, isbn, pageCount);
+    }
+
+    public static final class BookBuilder {
 
         private final MediaItemID id;
         private final Title title;
@@ -92,7 +96,7 @@ public final class Book extends MediaItem {
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
-        private List<Review> reviews = new ArrayList<>();
+        private List<ReviewID> reviews = new ArrayList<>();
         private Subtitle subtitle = new Subtitle("");
         private @Nullable PublishDate publishDate = null;
         private Publisher publisher = new Publisher("");
@@ -125,13 +129,13 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder reviews(List<Review> reviews) {
+        public BookBuilder reviews(List<ReviewID> reviews) {
             this.reviews = new ArrayList<>(reviews); // Create a mutable defensive copy
             return this;
         }
 
-        public BookBuilder review(Review review) {
-            this.reviews.add(review);
+        public BookBuilder review(ReviewID reviewID) {
+            this.reviews.add(reviewID);
             return this;
         }
 

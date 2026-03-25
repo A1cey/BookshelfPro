@@ -1,6 +1,6 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
-import org.a1cey.bookshelf_pro_domain.consumption.MediaItemConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject

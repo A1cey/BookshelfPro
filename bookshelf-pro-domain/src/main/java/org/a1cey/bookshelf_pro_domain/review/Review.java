@@ -1,8 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
-import org.a1cey.bookshelf_pro_domain.consumption.ConsumptionProgressSnapshot;
-import org.a1cey.bookshelf_pro_domain.consumption.ConsumptionState;
-import org.a1cey.bookshelf_pro_domain.consumption.MediaItemConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;

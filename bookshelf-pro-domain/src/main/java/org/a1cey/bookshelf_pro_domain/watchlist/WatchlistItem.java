@@ -2,7 +2,7 @@ package org.a1cey.bookshelf_pro_domain.watchlist;
 
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntry;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryID;
-import org.a1cey.bookshelf_pro_domain.consumption.ConsumptionState;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject

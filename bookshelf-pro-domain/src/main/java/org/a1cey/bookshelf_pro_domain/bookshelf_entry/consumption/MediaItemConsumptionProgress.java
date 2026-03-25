@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_domain.consumption;
+package org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption;
 
 public interface MediaItemConsumptionProgress {
 
