@@ -1,12 +1,16 @@
 package org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption;
 
+import jakarta.validation.Valid;
 import org.jmolecules.ddd.annotation.Entity;
+import org.jmolecules.ddd.annotation.Identity;
 
 @Entity
 public final class ConsumptionProgress {
 
+    @Identity
     private final ConsumptionProgressID id;
     private ConsumptionState state;
+    @Valid
     private MediaItemConsumptionProgress progress;
 
     public ConsumptionProgress(ConsumptionProgressID id, MediaItemConsumptionProgress progress) {

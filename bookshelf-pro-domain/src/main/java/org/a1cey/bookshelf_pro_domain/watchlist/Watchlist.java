@@ -2,6 +2,7 @@ package org.a1cey.bookshelf_pro_domain.watchlist;
 
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 
 import java.util.LinkedHashSet;
 import java.util.SequencedSet;
@@ -9,6 +10,7 @@ import java.util.SequencedSet;
 @AggregateRoot
 public class Watchlist {
 
+    @Identity
     private final WatchlistID id;
     private Title title;
     private final LinkedHashSet<WatchlistItem> items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot

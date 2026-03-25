@@ -1,11 +1,13 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
+import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,10 +19,11 @@ import java.util.Date;
 @AggregateRoot
 public final class Review {
 
+    @Identity
     private final ReviewID id;
     private final MediaItemID mediaItemID;
     private final UserID userID;
-    private final ArrayList<ReviewChange> reviewHistory = new ArrayList<>();
+    private final ArrayList<@Valid ReviewChange> reviewHistory = new ArrayList<>();
 
     private Review(ReviewID id, MediaItemID mediaItemID, UserID userID, ReviewChange reviewChange) {
         this.id = id;

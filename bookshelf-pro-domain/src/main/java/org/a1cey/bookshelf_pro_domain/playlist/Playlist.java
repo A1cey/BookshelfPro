@@ -1,16 +1,20 @@
 package org.a1cey.bookshelf_pro_domain.playlist;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.jmolecules.ddd.annotation.Entity;
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Entity
+@AggregateRoot
 public class Playlist {
 
+    @Identity
     private final PlaylistID id;
+    @Valid
     private Title title;
     private final LinkedList<PlaylistItem> items; // LinkedList is best for inserting/removing
 

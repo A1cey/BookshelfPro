@@ -15,7 +15,6 @@ import java.util.List;
 public abstract class MediaItem {
 
     @Identity
-    @Valid
     private final MediaItemID id;
     private final MediaItemType type;
     @Valid
