@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
 import org.a1cey.bookshelf_pro_domain.review.ReviewID;
+import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
 
@@ -16,15 +17,15 @@ public final class Book extends MediaItem {
 
     @Valid
     private final ISBN isbn;
-    private final Subtitle subtitle;
+    private Subtitle subtitle;
     private final List<@Valid Author> authors;
     @Valid
     @Nullable
-    private final PublishDate publishDate;
-    private final Publisher publisher;
-    private final PublishPlace publishPlace;
+    private PublishDate publishDate;
+    private Publisher publisher;
+    private PublishPlace publishPlace;
     @Valid
-    private final PageCount pageCount;
+    private PageCount pageCount;
 
     private Book(
             MediaItemID id,
@@ -32,6 +33,7 @@ public final class Book extends MediaItem {
             @Nullable URI coverImageUrl,
             Description description,
             List<ReviewID> reviews,
+            UserID owner,
             ISBN isbn,
             Subtitle subtitle,
             List<Author> authors,
@@ -40,10 +42,10 @@ public final class Book extends MediaItem {
             PublishPlace publishPlace,
             PageCount pageCount) {
 
-        super(id, MediaItemType.BOOK, title, coverImageUrl, description, reviews);
+        super(id, MediaItemType.BOOK, title, coverImageUrl, description, reviews, owner);
         this.isbn = isbn;
         this.subtitle = subtitle;
-        this.authors = List.copyOf(authors); // prevent modification from outside
+        this.authors = new ArrayList<>(authors); // prevent modification from outside
         this.publishDate = publishDate;
         this.publisher = publisher;
         this.publishPlace = publishPlace;
@@ -58,33 +60,69 @@ public final class Book extends MediaItem {
         return subtitle;
     }
 
+    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        subtitle = newSubtitle;
+    }
+
     public List<Author> authors() {
         return authors;
+    }
+
+    public void addAuthor(Author newAuthor, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        authors.add(newAuthor);
+    }
+
+    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        authors.remove(authorToRemove);
     }
 
     public @Nullable PublishDate publishDate() {
         return publishDate;
     }
 
+    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        publishDate = newPublishDate;
+    }
+
     public Publisher publisher() {
         return publisher;
+    }
+
+    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        publisher = newPublisher;
     }
 
     public PublishPlace publishPlace() {
         return publishPlace;
     }
 
+    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        publishPlace = newPublishPlace;
+    }
+
     public PageCount pageCount() {
         return pageCount;
     }
 
-    public static BookBuilder builder(MediaItemID id, Title title, ISBN isbn, PageCount pageCount) {
-        return new BookBuilder(id, title, isbn, pageCount);
+    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
+        pageCount = newPageCount;
+    }
+
+    public static BookBuilder builder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
+        return new BookBuilder(id, owner, title, isbn, pageCount);
     }
 
     public static final class BookBuilder {
 
         private final MediaItemID id;
+        private final UserID owner;
         @Valid
         private final Title title;
         @Valid
@@ -100,8 +138,9 @@ public final class Book extends MediaItem {
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
 
-        public BookBuilder(MediaItemID id, Title title, ISBN isbn, PageCount pageCount) {
+        public BookBuilder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
+            this.owner = owner;
             this.isbn = isbn;
             this.title = title;
             this.pageCount = pageCount;
@@ -164,6 +203,7 @@ public final class Book extends MediaItem {
                     coverImageUrl,
                     description,
                     reviews,
+                    owner,
                     isbn,
                     subtitle,
                     authors,

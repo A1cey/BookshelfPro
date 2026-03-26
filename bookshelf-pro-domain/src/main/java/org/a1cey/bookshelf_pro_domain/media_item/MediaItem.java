@@ -16,16 +16,16 @@ import java.util.List;
 public abstract class MediaItem {
 
     @Identity
-    private final MediaItemID id;
-    private final MediaItemType type;
+    protected final MediaItemID id;
+    protected final MediaItemType type;
     @Valid
-    private Title title;
+    protected Title title;
     @Nullable
-    private URI coverImageUrl;
-    private Description description;
+    protected URI coverImageUrl;
+    protected Description description;
     // not Review, this would bloat the Aggregate -> changing one review doesn't need to load all
-    private final List<@Valid ReviewID> reviews;
-    private final UserID owner;
+    protected final List<@Valid ReviewID> reviews;
+    protected final UserID owner;
 
     protected MediaItem(
             MediaItemID id,
@@ -45,6 +45,11 @@ public abstract class MediaItem {
         this.owner = owner;
     }
 
+    protected void validateChangeByOwner(UserID userRequestingChange) throws AssertionError {
+        assert userRequestingChange.equals(owner) :
+                "Change to media item " + id + " requested by non-owner user " + userRequestingChange;
+    }
+
     public MediaItemID id() {
         return id;
     }
@@ -53,14 +58,8 @@ public abstract class MediaItem {
         return title;
     }
 
-    public void changeTitle(Title newTitle, UserID userRequestingChange) throws IllegalArgumentException {
-        if (owner != userRequestingChange) {
-            throw new IllegalArgumentException(
-                    "User (" + userRequestingChange +
-                            ") requesting to change title is not owner of media item" + " (" + id + ")."
-            );
-        }
-
+    public void changeTitle(Title newTitle, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
         title = newTitle;
     }
 
@@ -68,14 +67,8 @@ public abstract class MediaItem {
         return coverImageUrl;
     }
 
-    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) throws IllegalArgumentException {
-        if (owner != userRequestingChange) {
-            throw new IllegalArgumentException(
-                    "User (" + userRequestingChange +
-                            ") requesting to change coverImageUrl is not owner of " + "media item" + " (" + id + ")."
-            );
-        }
-
+    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) throws AssertionError {
+        validateChangeByOwner(userRequestingChange);
         coverImageUrl = newUrl;
     }
 
@@ -84,13 +77,7 @@ public abstract class MediaItem {
     }
 
     public void changeDescription(Description newDescription, UserID userRequestingChange) throws IllegalArgumentException {
-        if (owner != userRequestingChange) {
-            throw new IllegalArgumentException(
-                    "User (" + userRequestingChange
-                            + ") requesting to change description is not owner of " + "media item" + " (" + id + ")."
-            );
-        }
-
+        validateChangeByOwner(userRequestingChange);
         description = newDescription;
     }
 
