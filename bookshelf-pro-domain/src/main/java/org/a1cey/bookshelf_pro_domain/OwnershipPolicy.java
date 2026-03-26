@@ -9,7 +9,7 @@ public final class OwnershipPolicy {
     public static void validate(UserID owner, UserID requestingUser, ID aggregateId) {
         if (!requestingUser.equals(owner)) {
             throw new IllegalStateException(
-                    "Change to aggregate " + aggregateId + " requested by non-owner " + requestingUser
+                    "Change to aggregate " + aggregateId.value() + " requested by non-owner " + requestingUser
             );
         }
     }

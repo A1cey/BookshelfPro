@@ -40,7 +40,7 @@ public final class Watchlist {
     }
 
     public void changeTitle(Title newTitle, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
 
@@ -49,12 +49,12 @@ public final class Watchlist {
     }
 
     public boolean addItem(WatchlistItem item, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.add(item);
     }
 
     public boolean removeItem(WatchlistItem item, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.remove(item);
     }
 

@@ -3,5 +3,7 @@ package org.a1cey.bookshelf_pro_domain.user;
 import org.a1cey.bookshelf_pro_domain.ID;
 import org.jmolecules.ddd.annotation.ValueObject;
 
+import java.util.UUID;
+
 @ValueObject
-public record UserID(ID id) {}
+public record UserID(UUID value) implements ID {}

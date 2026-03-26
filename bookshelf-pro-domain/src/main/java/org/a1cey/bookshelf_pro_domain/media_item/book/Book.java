@@ -61,7 +61,7 @@ public final class Book extends MediaItem {
     }
 
     public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         subtitle = newSubtitle;
     }
 
@@ -70,12 +70,12 @@ public final class Book extends MediaItem {
     }
 
     public void addAuthor(Author newAuthor, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.add(newAuthor);
     }
 
     public void removeAuthor(Author authorToRemove, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.remove(authorToRemove);
     }
 
@@ -84,7 +84,7 @@ public final class Book extends MediaItem {
     }
 
     public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishDate = newPublishDate;
     }
 
@@ -93,7 +93,7 @@ public final class Book extends MediaItem {
     }
 
     public void changePublisher(Publisher newPublisher, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         publisher = newPublisher;
     }
 
@@ -102,7 +102,7 @@ public final class Book extends MediaItem {
     }
 
     public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishPlace = newPublishPlace;
     }
 
@@ -111,7 +111,7 @@ public final class Book extends MediaItem {
     }
 
     public void changePageCount(PageCount newPageCount, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         pageCount = newPageCount;
     }
 

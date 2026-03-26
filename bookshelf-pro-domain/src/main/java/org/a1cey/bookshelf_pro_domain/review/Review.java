@@ -59,7 +59,7 @@ public final class Review {
     public void changeReview(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgressSnapshot,
                              UserID userRequestingChange) {
         validateConsumptionState(consumptionProgressSnapshot);
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
 
         var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot.progress());
 

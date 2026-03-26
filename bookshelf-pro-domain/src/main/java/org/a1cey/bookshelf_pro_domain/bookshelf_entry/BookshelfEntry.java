@@ -49,7 +49,7 @@ public final class BookshelfEntry {
     }
 
     public void updateConsumptionProgress(@Valid MediaItemConsumptionProgress newProgress, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         consumptionProgress.updateProgress(newProgress);
     }
 
@@ -58,12 +58,12 @@ public final class BookshelfEntry {
     }
 
     public void addLabel(@Valid Label label, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.add(label);
     }
 
     public void removeLabel(@Valid Label label, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.remove(label);
     }
 

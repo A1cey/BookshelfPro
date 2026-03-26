@@ -42,7 +42,7 @@ public final class Playlist {
     }
 
     public void changeTitle(Title newTitle, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
 
@@ -51,12 +51,12 @@ public final class Playlist {
     }
 
     public void addItem(PlaylistItem item, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         items.addLast(item);
     }
 
     public void moveItem(@PositiveOrZero int oldPosition, @PositiveOrZero int newPosition, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
 
         if (oldPosition < 0) {
             throw new IllegalArgumentException("oldPosition (" + oldPosition + ") is less than 0.");
@@ -77,7 +77,7 @@ public final class Playlist {
     }
 
     public boolean removeItem(PlaylistItemID itemId, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.removeIf(item -> item.id().equals(itemId));
     }
 

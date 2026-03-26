@@ -48,7 +48,7 @@ public abstract class MediaItem {
     }
 
     public void changeTitle(Title newTitle, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
 
@@ -57,7 +57,7 @@ public abstract class MediaItem {
     }
 
     public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         coverImageUrl = newUrl;
     }
 
@@ -66,7 +66,7 @@ public abstract class MediaItem {
     }
 
     public void changeDescription(Description newDescription, UserID userRequestingChange) throws IllegalArgumentException {
-        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
         description = newDescription;
     }
 
