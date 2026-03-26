@@ -2,25 +2,30 @@ package org.a1cey.bookshelf_pro_domain.playlist;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
+import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 @AggregateRoot
-public class Playlist {
+public final class Playlist {
 
     @Identity
     private final PlaylistID id;
+    private final UserID owner;
     @Valid
     private Title title;
     private final LinkedList<PlaylistItem> items; // LinkedList is best for inserting/removing
 
-    public Playlist(Title title, PlaylistID id, List<PlaylistItem> items) {
-        this.title = title;
+    public Playlist(PlaylistID id, UserID owner, Title title, List<PlaylistItem> items) {
         this.id = id;
+        this.owner = owner;
+        this.title = title;
         this.items = new LinkedList<>(items);
     }
 
@@ -28,23 +33,31 @@ public class Playlist {
         return id;
     }
 
+    public UserID owner() {
+        return owner;
+    }
+
     public Title title() {
         return title;
     }
 
-    public void changeTitle(Title newTitle) {
+    public void changeTitle(Title newTitle, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         title = newTitle;
     }
 
     public List<PlaylistItem> items() {
-        return items;
+        return Collections.unmodifiableList(items);
     }
 
-    public void addItem(PlaylistItem item) {
+    public void addItem(PlaylistItem item, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         items.addLast(item);
     }
 
-    public void moveItem(@PositiveOrZero int oldPosition, @PositiveOrZero int newPosition) {
+    public void moveItem(@PositiveOrZero int oldPosition, @PositiveOrZero int newPosition, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
+
         if (oldPosition < 0) {
             throw new IllegalArgumentException("oldPosition (" + oldPosition + ") is less than 0.");
         }
@@ -63,7 +76,8 @@ public class Playlist {
         items.add(newPosition, item);
     }
 
-    public boolean removeItem(PlaylistItemID itemId) {
+    public boolean removeItem(PlaylistItemID itemId, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         return items.removeIf(item -> item.id().equals(itemId));
     }
 
