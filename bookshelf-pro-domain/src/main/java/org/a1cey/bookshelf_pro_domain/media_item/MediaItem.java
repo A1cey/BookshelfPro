@@ -2,15 +2,12 @@ package org.a1cey.bookshelf_pro_domain.media_item;
 
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.review.ReviewID;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 @AggregateRoot
 public abstract class MediaItem {
@@ -23,8 +20,6 @@ public abstract class MediaItem {
     @Nullable
     protected URI coverImageUrl;
     protected Description description;
-    // not Review, this would bloat the Aggregate -> changing one review doesn't need to load all
-    protected final List<@Valid ReviewID> reviews;
     protected final UserID owner;
 
     protected MediaItem(
@@ -33,21 +28,22 @@ public abstract class MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<ReviewID> reviews,
             UserID owner
     ) {
         this.id = id;
         this.type = type;
         this.title = title;
-        this.reviews = new ArrayList<>(reviews); // prevent modification from outside
         this.coverImageUrl = coverImageUrl;
         this.description = description;
         this.owner = owner;
     }
 
-    protected void validateChangeByOwner(UserID userRequestingChange) throws AssertionError {
-        assert userRequestingChange.equals(owner) :
-                "Change to media item " + id + " requested by non-owner user " + userRequestingChange;
+    protected void validateChangeByOwner(UserID userRequestingChange) throws IllegalStateException {
+        if (!userRequestingChange.equals(owner)) {
+            throw new IllegalStateException(
+                    "Change to media item " + id + " requested by non-owner user " + userRequestingChange
+            );
+        }
     }
 
     public MediaItemID id() {
@@ -58,7 +54,7 @@ public abstract class MediaItem {
         return title;
     }
 
-    public void changeTitle(Title newTitle, UserID userRequestingChange) throws AssertionError {
+    public void changeTitle(Title newTitle, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         title = newTitle;
     }
@@ -67,7 +63,7 @@ public abstract class MediaItem {
         return coverImageUrl;
     }
 
-    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) throws AssertionError {
+    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         coverImageUrl = newUrl;
     }
@@ -79,10 +75,6 @@ public abstract class MediaItem {
     public void changeDescription(Description newDescription, UserID userRequestingChange) throws IllegalArgumentException {
         validateChangeByOwner(userRequestingChange);
         description = newDescription;
-    }
-
-    public List<ReviewID> reviews() {
-        return reviews;
     }
 
     public MediaItemType type() {

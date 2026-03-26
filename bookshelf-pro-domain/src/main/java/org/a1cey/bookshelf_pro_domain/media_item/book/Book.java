@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AggregateRoot
@@ -60,21 +61,21 @@ public final class Book extends MediaItem {
         return subtitle;
     }
 
-    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) throws AssertionError {
+    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         subtitle = newSubtitle;
     }
 
     public List<Author> authors() {
-        return authors;
+        return Collections.unmodifiableList(authors);
     }
 
-    public void addAuthor(Author newAuthor, UserID userRequestingChange) throws AssertionError {
+    public void addAuthor(Author newAuthor, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         authors.add(newAuthor);
     }
 
-    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) throws AssertionError {
+    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         authors.remove(authorToRemove);
     }
@@ -83,7 +84,7 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) throws AssertionError {
+    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         publishDate = newPublishDate;
     }
@@ -92,7 +93,7 @@ public final class Book extends MediaItem {
         return publisher;
     }
 
-    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) throws AssertionError {
+    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         publisher = newPublisher;
     }
@@ -101,7 +102,7 @@ public final class Book extends MediaItem {
         return publishPlace;
     }
 
-    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) throws AssertionError {
+    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         publishPlace = newPublishPlace;
     }
@@ -110,7 +111,7 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) throws AssertionError {
+    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) throws IllegalStateException {
         validateChangeByOwner(userRequestingChange);
         pageCount = newPageCount;
     }
@@ -138,7 +139,7 @@ public final class Book extends MediaItem {
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
 
-        public BookBuilder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
+        private BookBuilder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
             this.owner = owner;
             this.isbn = isbn;
