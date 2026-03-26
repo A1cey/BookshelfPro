@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import jakarta.validation.Valid;
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
@@ -38,14 +39,6 @@ public abstract class MediaItem {
         this.owner = owner;
     }
 
-    protected void validateChangeByOwner(UserID userRequestingChange) throws IllegalStateException {
-        if (!userRequestingChange.equals(owner)) {
-            throw new IllegalStateException(
-                    "Change to media item " + id + " requested by non-owner user " + userRequestingChange
-            );
-        }
-    }
-
     public MediaItemID id() {
         return id;
     }
@@ -54,8 +47,8 @@ public abstract class MediaItem {
         return title;
     }
 
-    public void changeTitle(Title newTitle, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changeTitle(Title newTitle, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         title = newTitle;
     }
 
@@ -63,8 +56,8 @@ public abstract class MediaItem {
         return coverImageUrl;
     }
 
-    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         coverImageUrl = newUrl;
     }
 
@@ -73,7 +66,7 @@ public abstract class MediaItem {
     }
 
     public void changeDescription(Description newDescription, UserID userRequestingChange) throws IllegalArgumentException {
-        validateChangeByOwner(userRequestingChange);
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         description = newDescription;
     }
 

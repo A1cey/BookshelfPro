@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
 import jakarta.validation.Valid;
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
@@ -59,8 +60,8 @@ public final class Book extends MediaItem {
         return subtitle;
     }
 
-    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         subtitle = newSubtitle;
     }
 
@@ -68,13 +69,13 @@ public final class Book extends MediaItem {
         return Collections.unmodifiableList(authors);
     }
 
-    public void addAuthor(Author newAuthor, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void addAuthor(Author newAuthor, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         authors.add(newAuthor);
     }
 
-    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         authors.remove(authorToRemove);
     }
 
@@ -82,8 +83,8 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         publishDate = newPublishDate;
     }
 
@@ -91,8 +92,8 @@ public final class Book extends MediaItem {
         return publisher;
     }
 
-    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         publisher = newPublisher;
     }
 
@@ -100,8 +101,8 @@ public final class Book extends MediaItem {
         return publishPlace;
     }
 
-    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         publishPlace = newPublishPlace;
     }
 
@@ -109,8 +110,8 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) throws IllegalStateException {
-        validateChangeByOwner(userRequestingChange);
+    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id.id());
         pageCount = newPageCount;
     }
 
@@ -163,7 +164,7 @@ public final class Book extends MediaItem {
             this.description = description;
             return this;
         }
-        
+
         public BookBuilder subtitle(Subtitle subtitle) {
             this.subtitle = subtitle;
             return this;
