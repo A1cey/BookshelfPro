@@ -6,7 +6,7 @@ import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionSta
 import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject
-public class WatchlistItem {
+public final class WatchlistItem {
 
     private final BookshelfEntryID bookshelfEntryID;
 
