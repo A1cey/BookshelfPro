@@ -1,5 +1,6 @@
 - Domain changes:
     - Labels should be private not global as modifying existing labels should not affect everyone
     - MediaItem does no longer hold a list of ReviewIDs, reviews already have a MediaItemID -> relation unidirectional
+    - Labels are NOT global but user specific. Labels are value objects, Labels can contain lowercase letters, digits and spaces
 - ReviewDomainService: Add/remove review to/from MediaItem
 - LibraryEntry (id, consumptionProgress, mediaItemID, Labels)
