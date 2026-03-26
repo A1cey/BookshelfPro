@@ -3,7 +3,6 @@ package org.a1cey.bookshelf_pro_domain.media_item.book;
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
-import org.a1cey.bookshelf_pro_domain.review.ReviewID;
 import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
@@ -33,7 +32,6 @@ public final class Book extends MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            List<ReviewID> reviews,
             UserID owner,
             ISBN isbn,
             Subtitle subtitle,
@@ -43,7 +41,7 @@ public final class Book extends MediaItem {
             PublishPlace publishPlace,
             PageCount pageCount) {
 
-        super(id, MediaItemType.BOOK, title, coverImageUrl, description, reviews, owner);
+        super(id, MediaItemType.BOOK, title, coverImageUrl, description, owner);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = new ArrayList<>(authors); // prevent modification from outside
@@ -133,7 +131,6 @@ public final class Book extends MediaItem {
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
-        private List<ReviewID> reviews = new ArrayList<>();
         private Subtitle subtitle = new Subtitle("");
         private @Nullable PublishDate publishDate = null;
         private Publisher publisher = new Publisher("");
@@ -166,17 +163,7 @@ public final class Book extends MediaItem {
             this.description = description;
             return this;
         }
-
-        public BookBuilder reviews(List<ReviewID> reviews) {
-            this.reviews = new ArrayList<>(reviews); // Create a mutable defensive copy
-            return this;
-        }
-
-        public BookBuilder review(ReviewID reviewID) {
-            this.reviews.add(reviewID);
-            return this;
-        }
-
+        
         public BookBuilder subtitle(Subtitle subtitle) {
             this.subtitle = subtitle;
             return this;
@@ -203,7 +190,6 @@ public final class Book extends MediaItem {
                     title,
                     coverImageUrl,
                     description,
-                    reviews,
                     owner,
                     isbn,
                     subtitle,
