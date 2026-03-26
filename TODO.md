@@ -1,2 +1,3 @@
 - LibraryEntry (id, consumptionProgress, mediaItemID, Labels)
 - change Domain: Labels should be private not global as modifying existing labels should not affect everyone
+- ReviewDomainService: Add/remove review to/from MediaItem
