@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountID;
+import org.a1cey.bookshelf_pro_domain.media_item.book.Language;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
@@ -22,6 +23,8 @@ public abstract class MediaItem {
     protected URI coverImageUrl;
     protected Description description;
     protected final AccountID owner;
+    @Valid
+    private Language language;
 
     protected MediaItem(
             MediaItemID id,
@@ -29,7 +32,8 @@ public abstract class MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            AccountID owner
+            AccountID owner,
+            Language language
     ) {
         this.id = id;
         this.type = type;
@@ -37,6 +41,7 @@ public abstract class MediaItem {
         this.coverImageUrl = coverImageUrl;
         this.description = description;
         this.owner = owner;
+        this.language = language;
     }
 
     public MediaItemID id() {
@@ -76,5 +81,14 @@ public abstract class MediaItem {
 
     public AccountID owner() {return owner;}
 
+
+    public Language language() {
+        return language;
+    }
+
+    public void changeLanguage(Language newLanguage, AccountID userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        language = newLanguage;
+    }
 
 }

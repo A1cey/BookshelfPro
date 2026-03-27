@@ -12,6 +12,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @AggregateRoot
 public final class Book extends MediaItem {
@@ -40,9 +41,10 @@ public final class Book extends MediaItem {
             @Nullable PublishDate publishDate,
             Publisher publisher,
             PublishPlace publishPlace,
-            PageCount pageCount) {
+            PageCount pageCount,
+            Language language) {
 
-        super(id, MediaItemType.BOOK, title, coverImageUrl, description, owner);
+        super(id, MediaItemType.BOOK, title, coverImageUrl, description, owner, language);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = new ArrayList<>(authors); // prevent modification from outside
@@ -115,6 +117,7 @@ public final class Book extends MediaItem {
         pageCount = newPageCount;
     }
 
+
     public static BookBuilder builder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
         return new BookBuilder(id, owner, title, isbn, pageCount);
     }
@@ -136,6 +139,7 @@ public final class Book extends MediaItem {
         private @Nullable PublishDate publishDate = null;
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
+        private Language language = Language.of(Locale.ENGLISH);
 
         private BookBuilder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
@@ -185,6 +189,11 @@ public final class Book extends MediaItem {
             return this;
         }
 
+        public BookBuilder language(Language language) {
+            this.language = language;
+            return this;
+        }
+
         public Book build() {
             return new Book(
                     id,
@@ -198,7 +207,8 @@ public final class Book extends MediaItem {
                     publishDate,
                     publisher,
                     publishPlace,
-                    pageCount
+                    pageCount,
+                    language
             );
         }
 
