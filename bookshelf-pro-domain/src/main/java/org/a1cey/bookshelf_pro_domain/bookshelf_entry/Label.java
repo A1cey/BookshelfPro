@@ -6,14 +6,19 @@ import org.jmolecules.ddd.annotation.ValueObject;
 @ValueObject
 public record Label(@NotBlank String name) {
 
-    public Label {
+    public Label(@NotBlank String name) {
         if (name.isBlank()) {
-            new IllegalArgumentException("Label name cannot be blank");
+            throw new IllegalArgumentException("Label name cannot be blank");
         }
         if (!name.chars().allMatch(c -> Character.isLowerCase(c) || Character.isDigit(c) || c == ' ')) {
             throw new IllegalArgumentException("Label name can only contain lowercase letters, digits and spaces");
         }
 
+        this.name = normalizeLabel(name);
+    }
+
+    private static String normalizeLabel(String label) {
+        return label.trim();
     }
 
 }
