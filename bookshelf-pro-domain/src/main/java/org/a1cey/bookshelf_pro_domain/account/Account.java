@@ -18,11 +18,14 @@ public final class Account {
     @Nullable
     @Valid
     private Email email;
+    @Valid
+    private Password password;
 
-    private Account(AccountID id, @Valid Username name, @Nullable @Valid Email email) {
+    public Account(AccountID id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     public AccountID id() {
@@ -43,6 +46,15 @@ public final class Account {
     public void changeEmail(@Valid Email newEmail, AccountID userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         email = newEmail;
+    }
+
+    public Password password() {
+        return password;
+    }
+
+    public void changePassword(@Valid Password newPassword, AccountID userRequestingChange) {
+        OwnershipPolicy.validate(id, userRequestingChange, id);
+        password = newPassword;
     }
 
 }
