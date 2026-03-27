@@ -99,9 +99,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <classPathDiscovery>true</classPathDiscovery>
-                </configuration>
             </plugin>
         </plugins>
     </build>

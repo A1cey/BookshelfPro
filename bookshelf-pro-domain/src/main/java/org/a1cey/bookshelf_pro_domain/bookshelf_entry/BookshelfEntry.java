@@ -80,7 +80,7 @@ public final class BookshelfEntry {
         private final ConsumptionProgress consumptionProgress;
         private final Set<@Valid Label> labels = new HashSet<>();
 
-        private BookshelfEntryBuilder(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress) {
+        private BookshelfEntryBuilder(final BookshelfEntryID id, final MediaItemID mediaItemID, final AccountID owner, final ConsumptionProgress consumptionProgress) {
             this.id = id;
             this.mediaItemID = mediaItemID;
             this.owner = owner;

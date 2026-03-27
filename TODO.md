@@ -4,3 +4,4 @@
     - Labels are NOT global but user specific. Labels are value objects, Labels can contain lowercase letters, digits and spaces
     - Playlists and Watchlists cannot have reviews
     - Usernames are unique, between 2 and 30 chars and can only contain numbers, letters and underscores
+- Should Media Item have the type attribute -> Matching on instanceof(mediaItem) is another possibility
