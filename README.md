@@ -32,12 +32,12 @@ Bewertungen sind dabei an den tatsächlichen Konsum gebunden, d.h. eine Bewertun
 Fortschritt des Nutzers (z.B. 80% abgeschlossen). Änderungen an Reviews werden historisiert, d.h. es gibt eine aktive (== aktuellste) Review
 und eine Historie an Änderungen. So kann ein Nutzer für ein bestimmtes Medium nur eine aktive Review besitzen. Eine Review kann zudem
 nur erstellt werden, wenn der Zustand des Mediums BEGONNEN oder ABGESCHLOSSEN ist.
-Das Rating einer Serie oder Season ergibt sich aus dem durchschnittlichen Rating der darin enthaltenen Media Items + der
+Das Rating einer Playlist, Serie oder Season ergibt sich aus dem durchschnittlichen Rating der darin enthaltenen Media Items + der
 direkten Reviews. Z.B.: Das Rating einer Season ergibt sich aus dem Durchschnitt der Episoden-Ratings und den direkten Ratings der
 Season ((SummerEpisodenRatings + SummeDirekteRatings) / (AnzahlEpisodenRatings + AnzahlDirekterRatings)).
 Bewertungen gelten für die globale Bibliothek nicht nur für die private Bibliothek.
 
-Darüber hinaus können Nutzer Medien innerhalb ihrer privaten Bibliothek mit Labels kategorisieren (z.B. scifi, harry potter, ...). Diese
+Darüber hinaus können Nutzer Medien innerhalb ihrer privaten Bibliothek mit Labels kategorisieren (z.B. SciFi, Harry Potter, ...). Diese
 Labels werden wie Medien global verwaltet, d.h. jeder Nutzer kann Label definieren. Es dürfen allerdings keine duplikate Labels existieren.
 Labels dürfen nur aus Kleinbuchstaben und Leerzeichen bestehen.
 

@@ -21,7 +21,7 @@ public final class Account {
     @Valid
     private Password password;
 
-    public Account(AccountID id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
+    Account(AccountID id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -34,7 +34,7 @@ public final class Account {
 
     public Username name() {return name;}
 
-    public void changeName(@Valid Username newName, AccountID userRequestingChange) {
+    void changeName(@Valid Username newName, AccountID userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         name = newName;
     }
