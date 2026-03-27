@@ -1,8 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
+import org.a1cey.bookshelf_pro_domain.account.AccountID;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.Service;
 
 @Service
@@ -17,18 +17,18 @@ public final class ReviewService {
     public Review addReview(
             ReviewID id,
             MediaItemID mediaItemID,
-            UserID userID,
+            AccountID accountID,
             Rating rating,
             Comment comment,
             ConsumptionProgressSnapshot snapshot
     ) {
-        if (reviewRepository.existsByUserAndMediaItem(userID, mediaItemID)) {
+        if (reviewRepository.existsByUserAndMediaItem(accountID, mediaItemID)) {
             throw new IllegalStateException(
-                    "User " + userID + " has already reviewed media item " + mediaItemID
+                    "User " + accountID + " has already reviewed media item " + mediaItemID
             );
         }
 
-        return Review.create(id, mediaItemID, userID, rating, comment, snapshot);
+        return Review.create(id, mediaItemID, accountID, rating, comment, snapshot);
     }
 
 }

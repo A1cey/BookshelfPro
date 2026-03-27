@@ -2,10 +2,10 @@ package org.a1cey.bookshelf_pro_domain.bookshelf_entry;
 
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.account.AccountID;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
@@ -19,12 +19,12 @@ public final class BookshelfEntry {
     @Identity
     private final BookshelfEntryID id;
     private final MediaItemID mediaItemID;
-    private final UserID owner;
+    private final AccountID owner;
     @Valid
     private final ConsumptionProgress consumptionProgress;
     private final Set<@Valid Label> labels;
 
-    private BookshelfEntry(BookshelfEntryID id, MediaItemID mediaItemID, UserID owner, ConsumptionProgress consumptionProgress, Set<@Valid Label> labels) {
+    private BookshelfEntry(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress, Set<@Valid Label> labels) {
         this.id = id;
         this.mediaItemID = mediaItemID;
         this.owner = owner;
@@ -36,7 +36,7 @@ public final class BookshelfEntry {
         return id;
     }
 
-    public UserID owner() {
+    public AccountID owner() {
         return owner;
     }
 
@@ -48,7 +48,7 @@ public final class BookshelfEntry {
         return consumptionProgress;
     }
 
-    public void updateConsumptionProgress(@Valid MediaItemConsumptionProgress newProgress, UserID userRequestingChange) {
+    public void updateConsumptionProgress(@Valid MediaItemConsumptionProgress newProgress, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         consumptionProgress.updateProgress(newProgress);
     }
@@ -57,17 +57,17 @@ public final class BookshelfEntry {
         return Collections.unmodifiableSet(labels);
     }
 
-    public void addLabel(@Valid Label label, UserID userRequestingChange) {
+    public void addLabel(@Valid Label label, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.add(label);
     }
 
-    public void removeLabel(@Valid Label label, UserID userRequestingChange) {
+    public void removeLabel(@Valid Label label, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.remove(label);
     }
 
-    public static BookshelfEntryBuilder builder(BookshelfEntryID id, MediaItemID mediaItemID, UserID owner, ConsumptionProgress consumptionProgress) {
+    public static BookshelfEntryBuilder builder(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress) {
         return new BookshelfEntryBuilder(id, mediaItemID, owner, consumptionProgress);
     }
 
@@ -75,12 +75,12 @@ public final class BookshelfEntry {
 
         private final BookshelfEntryID id;
         private final MediaItemID mediaItemID;
-        private final UserID owner;
+        private final AccountID owner;
         @Valid
         private final ConsumptionProgress consumptionProgress;
         private final Set<@Valid Label> labels = new HashSet<>();
 
-        private BookshelfEntryBuilder(BookshelfEntryID id, MediaItemID mediaItemID, UserID owner, ConsumptionProgress consumptionProgress) {
+        private BookshelfEntryBuilder(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress) {
             this.id = id;
             this.mediaItemID = mediaItemID;
             this.owner = owner;

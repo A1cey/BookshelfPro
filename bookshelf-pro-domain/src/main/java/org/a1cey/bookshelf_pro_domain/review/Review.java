@@ -2,11 +2,11 @@ package org.a1cey.bookshelf_pro_domain.review;
 
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.account.AccountID;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
@@ -25,10 +25,10 @@ public final class Review {
     @Identity
     private final ReviewID id;
     private final MediaItemID mediaItemID;
-    private final UserID owner;
+    private final AccountID owner;
     private final ArrayList<@Valid ReviewChange> reviewHistory = new ArrayList<>();
 
-    private Review(ReviewID id, MediaItemID mediaItemID, UserID owner, ReviewChange reviewChange) {
+    private Review(ReviewID id, MediaItemID mediaItemID, AccountID owner, ReviewChange reviewChange) {
         this.id = id;
         this.mediaItemID = mediaItemID;
         this.owner = owner;
@@ -45,7 +45,7 @@ public final class Review {
     }
 
     static Review create(
-            ReviewID id, MediaItemID mediaItemID, UserID userID,
+            ReviewID id, MediaItemID mediaItemID, AccountID accountID,
             Rating rating, Comment comment,
             ConsumptionProgressSnapshot consumptionProgressSnapshot
     ) {
@@ -53,11 +53,11 @@ public final class Review {
 
         var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot.progress());
 
-        return new Review(id, mediaItemID, userID, reviewChange);
+        return new Review(id, mediaItemID, accountID, reviewChange);
     }
 
     public void changeReview(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgressSnapshot,
-                             UserID userRequestingChange) {
+                             AccountID userRequestingChange) {
         validateConsumptionState(consumptionProgressSnapshot);
         OwnershipPolicy.validate(owner, userRequestingChange, id);
 
@@ -66,11 +66,11 @@ public final class Review {
         reviewHistory.add(reviewChange);
     }
 
-    public void changeRating(Rating newRating, ConsumptionProgressSnapshot consumptionProgressSnapshot, UserID userRequestingChange) {
+    public void changeRating(Rating newRating, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountID userRequestingChange) {
         changeReview(newRating, comment(), consumptionProgressSnapshot, userRequestingChange);
     }
 
-    public void changeComment(Comment newComment, ConsumptionProgressSnapshot consumptionProgressSnapshot, UserID userRequestingChange) {
+    public void changeComment(Comment newComment, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountID userRequestingChange) {
         changeReview(rating(), newComment, consumptionProgressSnapshot, userRequestingChange);
     }
 
@@ -80,7 +80,7 @@ public final class Review {
 
     public MediaItemID mediaItemID() {return mediaItemID;}
 
-    public UserID owner() {
+    public AccountID owner() {
         return owner;
     }
 

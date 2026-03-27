@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_domain.user;
+package org.a1cey.bookshelf_pro_domain.account;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -9,29 +9,29 @@ import org.jmolecules.ddd.annotation.Identity;
 import java.util.Optional;
 
 @AggregateRoot
-public final class User {
+public final class Account {
 
     @Identity
-    private final UserID id;
+    private final AccountID id;
     @Valid
     private Username name;
     @Nullable
     @Valid
     private Email email;
 
-    private User(UserID id, @Valid Username name, @Nullable @Valid Email email) {
+    private Account(AccountID id, @Valid Username name, @Nullable @Valid Email email) {
         this.id = id;
         this.name = name;
         this.email = email;
     }
 
-    public UserID id() {
+    public AccountID id() {
         return id;
     }
 
     public Username name() {return name;}
 
-    public void changeName(Username newName, UserID userRequestingChange) {
+    public void changeName(@Valid Username newName, AccountID userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         name = newName;
     }
@@ -40,7 +40,7 @@ public final class User {
         return Optional.ofNullable(email);
     }
 
-    public void changeEmail(@Valid Email newEmail, UserID userRequestingChange) {
+    public void changeEmail(@Valid Email newEmail, AccountID userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         email = newEmail;
     }

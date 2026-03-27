@@ -3,7 +3,7 @@ package org.a1cey.bookshelf_pro_domain.media_item;
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.user.UserID;
+import org.a1cey.bookshelf_pro_domain.account.AccountID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
@@ -21,7 +21,7 @@ public abstract class MediaItem {
     @Nullable
     protected URI coverImageUrl;
     protected Description description;
-    protected final UserID owner;
+    protected final AccountID owner;
 
     protected MediaItem(
             MediaItemID id,
@@ -29,7 +29,7 @@ public abstract class MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            UserID owner
+            AccountID owner
     ) {
         this.id = id;
         this.type = type;
@@ -47,7 +47,7 @@ public abstract class MediaItem {
         return title;
     }
 
-    public void changeTitle(Title newTitle, UserID userRequestingChange) {
+    public void changeTitle(Title newTitle, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
@@ -56,7 +56,7 @@ public abstract class MediaItem {
         return coverImageUrl;
     }
 
-    public void changeCoverImageUrl(@Nullable URI newUrl, UserID userRequestingChange) {
+    public void changeCoverImageUrl(@Nullable URI newUrl, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         coverImageUrl = newUrl;
     }
@@ -65,7 +65,7 @@ public abstract class MediaItem {
         return description;
     }
 
-    public void changeDescription(Description newDescription, UserID userRequestingChange) throws IllegalArgumentException {
+    public void changeDescription(Description newDescription, AccountID userRequestingChange) throws IllegalArgumentException {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         description = newDescription;
     }
@@ -74,7 +74,7 @@ public abstract class MediaItem {
         return type;
     }
 
-    public UserID owner() {return owner;}
+    public AccountID owner() {return owner;}
 
 
 }

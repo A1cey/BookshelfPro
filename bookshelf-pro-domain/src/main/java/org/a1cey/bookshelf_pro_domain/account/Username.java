@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_domain.user;
+package org.a1cey.bookshelf_pro_domain.account;
 
 import org.jmolecules.ddd.annotation.ValueObject;
 import org.jspecify.annotations.NonNull;

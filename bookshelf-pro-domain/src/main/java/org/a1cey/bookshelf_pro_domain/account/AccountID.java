@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_domain.user;
+package org.a1cey.bookshelf_pro_domain.account;
 
 import org.a1cey.bookshelf_pro_domain.ID;
 import org.jmolecules.ddd.annotation.ValueObject;
@@ -6,4 +6,4 @@ import org.jmolecules.ddd.annotation.ValueObject;
 import java.util.UUID;
 
 @ValueObject
-public record UserID(UUID value) implements ID {}
+public record AccountID(UUID value) implements ID {}

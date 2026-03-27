@@ -3,8 +3,8 @@ package org.a1cey.bookshelf_pro_domain.media_item.book;
 import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
+import org.a1cey.bookshelf_pro_domain.account.AccountID;
 import org.a1cey.bookshelf_pro_domain.media_item.*;
-import org.a1cey.bookshelf_pro_domain.user.UserID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jspecify.annotations.Nullable;
 
@@ -33,7 +33,7 @@ public final class Book extends MediaItem {
             Title title,
             @Nullable URI coverImageUrl,
             Description description,
-            UserID owner,
+            AccountID owner,
             ISBN isbn,
             Subtitle subtitle,
             List<Author> authors,
@@ -60,7 +60,7 @@ public final class Book extends MediaItem {
         return subtitle;
     }
 
-    public void changeSubtitle(Subtitle newSubtitle, UserID userRequestingChange) {
+    public void changeSubtitle(Subtitle newSubtitle, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         subtitle = newSubtitle;
     }
@@ -69,12 +69,12 @@ public final class Book extends MediaItem {
         return Collections.unmodifiableList(authors);
     }
 
-    public void addAuthor(Author newAuthor, UserID userRequestingChange) {
+    public void addAuthor(Author newAuthor, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.add(newAuthor);
     }
 
-    public void removeAuthor(Author authorToRemove, UserID userRequestingChange) {
+    public void removeAuthor(Author authorToRemove, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.remove(authorToRemove);
     }
@@ -83,7 +83,7 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public void changePublishDate(@Nullable PublishDate newPublishDate, UserID userRequestingChange) {
+    public void changePublishDate(@Nullable PublishDate newPublishDate, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishDate = newPublishDate;
     }
@@ -92,7 +92,7 @@ public final class Book extends MediaItem {
         return publisher;
     }
 
-    public void changePublisher(Publisher newPublisher, UserID userRequestingChange) {
+    public void changePublisher(Publisher newPublisher, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publisher = newPublisher;
     }
@@ -101,7 +101,7 @@ public final class Book extends MediaItem {
         return publishPlace;
     }
 
-    public void changePublishPlace(PublishPlace newPublishPlace, UserID userRequestingChange) {
+    public void changePublishPlace(PublishPlace newPublishPlace, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishPlace = newPublishPlace;
     }
@@ -110,19 +110,19 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public void changePageCount(PageCount newPageCount, UserID userRequestingChange) {
+    public void changePageCount(PageCount newPageCount, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         pageCount = newPageCount;
     }
 
-    public static BookBuilder builder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
+    public static BookBuilder builder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
         return new BookBuilder(id, owner, title, isbn, pageCount);
     }
 
     public static final class BookBuilder {
 
         private final MediaItemID id;
-        private final UserID owner;
+        private final AccountID owner;
         @Valid
         private final Title title;
         @Valid
@@ -137,7 +137,7 @@ public final class Book extends MediaItem {
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
 
-        private BookBuilder(MediaItemID id, UserID owner, Title title, ISBN isbn, PageCount pageCount) {
+        private BookBuilder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
             this.id = id;
             this.owner = owner;
             this.isbn = isbn;
