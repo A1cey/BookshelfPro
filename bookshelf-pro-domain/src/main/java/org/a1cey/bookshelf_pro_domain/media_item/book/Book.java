@@ -19,7 +19,6 @@ public final class Book extends MediaItem {
 
     @Valid
     private final ISBN isbn;
-    private Subtitle subtitle;
     private final List<@Valid Author> authors;
     @Valid
     @Nullable
@@ -31,20 +30,20 @@ public final class Book extends MediaItem {
 
     private Book(
             MediaItemID id,
-            Title title,
+            @Valid Title title,
+            Subtitle subtitle,
             @Nullable URI coverImageUrl,
             Description description,
             AccountID owner,
             ISBN isbn,
-            Subtitle subtitle,
             List<Author> authors,
-            @Nullable PublishDate publishDate,
+            @Valid @Nullable PublishDate publishDate,
             Publisher publisher,
             PublishPlace publishPlace,
-            PageCount pageCount,
+            @Valid PageCount pageCount,
             Language language) {
 
-        super(id, MediaItemType.BOOK, title, coverImageUrl, description, owner, language);
+        super(id, MediaItemType.BOOK, title,subtitle, coverImageUrl, description, owner, language);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = new ArrayList<>(authors); // prevent modification from outside
@@ -58,25 +57,17 @@ public final class Book extends MediaItem {
         return isbn;
     }
 
-    public Subtitle subtitle() {
-        return subtitle;
-    }
-
-    public void changeSubtitle(Subtitle newSubtitle, AccountID userRequestingChange) {
-        OwnershipPolicy.validate(owner, userRequestingChange, id);
-        subtitle = newSubtitle;
-    }
 
     public List<Author> authors() {
         return Collections.unmodifiableList(authors);
     }
 
-    public void addAuthor(Author newAuthor, AccountID userRequestingChange) {
+    public void addAuthor(@Valid Author newAuthor, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.add(newAuthor);
     }
 
-    public void removeAuthor(Author authorToRemove, AccountID userRequestingChange) {
+    public void removeAuthor(@Valid Author authorToRemove, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.remove(authorToRemove);
     }
@@ -85,7 +76,7 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public void changePublishDate(@Nullable PublishDate newPublishDate, AccountID userRequestingChange) {
+    public void changePublishDate(@Valid @Nullable PublishDate newPublishDate, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishDate = newPublishDate;
     }
@@ -112,13 +103,13 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public void changePageCount(PageCount newPageCount, AccountID userRequestingChange) {
+    public void changePageCount(@Valid PageCount newPageCount, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         pageCount = newPageCount;
     }
 
 
-    public static BookBuilder builder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
+    public static BookBuilder builder(MediaItemID id, AccountID owner,@Valid  Title title,@Valid  ISBN isbn,@Valid  PageCount pageCount) {
         return new BookBuilder(id, owner, title, isbn, pageCount);
     }
 
@@ -126,12 +117,9 @@ public final class Book extends MediaItem {
 
         private final MediaItemID id;
         private final AccountID owner;
-        @Valid
         private final Title title;
-        @Valid
         private final ISBN isbn;
-        private List<@Valid Author> authors = new ArrayList<>();
-        @Valid
+        private List<Author> authors = new ArrayList<>();
         private final PageCount pageCount;
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
@@ -141,7 +129,7 @@ public final class Book extends MediaItem {
         private PublishPlace publishPlace = new PublishPlace("");
         private Language language = Language.of(Locale.ENGLISH);
 
-        private BookBuilder(MediaItemID id, AccountID owner, Title title, ISBN isbn, PageCount pageCount) {
+        private BookBuilder(MediaItemID id, AccountID owner,@Valid Title title,@Valid ISBN isbn, @Valid PageCount pageCount) {
             this.id = id;
             this.owner = owner;
             this.isbn = isbn;
@@ -149,12 +137,12 @@ public final class Book extends MediaItem {
             this.pageCount = pageCount;
         }
 
-        public BookBuilder authors(List<Author> authors) {
+        public BookBuilder authors(List<@Valid Author> authors) {
             this.authors = new ArrayList<>(authors); // Create a mutable defensive copy
             return this;
         }
 
-        public BookBuilder author(Author author) {
+        public BookBuilder author(@Valid Author author) {
             this.authors.add(author);
             return this;
         }
@@ -174,7 +162,7 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder publishDate(@Nullable PublishDate publishDate) {
+        public BookBuilder publishDate(@Valid @Nullable PublishDate publishDate) {
             this.publishDate = publishDate;
             return this;
         }
@@ -189,7 +177,7 @@ public final class Book extends MediaItem {
             return this;
         }
 
-        public BookBuilder language(Language language) {
+        public BookBuilder language(@Valid Language language) {
             this.language = language;
             return this;
         }
@@ -198,11 +186,11 @@ public final class Book extends MediaItem {
             return new Book(
                     id,
                     title,
+                    subtitle,
                     coverImageUrl,
                     description,
                     owner,
                     isbn,
-                    subtitle,
                     authors,
                     publishDate,
                     publisher,
