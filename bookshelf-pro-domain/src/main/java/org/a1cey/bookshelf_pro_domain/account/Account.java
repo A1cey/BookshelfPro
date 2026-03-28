@@ -34,6 +34,7 @@ public final class Account {
 
     public Username name() {return name;}
 
+    // This is package private to be used in AccountService
     void changeName(@Valid Username newName, AccountID userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         name = newName;
