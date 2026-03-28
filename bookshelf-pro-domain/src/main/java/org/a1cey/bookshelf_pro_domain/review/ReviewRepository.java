@@ -15,4 +15,6 @@ public interface ReviewRepository {
 
     void save(Review review);
 
+    void delete(ReviewID reviewID);
+
 }

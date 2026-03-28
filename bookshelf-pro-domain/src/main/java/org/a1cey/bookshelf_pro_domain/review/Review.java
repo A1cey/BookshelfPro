@@ -51,7 +51,7 @@ public final class Review {
     ) {
         validateConsumptionState(consumptionProgressSnapshot);
 
-        var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot.progress());
+        var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot);
 
         return new Review(id, mediaItemID, accountID, reviewChange);
     }
@@ -61,7 +61,7 @@ public final class Review {
         validateConsumptionState(consumptionProgressSnapshot);
         OwnershipPolicy.validate(owner, userRequestingChange, id);
 
-        var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot.progress());
+        var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot);
 
         reviewHistory.add(reviewChange);
     }
@@ -96,7 +96,7 @@ public final class Review {
         return reviewHistory.getLast().reviewDate();
     }
 
-    public MediaItemConsumptionProgress consumptionProgress() {
+    public ConsumptionProgressSnapshot consumptionProgress() {
         return reviewHistory.getLast().consumptionProgress();
     }
 

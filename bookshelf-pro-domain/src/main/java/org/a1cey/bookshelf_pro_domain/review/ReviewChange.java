@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
 import jakarta.validation.Valid;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.jmolecules.ddd.annotation.ValueObject;
 
@@ -13,9 +14,9 @@ public final class ReviewChange {
     private final Rating rating;
     private final Comment comment;
     private final LocalDateTime reviewDate;
-    private final MediaItemConsumptionProgress consumptionProgress;
+    private final ConsumptionProgressSnapshot consumptionProgress;
 
-    public ReviewChange(Rating rating, Comment comment, MediaItemConsumptionProgress consumptionProgress) {
+    public ReviewChange(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgress) {
         this.rating = rating;
         this.comment = comment;
         this.reviewDate = LocalDateTime.now();
@@ -34,7 +35,7 @@ public final class ReviewChange {
         return reviewDate;
     }
 
-    public MediaItemConsumptionProgress consumptionProgress() {
+    public ConsumptionProgressSnapshot consumptionProgress() {
         return consumptionProgress;
     }
 
