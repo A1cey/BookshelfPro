@@ -108,6 +108,10 @@ public final class Book extends MediaItem {
         pageCount = newPageCount;
     }
 
+    public PageProgress createProgress(PageCount currentPage) {
+        return new PageProgress(currentPage, pageCount);
+    }
+
 
     public static BookBuilder builder(MediaItemID id, AccountID owner,@Valid  Title title,@Valid  ISBN isbn,@Valid  PageCount pageCount) {
         return new BookBuilder(id, owner, title, isbn, pageCount);
