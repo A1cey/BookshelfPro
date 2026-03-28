@@ -18,6 +18,6 @@ public record PageProgress(PageCount current, PageCount total) implements MediaI
     public boolean isCompleted() {return current.equals(total);}
 
     @Override
-    public boolean isEmpty() {return current.pageCount() == 0;}
+    public boolean isStarted() {return current.pageCount() > 0  && current.pageCount() < total.pageCount();}
 
 }

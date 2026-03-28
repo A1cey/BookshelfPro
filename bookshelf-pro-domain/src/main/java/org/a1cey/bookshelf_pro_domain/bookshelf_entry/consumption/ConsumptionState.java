@@ -24,9 +24,9 @@ public enum ConsumptionState {
         if (progress.isCompleted()) {
             return COMPLETED;
         }
-        if (progress.isEmpty()) {
-            return NOT_STARTED;
+        if (progress.isStarted()) {
+            return STARTED;
         }
-        return STARTED;
+        return NOT_STARTED;
     }
 }
