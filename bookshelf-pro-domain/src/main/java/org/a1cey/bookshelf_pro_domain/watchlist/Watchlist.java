@@ -3,6 +3,7 @@ package org.a1cey.bookshelf_pro_domain.watchlist;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountID;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryID;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
@@ -17,10 +18,10 @@ public final class Watchlist {
     private final WatchlistID id;
     private final AccountID owner;
     private Title title;
-    private final LinkedHashSet<WatchlistItem> items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot
+    private final LinkedHashSet<BookshelfEntryID > items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot
     // be rearranged
 
-    public Watchlist(WatchlistID id, AccountID owner, Title title, SequencedSet<WatchlistItem> items) {
+    public Watchlist(WatchlistID id, AccountID owner, Title title, SequencedSet<BookshelfEntryID > items) {
         this.id = id;
         this.owner = owner;
         this.title = title;
@@ -44,16 +45,16 @@ public final class Watchlist {
         title = newTitle;
     }
 
-    public SequencedSet<WatchlistItem> items() {
+    public SequencedSet<BookshelfEntryID> items() {
         return Collections.unmodifiableSequencedSet(items);
     }
 
-    public boolean addItem(WatchlistItem item, AccountID userRequestingChange) {
+    public boolean addItem(BookshelfEntryID item, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.add(item);
     }
 
-    public boolean removeItem(WatchlistItem item, AccountID userRequestingChange) {
+    public boolean removeItem(BookshelfEntryID item, AccountID userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.remove(item);
     }
