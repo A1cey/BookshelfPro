@@ -1,7 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
-import jakarta.validation.constraints.PositiveOrZero;
 import org.jmolecules.ddd.annotation.ValueObject;
+
+import jakarta.validation.constraints.PositiveOrZero;
 
 @ValueObject
 public record Rating(@PositiveOrZero float rating) {

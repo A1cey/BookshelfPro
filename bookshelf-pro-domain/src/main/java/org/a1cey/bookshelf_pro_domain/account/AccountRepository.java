@@ -1,13 +1,13 @@
 package org.a1cey.bookshelf_pro_domain.account;
 
-import org.jmolecules.ddd.annotation.Repository;
-
 import java.util.Optional;
+
+import org.jmolecules.ddd.annotation.Repository;
 
 @Repository
 public interface AccountRepository {
 
-    Optional<Account> findById(AccountID id);
+    Optional<Account> findById(AccountId id);
 
     void save(Account account);
 

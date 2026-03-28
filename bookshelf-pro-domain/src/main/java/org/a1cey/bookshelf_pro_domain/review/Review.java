@@ -1,36 +1,36 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
-import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.jmolecules.ddd.annotation.AggregateRoot;
-import org.jmolecules.ddd.annotation.Identity;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-//TODO: Das Rating einer Playlist, Serie oder Season ergibt sich aus dem durchschnittlichen Rating der darin enthaltenen Media Items + der
-// direkten Reviews. Z.B.: Das Rating einer Season ergibt sich aus dem Durchschnitt der Episoden-Ratings und den direkten Ratings der
-// Season ((SummerEpisodenRatings + SummeDirekteRatings) / (AnzahlEpisodenRatings + AnzahlDirekterRatings)).
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionState;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
+
+import jakarta.validation.Valid;
+
+// TODO: Das Rating einer Playlist, Serie oder Season ergibt sich aus dem durchschnittlichen Rating der darin enthaltenen Media Items + der
+//  direkten Reviews. Z.B.: Das Rating einer Season ergibt sich aus dem Durchschnitt der Episoden-Ratings und den direkten Ratings der
+//  Season ((SummerEpisodenRatings + SummeDirekteRatings) / (AnzahlEpisodenRatings + AnzahlDirekterRatings)).
 
 @AggregateRoot
 public final class Review {
 
     @Identity
-    private final ReviewID id;
-    private final MediaItemID mediaItemID;
-    private final AccountID owner;
+    private final ReviewId id;
+    private final MediaItemId mediaItemId;
+    private final AccountId owner;
     private final ArrayList<@Valid ReviewChange> reviewHistory = new ArrayList<>();
 
-    private Review(ReviewID id, MediaItemID mediaItemID, AccountID owner, ReviewChange reviewChange) {
+    private Review(ReviewId id, MediaItemId mediaItemId, AccountId owner, ReviewChange reviewChange) {
         this.id = id;
-        this.mediaItemID = mediaItemID;
+        this.mediaItemId = mediaItemId;
         this.owner = owner;
 
         reviewHistory.add(reviewChange);
@@ -39,25 +39,25 @@ public final class Review {
     private static void validateConsumptionState(ConsumptionProgressSnapshot snapshot) {
         if (snapshot.state() == ConsumptionState.NOT_STARTED) {
             throw new IllegalStateException(
-                    "Cannot review a medium the user has not started to consume."
+                "Cannot review a medium the user has not started to consume."
             );
         }
     }
 
     static Review create(
-            ReviewID id, MediaItemID mediaItemID, AccountID accountID,
-            Rating rating, Comment comment,
-            ConsumptionProgressSnapshot consumptionProgressSnapshot
+        ReviewId id, MediaItemId mediaItemId, AccountId accountId,
+        Rating rating, Comment comment,
+        ConsumptionProgressSnapshot consumptionProgressSnapshot
     ) {
         validateConsumptionState(consumptionProgressSnapshot);
 
         var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot);
 
-        return new Review(id, mediaItemID, accountID, reviewChange);
+        return new Review(id, mediaItemId, accountId, reviewChange);
     }
 
     public void changeReview(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgressSnapshot,
-                             AccountID userRequestingChange) {
+                             AccountId userRequestingChange) {
         validateConsumptionState(consumptionProgressSnapshot);
         OwnershipPolicy.validate(owner, userRequestingChange, id);
 
@@ -66,21 +66,23 @@ public final class Review {
         reviewHistory.add(reviewChange);
     }
 
-    public void changeRating(Rating newRating, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountID userRequestingChange) {
+    public void changeRating(Rating newRating, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountId userRequestingChange) {
         changeReview(newRating, comment(), consumptionProgressSnapshot, userRequestingChange);
     }
 
-    public void changeComment(Comment newComment, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountID userRequestingChange) {
+    public void changeComment(Comment newComment, ConsumptionProgressSnapshot consumptionProgressSnapshot, AccountId userRequestingChange) {
         changeReview(rating(), newComment, consumptionProgressSnapshot, userRequestingChange);
     }
 
-    public ReviewID id() {
+    public ReviewId id() {
         return id;
     }
 
-    public MediaItemID mediaItemID() {return mediaItemID;}
+    public MediaItemId mediaItemId() {
+        return mediaItemId;
+    }
 
-    public AccountID owner() {
+    public AccountId owner() {
         return owner;
     }
 

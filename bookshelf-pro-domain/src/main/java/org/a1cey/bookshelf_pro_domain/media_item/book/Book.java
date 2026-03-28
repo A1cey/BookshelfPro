@@ -1,24 +1,30 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
-import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
-import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.media_item.*;
-import org.jmolecules.ddd.annotation.AggregateRoot;
-import org.jspecify.annotations.Nullable;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.Title;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.media_item.Description;
+import org.a1cey.bookshelf_pro_domain.media_item.Language;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItem;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
+import org.a1cey.bookshelf_pro_domain.media_item.Subtitle;
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jspecify.annotations.Nullable;
+
+import jakarta.validation.Valid;
+
 @AggregateRoot
 public final class Book extends MediaItem {
 
     @Valid
-    private final ISBN isbn;
+    private final Isbn isbn;
     private final List<@Valid Author> authors;
     @Valid
     @Nullable
@@ -29,21 +35,21 @@ public final class Book extends MediaItem {
     private PageCount pageCount;
 
     private Book(
-            MediaItemID id,
-            @Valid Title title,
-            Subtitle subtitle,
-            @Nullable URI coverImageUrl,
-            Description description,
-            AccountID owner,
-            ISBN isbn,
-            List<Author> authors,
-            @Valid @Nullable PublishDate publishDate,
-            Publisher publisher,
-            PublishPlace publishPlace,
-            @Valid PageCount pageCount,
-            Language language) {
+        MediaItemId id,
+        @Valid Title title,
+        Subtitle subtitle,
+        @Nullable URI coverImageUrl,
+        Description description,
+        AccountId owner,
+        Isbn isbn,
+        List<Author> authors,
+        @Valid @Nullable PublishDate publishDate,
+        Publisher publisher,
+        PublishPlace publishPlace,
+        @Valid PageCount pageCount,
+        Language language) {
 
-        super(id, MediaItemType.BOOK, title,subtitle, coverImageUrl, description, owner, language);
+        super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, language);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = new ArrayList<>(authors); // prevent modification from outside
@@ -53,21 +59,24 @@ public final class Book extends MediaItem {
         this.pageCount = pageCount;
     }
 
-    public ISBN isbn() {
-        return isbn;
+    public static BookBuilder builder(MediaItemId id, AccountId owner, @Valid Title title, @Valid Isbn isbn, @Valid PageCount pageCount) {
+        return new BookBuilder(id, owner, title, isbn, pageCount);
     }
 
+    public Isbn isbn() {
+        return isbn;
+    }
 
     public List<Author> authors() {
         return Collections.unmodifiableList(authors);
     }
 
-    public void addAuthor(@Valid Author newAuthor, AccountID userRequestingChange) {
+    public void addAuthor(@Valid Author newAuthor, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.add(newAuthor);
     }
 
-    public void removeAuthor(@Valid Author authorToRemove, AccountID userRequestingChange) {
+    public void removeAuthor(@Valid Author authorToRemove, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.remove(authorToRemove);
     }
@@ -76,7 +85,7 @@ public final class Book extends MediaItem {
         return publishDate;
     }
 
-    public void changePublishDate(@Valid @Nullable PublishDate newPublishDate, AccountID userRequestingChange) {
+    public void changePublishDate(@Valid @Nullable PublishDate newPublishDate, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishDate = newPublishDate;
     }
@@ -85,7 +94,7 @@ public final class Book extends MediaItem {
         return publisher;
     }
 
-    public void changePublisher(Publisher newPublisher, AccountID userRequestingChange) {
+    public void changePublisher(Publisher newPublisher, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publisher = newPublisher;
     }
@@ -94,7 +103,7 @@ public final class Book extends MediaItem {
         return publishPlace;
     }
 
-    public void changePublishPlace(PublishPlace newPublishPlace, AccountID userRequestingChange) {
+    public void changePublishPlace(PublishPlace newPublishPlace, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         publishPlace = newPublishPlace;
     }
@@ -103,7 +112,7 @@ public final class Book extends MediaItem {
         return pageCount;
     }
 
-    public void changePageCount(@Valid PageCount newPageCount, AccountID userRequestingChange) {
+    public void changePageCount(@Valid PageCount newPageCount, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         pageCount = newPageCount;
     }
@@ -112,19 +121,14 @@ public final class Book extends MediaItem {
         return new PageProgress(currentPage, pageCount);
     }
 
-
-    public static BookBuilder builder(MediaItemID id, AccountID owner,@Valid  Title title,@Valid  ISBN isbn,@Valid  PageCount pageCount) {
-        return new BookBuilder(id, owner, title, isbn, pageCount);
-    }
-
     public static final class BookBuilder {
 
-        private final MediaItemID id;
-        private final AccountID owner;
+        private final MediaItemId id;
+        private final AccountId owner;
         private final Title title;
-        private final ISBN isbn;
-        private List<Author> authors = new ArrayList<>();
+        private final Isbn isbn;
         private final PageCount pageCount;
+        private List<Author> authors = new ArrayList<>();
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
         private Subtitle subtitle = new Subtitle("");
@@ -133,7 +137,7 @@ public final class Book extends MediaItem {
         private PublishPlace publishPlace = new PublishPlace("");
         private Language language = Language.of(Locale.ENGLISH);
 
-        private BookBuilder(MediaItemID id, AccountID owner,@Valid Title title,@Valid ISBN isbn, @Valid PageCount pageCount) {
+        private BookBuilder(MediaItemId id, AccountId owner, @Valid Title title, @Valid Isbn isbn, @Valid PageCount pageCount) {
             this.id = id;
             this.owner = owner;
             this.isbn = isbn;
@@ -188,19 +192,19 @@ public final class Book extends MediaItem {
 
         public Book build() {
             return new Book(
-                    id,
-                    title,
-                    subtitle,
-                    coverImageUrl,
-                    description,
-                    owner,
-                    isbn,
-                    authors,
-                    publishDate,
-                    publisher,
-                    publishPlace,
-                    pageCount,
-                    language
+                id,
+                title,
+                subtitle,
+                coverImageUrl,
+                description,
+                owner,
+                isbn,
+                authors,
+                publishDate,
+                publisher,
+                publishPlace,
+                pageCount,
+                language
             );
         }
 

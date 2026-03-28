@@ -1,54 +1,63 @@
 package org.a1cey.bookshelf_pro_domain.bookshelf_entry;
 
-import jakarta.validation.Valid;
-import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgress;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.jmolecules.ddd.annotation.AggregateRoot;
-import org.jmolecules.ddd.annotation.Identity;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
+
+import jakarta.validation.Valid;
 
 @AggregateRoot
 public final class BookshelfEntry {
 
     @Identity
-    private final BookshelfEntryID id;
-    private final MediaItemID mediaItemID;
-    private final AccountID owner;
+    private final BookshelfEntryId id;
+    private final MediaItemId mediaItemId;
+    private final AccountId owner;
     @Valid
     private final ConsumptionProgress consumptionProgress;
     private final Set<@Valid Label> labels;
 
-    private BookshelfEntry(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress, Set<@Valid Label> labels) {
+    private BookshelfEntry(
+        BookshelfEntryId id, MediaItemId mediaItemId, AccountId owner, ConsumptionProgress consumptionProgress, Set<@Valid Label> labels
+    ) {
         this.id = id;
-        this.mediaItemID = mediaItemID;
+        this.mediaItemId = mediaItemId;
         this.owner = owner;
         this.consumptionProgress = consumptionProgress;
         this.labels = labels;
     }
 
-    public BookshelfEntryID id() {
+    public static BookshelfEntryBuilder builder(
+        BookshelfEntryId id, MediaItemId mediaItemId, AccountId owner, ConsumptionProgress consumptionProgress
+    ) {
+        return new BookshelfEntryBuilder(id, mediaItemId, owner, consumptionProgress);
+    }
+
+    public BookshelfEntryId id() {
         return id;
     }
 
-    public AccountID owner() {
+    public AccountId owner() {
         return owner;
     }
 
-    public MediaItemID mediaItemID() {
-        return mediaItemID;
+    public MediaItemId mediaItemId() {
+        return mediaItemId;
     }
 
     public ConsumptionProgress consumptionProgress() {
         return consumptionProgress;
     }
 
-    public void updateConsumptionProgress(@Valid MediaItemConsumptionProgress newProgress, AccountID userRequestingChange) {
+    public void updateConsumptionProgress(@Valid MediaItemConsumptionProgress newProgress, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         consumptionProgress.updateProgress(newProgress);
     }
@@ -57,32 +66,30 @@ public final class BookshelfEntry {
         return Collections.unmodifiableSet(labels);
     }
 
-    public void addLabel(@Valid Label label, AccountID userRequestingChange) {
+    public void addLabel(@Valid Label label, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.add(label);
     }
 
-    public void removeLabel(@Valid Label label, AccountID userRequestingChange) {
+    public void removeLabel(@Valid Label label, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         labels.remove(label);
     }
 
-    public static BookshelfEntryBuilder builder(BookshelfEntryID id, MediaItemID mediaItemID, AccountID owner, ConsumptionProgress consumptionProgress) {
-        return new BookshelfEntryBuilder(id, mediaItemID, owner, consumptionProgress);
-    }
-
     public static final class BookshelfEntryBuilder {
 
-        private final BookshelfEntryID id;
-        private final MediaItemID mediaItemID;
-        private final AccountID owner;
+        private final BookshelfEntryId id;
+        private final MediaItemId mediaItemId;
+        private final AccountId owner;
         @Valid
         private final ConsumptionProgress consumptionProgress;
         private final Set<@Valid Label> labels = new HashSet<>();
 
-        private BookshelfEntryBuilder(final BookshelfEntryID id, final MediaItemID mediaItemID, final AccountID owner, final ConsumptionProgress consumptionProgress) {
+        private BookshelfEntryBuilder(
+            final BookshelfEntryId id, final MediaItemId mediaItemId, final AccountId owner, final ConsumptionProgress consumptionProgress
+        ) {
             this.id = id;
-            this.mediaItemID = mediaItemID;
+            this.mediaItemId = mediaItemId;
             this.owner = owner;
             this.consumptionProgress = consumptionProgress;
         }
@@ -98,7 +105,7 @@ public final class BookshelfEntry {
         }
 
         public BookshelfEntry build() {
-            return new BookshelfEntry(id, mediaItemID, owner, consumptionProgress, labels);
+            return new BookshelfEntry(id, mediaItemId, owner, consumptionProgress, labels);
         }
 
     }

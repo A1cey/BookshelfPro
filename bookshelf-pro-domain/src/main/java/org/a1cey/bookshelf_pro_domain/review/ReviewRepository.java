@@ -1,20 +1,20 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemID;
-import org.jmolecules.ddd.annotation.Repository;
-
 import java.util.Optional;
+
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.jmolecules.ddd.annotation.Repository;
 
 @Repository
 public interface ReviewRepository {
 
-    Optional<Review> findById(ReviewID id);
+    Optional<Review> findById(ReviewId id);
 
-    boolean existsByUserAndMediaItem(AccountID accountID, MediaItemID mediaItemID);
+    boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
     void save(Review review);
 
-    void delete(ReviewID reviewID);
+    void delete(ReviewId reviewId);
 
 }

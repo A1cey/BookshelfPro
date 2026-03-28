@@ -1,19 +1,20 @@
 package org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption;
 
-import jakarta.validation.Valid;
 import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.Identity;
+
+import jakarta.validation.Valid;
 
 @Entity
 public final class ConsumptionProgress {
 
     @Identity
-    private final ConsumptionProgressID id;
+    private final ConsumptionProgressId id;
     private ConsumptionState state;
     @Valid
     private MediaItemConsumptionProgress progress;
 
-    public ConsumptionProgress(ConsumptionProgressID id, MediaItemConsumptionProgress progress) {
+    public ConsumptionProgress(ConsumptionProgressId id, MediaItemConsumptionProgress progress) {
         this.id = id;
         this.state = ConsumptionState.NOT_STARTED.nextState(progress);
         this.progress = progress;
@@ -28,9 +29,11 @@ public final class ConsumptionProgress {
         return progress;
     }
 
-    public ConsumptionState state() {return state;}
+    public ConsumptionState state() {
+        return state;
+    }
 
-    public ConsumptionProgressID id() {
+    public ConsumptionProgressId id() {
         return id;
     }
 

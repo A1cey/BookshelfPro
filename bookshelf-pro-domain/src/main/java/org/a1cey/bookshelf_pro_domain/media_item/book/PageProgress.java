@@ -1,8 +1,9 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
-import jakarta.validation.Valid;
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.jmolecules.ddd.annotation.ValueObject;
+
+import jakarta.validation.Valid;
 
 @ValueObject
 public final class PageProgress implements MediaItemConsumptionProgress {
@@ -13,7 +14,9 @@ public final class PageProgress implements MediaItemConsumptionProgress {
     // This is package private to be used in Book.createProgress
     PageProgress(@Valid PageCount current, @Valid PageCount total) {
         if (current.pageCount() > total.pageCount()) {
-            throw new IllegalArgumentException("Current page count cannot be greater than total page count:\ncurrent:" + current.pageCount() + "\ntotal:" + total);
+            throw new IllegalArgumentException(
+                "Current page count cannot be greater than total page count:\ncurrent:" + current.pageCount() + "\ntotal:" + total
+            );
         }
         this.current = current;
         this.total = total;
@@ -28,12 +31,18 @@ public final class PageProgress implements MediaItemConsumptionProgress {
     }
 
     @Override
-    public double percentage() {return (double) current.pageCount() / (double) total.pageCount();}
+    public double percentage() {
+        return (double) current.pageCount() / (double) total.pageCount();
+    }
 
     @Override
-    public boolean isCompleted() {return current.equals(total);}
+    public boolean isCompleted() {
+        return current.equals(total);
+    }
 
     @Override
-    public boolean isStarted() {return current.pageCount() > 0  && current.pageCount() < total.pageCount();}
+    public boolean isStarted() {
+        return current.pageCount() > 0 && current.pageCount() < total.pageCount();
+    }
 
 }

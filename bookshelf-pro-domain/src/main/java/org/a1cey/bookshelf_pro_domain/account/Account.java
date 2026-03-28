@@ -1,18 +1,19 @@
 package org.a1cey.bookshelf_pro_domain.account;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
+import java.util.Optional;
+
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
-import java.util.Optional;
+import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 
 @AggregateRoot
 public final class Account {
 
     @Identity
-    private final AccountID id;
+    private final AccountId id;
     @Valid
     private Username name;
     @Nullable
@@ -21,21 +22,23 @@ public final class Account {
     @Valid
     private Password password;
 
-    Account(AccountID id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
+    Account(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public AccountID id() {
+    public AccountId id() {
         return id;
     }
 
-    public Username name() {return name;}
+    public Username name() {
+        return name;
+    }
 
     // This is package private to be used in AccountService
-    void changeName(@Valid Username newName, AccountID userRequestingChange) {
+    void changeName(@Valid Username newName, AccountId userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         name = newName;
     }
@@ -44,7 +47,7 @@ public final class Account {
         return Optional.ofNullable(email);
     }
 
-    public void changeEmail(@Valid Email newEmail, AccountID userRequestingChange) {
+    public void changeEmail(@Valid Email newEmail, AccountId userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         email = newEmail;
     }
@@ -53,7 +56,7 @@ public final class Account {
         return password;
     }
 
-    public void changePassword(@Valid Password newPassword, AccountID userRequestingChange) {
+    public void changePassword(@Valid Password newPassword, AccountId userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         password = newPassword;
     }

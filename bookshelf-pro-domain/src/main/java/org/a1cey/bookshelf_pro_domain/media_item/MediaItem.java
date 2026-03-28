@@ -1,39 +1,39 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
-import jakarta.validation.Valid;
+import java.net.URI;
+
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 import org.jspecify.annotations.Nullable;
 
-import java.net.URI;
+import jakarta.validation.Valid;
 
 @AggregateRoot
 public abstract class MediaItem {
 
     @Identity
-    protected final MediaItemID id;
+    protected final MediaItemId id;
     protected final MediaItemType type;
+    protected final AccountId owner;
     protected Title title;
     protected Subtitle subtitle;
     @Nullable
     protected URI coverImageUrl;
     protected Description description;
-    protected final AccountID owner;
     protected Language language;
 
     protected MediaItem(
-            MediaItemID id,
-            MediaItemType type,
-            @Valid Title title,
-            Subtitle subtitle,
-            @Nullable URI coverImageUrl,
-            Description description,
-            AccountID owner,
-            Language language
+        MediaItemId id,
+        MediaItemType type,
+        @Valid Title title,
+        Subtitle subtitle,
+        @Nullable URI coverImageUrl,
+        Description description,
+        AccountId owner,
+        Language language
     ) {
         this.id = id;
         this.type = type;
@@ -45,7 +45,7 @@ public abstract class MediaItem {
         this.language = language;
     }
 
-    public MediaItemID id() {
+    public MediaItemId id() {
         return id;
     }
 
@@ -53,7 +53,7 @@ public abstract class MediaItem {
         return title;
     }
 
-    public void changeTitle(@Valid Title newTitle, AccountID userRequestingChange) {
+    public void changeTitle(@Valid Title newTitle, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
@@ -62,17 +62,16 @@ public abstract class MediaItem {
         return subtitle;
     }
 
-    public void changeSubtitle(Subtitle newSubtitle, AccountID userRequestingChange) {
+    public void changeSubtitle(Subtitle newSubtitle, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         subtitle = newSubtitle;
     }
-
-
+    
     public @Nullable URI coverImageUrl() {
         return coverImageUrl;
     }
 
-    public void changeCoverImageUrl(@Nullable URI newUrl, AccountID userRequestingChange) {
+    public void changeCoverImageUrl(@Nullable URI newUrl, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         coverImageUrl = newUrl;
     }
@@ -81,7 +80,7 @@ public abstract class MediaItem {
         return description;
     }
 
-    public void changeDescription(Description newDescription, AccountID userRequestingChange) throws IllegalArgumentException {
+    public void changeDescription(Description newDescription, AccountId userRequestingChange) throws IllegalArgumentException {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         description = newDescription;
     }
@@ -90,13 +89,15 @@ public abstract class MediaItem {
         return type;
     }
 
-    public AccountID owner() {return owner;}
+    public AccountId owner() {
+        return owner;
+    }
 
     public Language language() {
         return language;
     }
 
-    public void changeLanguage(@Valid Language newLanguage, AccountID userRequestingChange) {
+    public void changeLanguage(@Valid Language newLanguage, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         language = newLanguage;
     }

@@ -8,6 +8,16 @@ public enum ConsumptionState {
     STARTED,
     COMPLETED;
 
+    private static ConsumptionState calculateState(MediaItemConsumptionProgress progress) {
+        if (progress.isCompleted()) {
+            return COMPLETED;
+        }
+        if (progress.isStarted()) {
+            return STARTED;
+        }
+        return NOT_STARTED;
+    }
+
     public ConsumptionState nextState(MediaItemConsumptionProgress progress) {
         ConsumptionState targetState = calculateState(progress);
 
@@ -18,15 +28,5 @@ public enum ConsumptionState {
         }
 
         return targetState;
-    }
-
-    private static ConsumptionState calculateState(MediaItemConsumptionProgress progress) {
-        if (progress.isCompleted()) {
-            return COMPLETED;
-        }
-        if (progress.isStarted()) {
-            return STARTED;
-        }
-        return NOT_STARTED;
     }
 }

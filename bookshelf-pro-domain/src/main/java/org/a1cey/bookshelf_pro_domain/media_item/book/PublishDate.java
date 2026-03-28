@@ -1,9 +1,10 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
-import jakarta.validation.constraints.PastOrPresent;
+import java.time.LocalDate;
+
 import org.jmolecules.ddd.annotation.ValueObject;
 
-import java.time.LocalDate;
+import jakarta.validation.constraints.PastOrPresent;
 
 @ValueObject
 public record PublishDate(@PastOrPresent LocalDate publishDate) {

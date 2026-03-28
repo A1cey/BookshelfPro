@@ -1,8 +1,9 @@
 package org.a1cey.bookshelf_pro_domain.account;
 
-import jakarta.validation.constraints.NotBlank;
 import org.jmolecules.ddd.annotation.ValueObject;
 import org.jspecify.annotations.NonNull;
+
+import jakarta.validation.constraints.NotBlank;
 
 @ValueObject
 public record Username(@NonNull @NotBlank String name) {

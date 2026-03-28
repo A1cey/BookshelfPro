@@ -1,7 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.bookshelf_entry;
 
-import jakarta.validation.constraints.NotBlank;
 import org.jmolecules.ddd.annotation.ValueObject;
+
+import jakarta.validation.constraints.NotBlank;
 
 @ValueObject
 public record Label(@NotBlank String name) {

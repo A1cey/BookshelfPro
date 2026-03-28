@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="Bookshelf Pro PMD Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+             https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>PMD ruleset for Bookshelf Pro</description>
+
+    <!--    &lt;!&ndash; Best Practices &ndash;&gt;-->
+    <!--    <rule ref="category/java/bestpractices.xml">-->
+    <!--        <exclude name="GuardLogStatement"/>-->
+    <!--        &lt;!&ndash; JUnit 5 uses different method signatures &ndash;&gt;-->
+    <!--        <exclude name="JUnit4TestShouldUseTestAnnotation"/>-->
+    <!--        <exclude name="JUnit4SuitesShouldUseSuiteAnnotation"/>-->
+    <!--    </rule>-->
+
+    <!--    &lt;!&ndash; Code Style &ndash;&gt;-->
+    <!--    <rule ref="category/java/codestyle.xml">-->
+    <!--        <exclude name="OnlyOneReturn"/>          &lt;!&ndash; legitimate in complex domain logic &ndash;&gt;-->
+    <!--        <exclude name="AtLeastOneConstructor"/>  &lt;!&ndash; records and value objects don't need it &ndash;&gt;-->
+    <!--        <exclude name="LongVariable"/>           &lt;!&ndash; DDD names are intentionally expressive &ndash;&gt;-->
+    <!--        <exclude name="ShortVariable"/>          &lt;!&ndash; 'id' is fine &ndash;&gt;-->
+    <!--        <exclude name="CommentDefaultAccessModifier"/>-->
+    <!--        <exclude name="DefaultPackage"/>-->
+    <!--    </rule>-->
+
+    <!--    &lt;!&ndash; Design &ndash;&gt;-->
+    <!--    <rule ref="category/java/design.xml">-->
+    <!--        <exclude name="LawOfDemeter"/>           &lt;!&ndash; DDD fluent builders naturally chain &ndash;&gt;-->
+    <!--        <exclude name="LoosePackageCoupling"/>-->
+    <!--    </rule>-->
+    <!--    <rule ref="category/java/design.xml/TooManyMethods">-->
+    <!--        <properties>-->
+    <!--            &lt;!&ndash; Aggregate roots legitimately expose many methods &ndash;&gt;-->
+    <!--            <property name="maxmethods" value="20"/>-->
+    <!--        </properties>-->
+    <!--    </rule>-->
+    <!--    <rule ref="category/java/design.xml/ExcessivePublicCount">-->
+    <!--        <properties>-->
+    <!--            <property name="minimum" value="25"/>-->
+    <!--        </properties>-->
+    <!--    </rule>-->
+
+    <!--    &lt;!&ndash; Error Prone &ndash;&gt;-->
+    <!--    <rule ref="category/java/errorprone.xml">-->
+    <!--        <exclude name="NullAssignment"/>-->
+    <!--        <exclude name="UseLocaleWithCaseConversions"/> &lt;!&ndash; we use explicit Locale where needed &ndash;&gt;-->
+    <!--    </rule>-->
+
+    <!--    &lt;!&ndash; Performance &ndash;&gt;-->
+    <!--    <rule ref="category/java/performance.xml"/>-->
+
+    <!--    &lt;!&ndash; Security &ndash;&gt;-->
+    <!--    <rule ref="category/java/security.xml"/>-->
+
+</ruleset>

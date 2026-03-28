@@ -1,11 +1,11 @@
 package org.a1cey.bookshelf_pro_domain.review;
 
-import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
 import org.jmolecules.ddd.annotation.ValueObject;
 
-import java.time.LocalDateTime;
+import jakarta.validation.Valid;
 
 @ValueObject
 public final class ReviewChange {

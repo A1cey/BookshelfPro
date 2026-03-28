@@ -4,8 +4,8 @@ import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject
 public record ConsumptionProgressSnapshot(
-        ConsumptionState state,
-        MediaItemConsumptionProgress progress
+    ConsumptionState state,
+    MediaItemConsumptionProgress progress
 ) {
 
     public static ConsumptionProgressSnapshot of(ConsumptionProgress cp) {

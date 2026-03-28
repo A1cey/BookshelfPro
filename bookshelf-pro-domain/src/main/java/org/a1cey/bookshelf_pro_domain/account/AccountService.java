@@ -11,12 +11,12 @@ public final class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account buildAccount(AccountID id, Username name, Email email, Password password) {
+    public Account buildAccount(AccountId id, Username name, Email email, Password password) {
         validateUserNameIsUnique(name);
         return new Account(id, name, email, password);
     }
 
-    public void changeUsername(Account account, Username newUsername, AccountID userRequestingChange) {
+    public void changeUsername(Account account, Username newUsername, AccountId userRequestingChange) {
         if (account.name() == newUsername) {
             return;
         }

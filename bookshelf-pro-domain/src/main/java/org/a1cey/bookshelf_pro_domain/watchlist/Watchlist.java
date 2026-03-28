@@ -1,38 +1,38 @@
 package org.a1cey.bookshelf_pro_domain.watchlist;
 
-import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
-import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.account.AccountID;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryID;
-import org.jmolecules.ddd.annotation.AggregateRoot;
-import org.jmolecules.ddd.annotation.Identity;
-
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.SequencedSet;
+
+import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
+import org.a1cey.bookshelf_pro_domain.Title;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryId;
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 
 @AggregateRoot
 public final class Watchlist {
 
     @Identity
-    private final WatchlistID id;
-    private final AccountID owner;
+    private final WatchlistId id;
+    private final AccountId owner;
+    private final LinkedHashSet<BookshelfEntryId> items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot
     private Title title;
-    private final LinkedHashSet<BookshelfEntryID > items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot
     // be rearranged
 
-    public Watchlist(WatchlistID id, AccountID owner, Title title, SequencedSet<BookshelfEntryID > items) {
+    public Watchlist(WatchlistId id, AccountId owner, Title title, SequencedSet<BookshelfEntryId> items) {
         this.id = id;
         this.owner = owner;
         this.title = title;
         this.items = new LinkedHashSet<>(items);
     }
 
-    public WatchlistID id() {
+    public WatchlistId id() {
         return id;
     }
 
-    public AccountID owner() {
+    public AccountId owner() {
         return owner;
     }
 
@@ -40,21 +40,21 @@ public final class Watchlist {
         return title;
     }
 
-    public void changeTitle(Title newTitle, AccountID userRequestingChange) {
+    public void changeTitle(Title newTitle, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         title = newTitle;
     }
 
-    public SequencedSet<BookshelfEntryID> items() {
+    public SequencedSet<BookshelfEntryId> items() {
         return Collections.unmodifiableSequencedSet(items);
     }
 
-    public boolean addItem(BookshelfEntryID item, AccountID userRequestingChange) {
+    public boolean addItem(BookshelfEntryId item, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.add(item);
     }
 
-    public boolean removeItem(BookshelfEntryID item, AccountID userRequestingChange) {
+    public boolean removeItem(BookshelfEntryId item, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         return items.remove(item);
     }

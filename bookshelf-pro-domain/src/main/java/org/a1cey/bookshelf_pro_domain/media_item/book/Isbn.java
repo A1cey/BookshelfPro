@@ -1,24 +1,25 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
-import jakarta.validation.constraints.NotBlank;
 import org.apache.commons.validator.routines.ISBNValidator;
 import org.jmolecules.ddd.annotation.ValueObject;
 
+import jakarta.validation.constraints.NotBlank;
+
 @ValueObject
-public record ISBN(@NotBlank @org.hibernate.validator.constraints.ISBN String value) {
+public record Isbn(@NotBlank @org.hibernate.validator.constraints.ISBN String value) {
 
     private static final ISBNValidator validator = ISBNValidator.getInstance();
 
-    public ISBN(@NotBlank @org.hibernate.validator.constraints.ISBN String value) {
+    public Isbn(@NotBlank @org.hibernate.validator.constraints.ISBN String value) {
         if (value.isBlank()) {
             throw new IllegalArgumentException("ISBN value cannot be blank");
         }
-        String validISBN = validator.validate(value);
-        if (validISBN == null) {
+        String validIsbn = validator.validate(value);
+        if (validIsbn == null) {
             throw new IllegalArgumentException("Invalid ISBN: " + value);
         }
 
-        this.value = validISBN;
+        this.value = validIsbn;
     }
 
 }

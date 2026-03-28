@@ -1,9 +1,9 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
-import org.jmolecules.ddd.annotation.ValueObject;
-
 import java.util.Locale;
 import java.util.Set;
+
+import org.jmolecules.ddd.annotation.ValueObject;
 
 @ValueObject
 public record Language(String isoCode) {
