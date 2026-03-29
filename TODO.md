@@ -12,4 +12,75 @@
 - Deleting bookshelf affects watchlists and playlists as they reference the id
     - Either do not allow deletion of bookshelf entries by user (reasonable as it tracks consumption and labels and the user has so good use
       case to remove this data)
-    - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work) 
+    - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
+- Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate
+- Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
+    - [ ] Account
+        - [ ] Create account (username, password, [email])
+        - [ ] ! Delete account (accountId)
+        - [ ] ! Change username (newUsername)
+        - [ ] ! Change email (newEmail)
+        - [ ] ! Change password (newPassword)
+        - [ ] ! Get account details -> id, username, email
+        - [ ] ! Get media items -> mediaItems
+        - [ ] ! Get reviews -> reviews
+    - [ ] Bookshelf
+        - [ ] ! Get bookshelf entries -> bookshelfEntries
+        - [ ] ! Get playlists -> playlists
+        - [ ] ! Get watchlists -> watchlists
+    - [ ] BookshelfEntry
+        - [ ] ! Create bookshelf entry (mediaItemId, [consumptionProgress], [labels]) // TODO: or make this a use
+          case on MediaItem -> Book.addToBookshelf
+        - [ ] ! Update consumption progress (MediaItemConsumptionProgress)
+        - [ ] ! Add label (label)
+        - [ ] ! Remove label (label)
+        - [ ] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
+    - [ ] MediaItem
+        - [ ] Book
+            - [ ] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
+              pageCount, [authors], [publishDate], [publisher], [publishPlace])
+            - [ ] ! Change title (newTitle)
+            - [ ] ! Change subtitle (newSubtitle)
+            - [ ] ! Change description (newDescription)
+            - [ ] ! Change coverImageUrl (newCoverImageUrl)
+            - [ ] ! Add language (language)
+            - [ ] ! Remove language (language)
+            - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
+              [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace])
+            - [ ] ! Change pageCount (newPageCount)
+            - [ ] ! Add author (author)
+            - [ ] ! Remove author (author)
+            - [ ] ! Change publishDate (newPublishDate)
+            - [ ] ! Change publisher (newPublisher)
+            - [ ] ! Change publishPlace (publishPlace)
+            - [ ] Get book details -> id, owner, isbn, title, subtitle, description, coverImageUrl, languages, pageCount, authors,
+              publishDate, publisher, publishPlace
+        - [ ] Movie/Video
+            - ...
+        - [ ] Series
+            - ...
+        - [ ] Music
+            - ...
+    - Playlist
+        - [ ] ! Create playlist (title, [items])
+        - [ ] ! Delete playlist (playlistId)
+        - [ ] ! Change title (newTitle)
+        - [ ] ! Add item (bookshelfEntryId)
+        - [ ] ! Remove item (playlistItemId)
+        - [ ] ! Move Item (oldPosition, newPosition)
+        - [ ] ! Get playlist details -> id, title, items
+    - Watchlist
+        - [ ] ! Create watchlist (title, [items])
+        - [ ] ! Delete watchlist (watchlistId)
+        - [ ] ! Change title (newTitle)
+        - [ ] ! Add item (bookshelfEntryId)
+        - [ ] ! Remove item (watchlistItemId)
+        - [ ] ! Remove items by consumption state (consumptionStates)
+        - [ ] ! Get watchlist details -> id, title, items
+    - Review
+        - [ ] Create review (mediaItemId, rating, comment)
+        - [ ] ! Delete review (reviewId)
+        - [ ] ! Change review (newRating, newComment)
+        - [ ] ! Change rating (newRating)
+        - [ ] ! Change comment (newComment)
+        - [ ] Get review details -> id, owner, mediaItemId, reviewHistory
