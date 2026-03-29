@@ -6,13 +6,13 @@ import org.jmolecules.ddd.annotation.ValueObject;
 import jakarta.validation.Valid;
 
 @ValueObject
-public final class PageProgress implements MediaItemConsumptionProgress {
+public final class BookConsumptionProgress implements MediaItemConsumptionProgress {
 
     private final PageCount current;
     private final PageCount total;
 
     // This is package private to be used in Book.createProgress
-    PageProgress(@Valid PageCount current, @Valid PageCount total) {
+    BookConsumptionProgress(@Valid PageCount current, @Valid PageCount total) {
         if (current.pageCount() > total.pageCount()) {
             throw new IllegalArgumentException(
                 "Current page count cannot be greater than total page count:\ncurrent:" + current.pageCount() + "\ntotal:" + total

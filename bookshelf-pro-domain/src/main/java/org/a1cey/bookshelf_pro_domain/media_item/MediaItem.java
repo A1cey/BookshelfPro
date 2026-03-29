@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import java.net.URI;
+import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
@@ -23,7 +24,7 @@ public abstract class MediaItem {
     @Nullable
     protected URI coverImageUrl;
     protected Description description;
-    protected Language language;
+    protected Set<Language> languages;
 
     protected MediaItem(
         MediaItemId id,
@@ -33,7 +34,7 @@ public abstract class MediaItem {
         @Nullable URI coverImageUrl,
         Description description,
         AccountId owner,
-        Language language
+        Set<Language> languages
     ) {
         this.id = id;
         this.type = type;
@@ -42,7 +43,7 @@ public abstract class MediaItem {
         this.coverImageUrl = coverImageUrl;
         this.description = description;
         this.owner = owner;
-        this.language = language;
+        this.languages = languages;
     }
 
     public MediaItemId id() {
@@ -66,7 +67,7 @@ public abstract class MediaItem {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         subtitle = newSubtitle;
     }
-    
+
     public @Nullable URI coverImageUrl() {
         return coverImageUrl;
     }
@@ -93,13 +94,18 @@ public abstract class MediaItem {
         return owner;
     }
 
-    public Language language() {
-        return language;
+    public Set<Language> languages() {
+        return languages;
     }
 
-    public void changeLanguage(@Valid Language newLanguage, AccountId userRequestingChange) {
+    public void addLanguage(@Valid Language language, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
-        language = newLanguage;
+        languages.add(language);
+    }
+
+    public void removeLanguage(@Valid Language language, AccountId userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        languages.remove(language);
     }
 
 }

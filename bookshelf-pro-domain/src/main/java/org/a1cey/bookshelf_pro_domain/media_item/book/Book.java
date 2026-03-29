@@ -3,8 +3,10 @@ package org.a1cey.bookshelf_pro_domain.media_item.book;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
@@ -47,9 +49,9 @@ public final class Book extends MediaItem {
         Publisher publisher,
         PublishPlace publishPlace,
         @Valid PageCount pageCount,
-        Language language) {
+        Set<Language> languages) {
 
-        super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, language);
+        super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, languages);
         this.isbn = isbn;
         this.subtitle = subtitle;
         this.authors = new ArrayList<>(authors); // prevent modification from outside
@@ -117,8 +119,8 @@ public final class Book extends MediaItem {
         pageCount = newPageCount;
     }
 
-    public PageProgress createProgress(PageCount currentPage) {
-        return new PageProgress(currentPage, pageCount);
+    public BookConsumptionProgress createProgress(PageCount currentPage) {
+        return new BookConsumptionProgress(currentPage, pageCount);
     }
 
     public static final class BookBuilder {
@@ -128,6 +130,7 @@ public final class Book extends MediaItem {
         private final Title title;
         private final Isbn isbn;
         private final PageCount pageCount;
+        private final Set<Language> languages = new HashSet<>();
         private List<Author> authors = new ArrayList<>();
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
@@ -135,7 +138,6 @@ public final class Book extends MediaItem {
         private @Nullable PublishDate publishDate = null;
         private Publisher publisher = new Publisher("");
         private PublishPlace publishPlace = new PublishPlace("");
-        private Language language = Language.of(Locale.ENGLISH);
 
         private BookBuilder(MediaItemId id, AccountId owner, @Valid Title title, @Valid Isbn isbn, @Valid PageCount pageCount) {
             this.id = id;
@@ -143,6 +145,7 @@ public final class Book extends MediaItem {
             this.isbn = isbn;
             this.title = title;
             this.pageCount = pageCount;
+            languages.add(Language.of(Locale.ENGLISH));
         }
 
         public BookBuilder authors(List<@Valid Author> authors) {
@@ -185,8 +188,13 @@ public final class Book extends MediaItem {
             return this;
         }
 
+        public BookBuilder languages(Set<@Valid Language> languages) {
+            this.languages.addAll(languages);
+            return this;
+        }
+
         public BookBuilder language(@Valid Language language) {
-            this.language = language;
+            this.languages.add(language);
             return this;
         }
 
@@ -204,7 +212,7 @@ public final class Book extends MediaItem {
                 publisher,
                 publishPlace,
                 pageCount,
-                language
+                languages
             );
         }
 
