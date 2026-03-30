@@ -32,10 +32,18 @@ public class JooqAccountRepository implements AccountRepository {
 
         AccountService accountService = new AccountService(this);
 
-        var account = accountService.buildAccount(
+        var emailStr = accountRecord.getEmail();
+
+        Email email = null;
+
+        if (emailStr != null) {
+            email = new Email(emailStr);
+        }
+
+        var account = new Account(
             id,
             new Username(accountRecord.getUsername()),
-            new Email(accountRecord.getEmail()),
+            email,
             new Password(accountRecord.getPassword())
         );
 

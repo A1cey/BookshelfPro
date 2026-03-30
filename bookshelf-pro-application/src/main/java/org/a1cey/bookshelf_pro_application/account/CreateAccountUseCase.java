@@ -18,7 +18,7 @@ public class CreateAccountUseCase {
 
     public CreateAccountResult execute(CreateAccountCommand command) {
         AccountService accountService = new AccountService(accountRepository);
-        var account = accountService.buildAccount(
+        var account = accountService.createAccount(
             new AccountId(IdService.UUIDv4()),
             command.name(),
             command.email().orElse(null),

@@ -14,7 +14,7 @@ public final class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account buildAccount(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
+    public Account createAccount(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         validateUserNameIsUnique(name);
         return new Account(id, name, email, password);
     }
