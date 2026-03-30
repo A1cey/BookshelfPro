@@ -1,6 +1,9 @@
 package org.a1cey.bookshelf_pro_domain.account;
 
 import org.jmolecules.ddd.annotation.Service;
+import org.jspecify.annotations.Nullable;
+
+import jakarta.validation.Valid;
 
 @Service
 public final class AccountService {
@@ -11,7 +14,7 @@ public final class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account buildAccount(AccountId id, Username name, Email email, Password password) {
+    public Account buildAccount(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         validateUserNameIsUnique(name);
         return new Account(id, name, email, password);
     }

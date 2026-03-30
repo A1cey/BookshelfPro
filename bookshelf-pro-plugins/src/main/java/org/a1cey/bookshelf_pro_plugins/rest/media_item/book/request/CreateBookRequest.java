@@ -8,6 +8,7 @@ import java.util.Set;
 import org.jspecify.annotations.Nullable;
 
 public record CreateBookRequest(
+    String requestingAccountId, // TODO: Replace this with real auth
     String title,
     String isbn,
     int pageCount,

@@ -36,11 +36,8 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<CreateBookResult> createBook(@RequestBody CreateBookRequest request) {
-        // TODO: replace with real auth
-        var requestingUser = new AccountId(UUID.randomUUID());
-
         var command = new CreateBookCommand(
-            requestingUser,
+            new AccountId(UUID.fromString(request.requestingAccountId())),
             new Title(request.title()),
             new Isbn(request.isbn()),
             new PageCount(request.pageCount()),

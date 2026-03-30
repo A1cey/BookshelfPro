@@ -44,7 +44,12 @@ public class JooqAccountRepository implements AccountRepository {
 
     @Override
     public void save(Account account) {
-        // TODO:
+        dsl.insertInto(ACCOUNT)
+           .set(ACCOUNT.ID, account.id().value())
+           .set(ACCOUNT.USERNAME, account.name().name())
+           .set(ACCOUNT.PASSWORD, account.password().hashedPassword())
+           .set(ACCOUNT.EMAIL, account.email().map(Email::email).orElse(null))
+           .execute();
     }
 
     @Override

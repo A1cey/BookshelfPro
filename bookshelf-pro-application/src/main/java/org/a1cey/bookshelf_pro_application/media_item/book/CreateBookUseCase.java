@@ -1,7 +1,6 @@
 package org.a1cey.bookshelf_pro_application.media_item.book;
 
-import java.util.UUID;
-
+import org.a1cey.bookshelf_pro_application.IdService;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.CreateBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.result.CreateBookResult;
 import org.a1cey.bookshelf_pro_domain.account.AccountRepository;
@@ -25,7 +24,7 @@ public class CreateBookUseCase {
             "Account not found: " + command.requestingUser().value()
         ));
 
-        var id = new MediaItemId(UUID.randomUUID()); // This is enough, generating the same UUID4 twice is extremely unlikely (no problem)
+        var id = new MediaItemId(IdService.UUIDv4());
 
         var builder = Book.builder(id, command.requestingUser(), command.title(), command.isbn(), command.pageCount());
 
