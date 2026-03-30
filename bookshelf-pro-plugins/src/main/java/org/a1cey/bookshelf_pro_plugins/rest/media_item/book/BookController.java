@@ -2,6 +2,7 @@ package org.a1cey.bookshelf_pro_plugins.rest.media_item.book;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.media_item.book.CreateBookUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.CreateBookCommand;
@@ -44,11 +45,11 @@ public class BookController {
             Optional.ofNullable(request.subtitle()).map(Subtitle::new),
             Optional.ofNullable(request.description()).map(Description::new),
             Optional.ofNullable(request.coverImageUrl()),
-            Optional.ofNullable(request.authors()).map(a -> a.stream().map(Author::new).toList()),
+            Optional.ofNullable(request.authors()).map(a -> a.stream().map(Author::new).collect(Collectors.toSet())),
             Optional.ofNullable(request.publishDate()).map(PublishDate::new),
             Optional.ofNullable(request.publisher()).map(Publisher::new),
             Optional.ofNullable(request.publishPlace()).map(PublishPlace::new),
-            Optional.ofNullable(request.languages()).map(ls -> ls.stream().map(Language::new).collect(java.util.stream.Collectors.toSet()))
+            Optional.ofNullable(request.languages()).map(ls -> ls.stream().map(Language::new).collect(Collectors.toSet()))
         );
 
         return ResponseEntity.ok(createBookUseCase.execute(command));

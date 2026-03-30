@@ -25,7 +25,7 @@ public abstract class MediaItem {
     @Nullable
     protected URI coverImageUrl;
     protected Description description;
-    protected Set<Language> languages;
+    protected final Set<Language> languages;
 
     protected MediaItem(
         MediaItemId id,

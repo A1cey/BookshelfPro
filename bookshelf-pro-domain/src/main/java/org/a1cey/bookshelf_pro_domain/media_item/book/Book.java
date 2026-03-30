@@ -1,10 +1,8 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -27,7 +25,7 @@ public final class Book extends MediaItem {
 
     @Valid
     private final Isbn isbn;
-    private final List<@Valid Author> authors;
+    private final Set<@Valid Author> authors;
     @Valid
     @Nullable
     private PublishDate publishDate;
@@ -44,7 +42,7 @@ public final class Book extends MediaItem {
         Description description,
         AccountId owner,
         Isbn isbn,
-        List<Author> authors,
+        Set<Author> authors,
         @Valid @Nullable PublishDate publishDate,
         Publisher publisher,
         PublishPlace publishPlace,
@@ -54,7 +52,7 @@ public final class Book extends MediaItem {
         super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, languages);
         this.isbn = isbn;
         this.subtitle = subtitle;
-        this.authors = new ArrayList<>(authors); // prevent modification from outside
+        this.authors = new HashSet<>(authors); // prevent modification from outside
         this.publishDate = publishDate;
         this.publisher = publisher;
         this.publishPlace = publishPlace;
@@ -69,8 +67,8 @@ public final class Book extends MediaItem {
         return isbn;
     }
 
-    public List<Author> authors() {
-        return Collections.unmodifiableList(authors);
+    public Set<Author> authors() {
+        return Collections.unmodifiableSet(authors);
     }
 
     public void addAuthor(@Valid Author newAuthor, AccountId userRequestingChange) {
@@ -131,7 +129,7 @@ public final class Book extends MediaItem {
         private final Isbn isbn;
         private final PageCount pageCount;
         private final Set<Language> languages = new HashSet<>();
-        private List<Author> authors = new ArrayList<>();
+        private Set<Author> authors = new HashSet<>();
         private @Nullable URI coverImageUrl;
         private Description description = new Description("");
         private Subtitle subtitle = new Subtitle("");
@@ -148,8 +146,8 @@ public final class Book extends MediaItem {
             languages.add(Language.of(Locale.ENGLISH));
         }
 
-        public BookBuilder authors(List<@Valid Author> authors) {
-            this.authors = new ArrayList<>(authors); // Create a mutable defensive copy
+        public BookBuilder authors(Set<@Valid Author> authors) {
+            this.authors = new HashSet<>(authors); // Create a mutable defensive copy
             return this;
         }
 

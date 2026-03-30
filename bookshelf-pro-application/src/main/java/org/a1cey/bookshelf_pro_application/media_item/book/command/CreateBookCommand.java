@@ -1,7 +1,6 @@
 package org.a1cey.bookshelf_pro_application.media_item.book.command;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public record CreateBookCommand(
     Optional<Subtitle> subtitle,
     Optional<Description> description,
     Optional<URI> coverImageUrl,
-    Optional<List<Author>> authors,
+    Optional<Set<Author>> authors,
     Optional<PublishDate> publishDate,
     Optional<Publisher> publisher,
     Optional<PublishPlace> publishPlace,
