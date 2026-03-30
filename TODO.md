@@ -16,8 +16,10 @@
     - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
 - Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
+
+  Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [ ] Account
-        - [ ] Create account (username, password, [email])
+        - [x] Create account (username, password, [email])
         - [ ] ! Delete account (accountId)
         - [ ] ! Change username (newUsername)
         - [ ] ! Change email (newEmail)
@@ -38,22 +40,22 @@
         - [ ] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
     - [ ] MediaItem
         - [ ] Book
-            - [ ] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
+            - [x] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
               pageCount, [authors], [publishDate], [publisher], [publishPlace])
-            - [ ] ! Change title (newTitle)
-            - [ ] ! Change subtitle (newSubtitle)
-            - [ ] ! Change description (newDescription)
-            - [ ] ! Change coverImageUrl (newCoverImageUrl)
-            - [ ] ! Add language (language)
-            - [ ] ! Remove language (language)
+            - [x] ! Change title (newTitle)
+            - [x] ! Change subtitle (newSubtitle)
+            - [x] ! Change description (newDescription)
+            - [x] ! Change coverImageUrl (newCoverImageUrl)
+            - [x] ! Add language (language)
+            - [x] ! Remove language (language)
             - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
               [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace])
-            - [ ] ! Change pageCount (newPageCount)
-            - [ ] ! Add author (author)
-            - [ ] ! Remove author (author)
-            - [ ] ! Change publishDate (newPublishDate)
-            - [ ] ! Change publisher (newPublisher)
-            - [ ] ! Change publishPlace (publishPlace)
+            - [x] ! Change pageCount (newPageCount)
+            - [x] ! Add author (author)
+            - [x] ! Remove author (author)
+            - [x] ! Change publishDate (newPublishDate)
+            - [x] ! Change publisher (newPublisher)
+            - [x] ! Change publishPlace (publishPlace)
             - [ ] Get book details -> id, owner, isbn, title, subtitle, description, coverImageUrl, languages, pageCount, authors,
               publishDate, publisher, publishPlace
         - [ ] Movie/Video

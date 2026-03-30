@@ -20,7 +20,7 @@ public final class AccountService {
     }
 
     public void changeUsername(Account account, Username newUsername, AccountId userRequestingChange) {
-        if (account.name() == newUsername) {
+        if (account.name().equals(newUsername)) {
             return;
         }
 

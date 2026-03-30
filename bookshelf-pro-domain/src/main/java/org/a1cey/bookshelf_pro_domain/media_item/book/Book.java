@@ -71,6 +71,12 @@ public final class Book extends MediaItem {
         return Collections.unmodifiableSet(authors);
     }
 
+    public void changeAuthors(Set<@Valid Author> authors, AccountId userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        this.authors.clear();
+        this.authors.addAll(authors);
+    }
+
     public void addAuthor(@Valid Author newAuthor, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         authors.add(newAuthor);

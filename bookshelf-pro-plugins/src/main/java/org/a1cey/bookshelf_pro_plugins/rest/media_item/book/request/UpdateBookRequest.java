@@ -7,17 +7,16 @@ import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 
-public record CreateBookRequest(
+public record UpdateBookRequest(
     UUID requestingAccountId, // TODO: Replace this with real auth
-    String title,
-    String isbn,
-    int pageCount,
+    @Nullable String title,
     @Nullable String subtitle,
     @Nullable String description,
     @Nullable URI coverImageUrl,
+    @Nullable Set<String> languages,
+    @Nullable Integer pageCount,
     @Nullable Set<String> authors,
     @Nullable LocalDate publishDate,
     @Nullable String publisher,
-    @Nullable String publishPlace,
-    @Nullable Set<String> languages
+    @Nullable String publishPlace
 ) {}

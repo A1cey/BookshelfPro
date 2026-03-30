@@ -71,6 +71,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -82,6 +83,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -108,6 +110,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <classPathDiscovery>true</classPathDiscovery>
+                </configuration>
             </plugin>
         </plugins>
     </build>

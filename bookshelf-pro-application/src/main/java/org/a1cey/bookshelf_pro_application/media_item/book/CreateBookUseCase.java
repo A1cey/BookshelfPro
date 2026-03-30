@@ -10,7 +10,7 @@ import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateBookUseCase {
+public final class CreateBookUseCase {
     private final AccountRepository accountRepository;
     private final MediaItemRepository mediaItemRepository;
 

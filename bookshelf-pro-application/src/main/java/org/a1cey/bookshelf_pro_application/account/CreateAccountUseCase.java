@@ -9,15 +9,17 @@ import org.a1cey.bookshelf_pro_domain.account.AccountService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateAccountUseCase {
+public final class CreateAccountUseCase {
     private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
-    public CreateAccountUseCase(AccountRepository accountRepository) {
+    public CreateAccountUseCase(AccountRepository accountRepository, AccountService accountService) { // TODO: this is a domain service
+        // with jmolecules @Service
         this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
     public CreateAccountResult execute(CreateAccountCommand command) {
-        AccountService accountService = new AccountService(accountRepository);
         var account = accountService.createAccount(
             new AccountId(IdService.UUIDv4()),
             command.name(),

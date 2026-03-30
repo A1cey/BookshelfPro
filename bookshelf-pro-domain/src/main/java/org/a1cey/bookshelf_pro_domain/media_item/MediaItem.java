@@ -99,6 +99,12 @@ public abstract class MediaItem {
         return Collections.unmodifiableSet(languages);
     }
 
+    public void changeLanguages(Set<@Valid Language> languages, AccountId userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        this.languages.clear();
+        this.languages.addAll(languages);
+    }
+
     public void addLanguage(@Valid Language language, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
         languages.add(language);

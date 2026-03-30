@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {
     "org.a1cey.bookshelf_pro_plugins",
-    "org.a1cey.bookshelf_pro_application"
+    "org.a1cey.bookshelf_pro_application",
+    "org.a1cey.bookshelf_pro_domain"
 })
 public class BookshelfProApplication {
 

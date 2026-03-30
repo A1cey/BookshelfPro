@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.a1cey.bookshelf_pro_domain.account.Account;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.AccountRepository;
-import org.a1cey.bookshelf_pro_domain.account.AccountService;
 import org.a1cey.bookshelf_pro_domain.account.Email;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
@@ -29,8 +28,6 @@ public class JooqAccountRepository implements AccountRepository {
         if (accountRecord == null) {
             return Optional.empty();
         }
-
-        AccountService accountService = new AccountService(this);
 
         var emailStr = accountRecord.getEmail();
 

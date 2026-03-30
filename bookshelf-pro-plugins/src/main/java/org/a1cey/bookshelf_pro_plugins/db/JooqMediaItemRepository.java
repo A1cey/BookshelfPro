@@ -69,10 +69,30 @@ public class JooqMediaItemRepository implements MediaItemRepository {
            .set(MEDIA_ITEM.SUBTITLE, mediaItem.subtitle().subtitle())
            .execute();
 
-        saveLanguages(mediaItem.id(), mediaItem.languages());
+        updateLanguages(mediaItem.id(), mediaItem.languages());
 
         switch (mediaItem) {
             case Book book -> saveBook(book);
+            default -> throw new IllegalStateException("Unexpected media item type: " + mediaItem);
+        }
+
+    }
+
+    @Transactional // TODO: Move this to invocating functions?
+    @Override
+    public void update(MediaItem mediaItem) {
+        dsl.update(MEDIA_ITEM)
+           .set(MEDIA_ITEM.COVER_IMAGE_URL, mediaItem.coverImageUrl() != null ? mediaItem.coverImageUrl().toString() : null)
+           .set(MEDIA_ITEM.DESCRIPTION, mediaItem.description().description())
+           .set(MEDIA_ITEM.TITLE, mediaItem.title().title())
+           .set(MEDIA_ITEM.SUBTITLE, mediaItem.subtitle().subtitle())
+           .where(MEDIA_ITEM.ID.eq(mediaItem.id().value()))
+           .execute();
+
+        updateLanguages(mediaItem.id(), mediaItem.languages());
+
+        switch (mediaItem) {
+            case Book book -> updateBook(book);
             default -> throw new IllegalStateException("Unexpected media item type: " + mediaItem);
         }
 
@@ -94,36 +114,10 @@ public class JooqMediaItemRepository implements MediaItemRepository {
            .set(BOOK.PUBLISH_PLACE, book.publishPlace().publishPlace())
            .execute();
 
-        saveAuthors(book.id(), book.authors());
+        updateAuthors(book.id(), book.authors());
     }
 
-    private void saveAuthors(MediaItemId id, Set<Author> authors) {
-        var existingAuthors = dsl
-                                  .select(BOOK_AUTHOR.NAME)
-                                  .from(BOOK_AUTHOR)
-                                  .where(BOOK_AUTHOR.BOOK_ID.eq(id.value()))
-                                  .fetchSet(BOOK_AUTHOR.NAME);
-
-        var newAuthors = authors.stream().map(Author::name).collect(Collectors.toSet());
-
-        var authorsToDelete = existingAuthors.stream().filter(author -> !newAuthors.contains(author)).toList();
-        var authorsToInsert = newAuthors.stream().filter(author -> !existingAuthors.contains(author)).toList();
-
-        if (!authorsToDelete.isEmpty()) {
-            dsl.deleteFrom(BOOK_AUTHOR)
-               .where(BOOK_AUTHOR.BOOK_ID.eq(id.value()))
-               .and(BOOK_AUTHOR.NAME.in(authorsToDelete))
-               .execute();
-        }
-
-        if (!authorsToInsert.isEmpty()) {
-            dsl.insertInto(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID, BOOK_AUTHOR.NAME)
-               .valuesOfRows(authorsToInsert.stream().map(name -> DSL.row(id.value(), name)).toList())
-               .execute();
-        }
-    }
-
-    private void saveLanguages(MediaItemId id, Set<Language> languages) {
+    private void updateLanguages(MediaItemId id, Set<Language> languages) {
         var existingLanguages = dsl
                                     .select(MEDIA_ITEM_LANGUAGE.ISO_CODE)
                                     .from(MEDIA_ITEM_LANGUAGE)
@@ -145,6 +139,44 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         if (!languagesToInsert.isEmpty()) {
             dsl.insertInto(MEDIA_ITEM_LANGUAGE, MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID, MEDIA_ITEM_LANGUAGE.ISO_CODE)
                .valuesOfRows(languagesToInsert.stream().map(isoCode -> DSL.row(id.value(), isoCode)).toList())
+               .execute();
+        }
+    }
+
+    private void updateBook(Book book) {
+        dsl.update(BOOK)
+           .set(BOOK.PAGE_COUNT, book.pageCount().pageCount())
+           .set(BOOK.PUBLISHER, book.publisher().publisher())
+           .set(BOOK.PUBLISH_DATE, book.publishDate() != null ? book.publishDate().publishDate() : null)
+           .set(BOOK.PUBLISH_PLACE, book.publishPlace().publishPlace())
+           .where(BOOK.ID.eq(book.id().value()))
+           .execute();
+
+        updateAuthors(book.id(), book.authors());
+    }
+
+    private void updateAuthors(MediaItemId id, Set<Author> authors) {
+        var existingAuthors = dsl
+                                  .select(BOOK_AUTHOR.NAME)
+                                  .from(BOOK_AUTHOR)
+                                  .where(BOOK_AUTHOR.BOOK_ID.eq(id.value()))
+                                  .fetchSet(BOOK_AUTHOR.NAME);
+
+        var newAuthors = authors.stream().map(Author::name).collect(Collectors.toSet());
+
+        var authorsToDelete = existingAuthors.stream().filter(author -> !newAuthors.contains(author)).toList();
+        var authorsToInsert = newAuthors.stream().filter(author -> !existingAuthors.contains(author)).toList();
+
+        if (!authorsToDelete.isEmpty()) {
+            dsl.deleteFrom(BOOK_AUTHOR)
+               .where(BOOK_AUTHOR.BOOK_ID.eq(id.value()))
+               .and(BOOK_AUTHOR.NAME.in(authorsToDelete))
+               .execute();
+        }
+
+        if (!authorsToInsert.isEmpty()) {
+            dsl.insertInto(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID, BOOK_AUTHOR.NAME)
+               .valuesOfRows(authorsToInsert.stream().map(name -> DSL.row(id.value(), name)).toList())
                .execute();
         }
     }

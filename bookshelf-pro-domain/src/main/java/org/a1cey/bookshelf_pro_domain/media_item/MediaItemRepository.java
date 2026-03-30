@@ -13,5 +13,7 @@ public interface MediaItemRepository {
 
     void save(MediaItem mediaItem);
 
+    void update(MediaItem mediaItem);
+
     List<MediaItem> search(MediaItemSearchCriteria searchCriteria);
 }
