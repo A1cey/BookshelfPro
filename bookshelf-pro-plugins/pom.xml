@@ -11,8 +11,8 @@
     <groupId>org.a1cey</groupId>
     <artifactId>bookshelf-pro-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>bookshelfpro-plugins</name>
-    <description>bookshelfpro-plugins</description>
+    <name>bookshelf-pro-plugins</name>
+    <description>Plugin layer of BookshelfPro</description>
     <properties>
         <java.version>25</java.version>
     </properties>
@@ -109,6 +109,46 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/bookshelf-pro</url>
+                    <user>admin</user>
+                    <password>admin</password>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jdbc>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/bookshelf-pro</url>
+                        <user>admin</user>
+                        <password>admin</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <includes>.*</includes>
+                            <excludes>flyway_schema_history</excludes>
+                            <inputSchema>public</inputSchema>
+                        </database>
+                        <target>
+                            <packageName>org.a1cey.bookshelf_pro_plugins.db.jooq</packageName>
+                            <directory>src/main/java</directory>
+                        </target>
+                    </generator>
+                </configuration>
             </plugin>
         </plugins>
     </build>

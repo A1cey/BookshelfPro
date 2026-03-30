@@ -8,7 +8,11 @@
     <!-- Interfaces injected via constructor cannot expose mutable state -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP2"/>
-        <Class name="~.*Service"/>
+        <Or>
+            <Class name="~.*Service"/>
+            <Class name="~.*UseCase"/>
+            <Class name="~.*Request"/>
+        </Or>
     </Match>
 
     <!--    &lt;!&ndash; jMolecules byte-buddy instrumented classes can trigger false positives &ndash;&gt;-->

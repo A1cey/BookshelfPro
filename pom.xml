@@ -19,8 +19,8 @@
 
     <modules>
         <module>bookshelf-pro-domain</module>
-        <module>bookshelf-pro-plugins</module>
         <module>bookshelf-pro-application</module>
+        <module>bookshelf-pro-plugins</module>
     </modules>
 
     <properties>

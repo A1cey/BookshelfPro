@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
 import java.net.URI;
+import java.util.Collections;
 import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
@@ -95,7 +96,7 @@ public abstract class MediaItem {
     }
 
     public Set<Language> languages() {
-        return languages;
+        return Collections.unmodifiableSet(languages);
     }
 
     public void addLanguage(@Valid Language language, AccountId userRequestingChange) {

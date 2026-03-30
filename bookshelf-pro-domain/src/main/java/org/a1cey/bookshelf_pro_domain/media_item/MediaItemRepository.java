@@ -14,7 +14,4 @@ public interface MediaItemRepository {
     void save(MediaItem mediaItem);
 
     List<MediaItem> search(MediaItemSearchCriteria searchCriteria);
-
-    void delete(MediaItemId id);
-
 }
