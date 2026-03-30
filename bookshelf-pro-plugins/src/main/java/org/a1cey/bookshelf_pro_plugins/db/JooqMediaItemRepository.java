@@ -57,13 +57,31 @@ public class JooqMediaItemRepository implements MediaItemRepository {
     @Transactional
     @Override
     public void save(MediaItem mediaItem) {
-        // TODO:
+        dsl.insertInto(MEDIA_ITEM)
+           .set(MEDIA_ITEM.ID, mediaItem.id().value())
+           .set(MEDIA_ITEM.OWNER_ID, mediaItem.owner().value())
+           .set(MEDIA_ITEM.COVER_IMAGE_URL, mediaItem.coverImageUrl() != null ? mediaItem.coverImageUrl().toString() : null)
+           .set(MEDIA_ITEM.DESCRIPTION, mediaItem.description().description())
+           .set(MEDIA_ITEM.TYPE, mediaItem.type().name())
+           .set(MEDIA_ITEM.TITLE, mediaItem.title().title())
+           .set(MEDIA_ITEM.SUBTITLE, mediaItem.subtitle().subtitle())
+           .execute();
+
+        switch (mediaItem) {
+            case Book book -> saveBook(book);
+            default -> throw new IllegalStateException("Unexpected media item type: " + mediaItem);
+        }
+
     }
 
     @Override
     public List<MediaItem> search(MediaItemSearchCriteria searchCriteria) {
         // TODO:
         return List.of();
+    }
+
+    private void saveBook(Book book) {
+        // TODO:
     }
 
     private Book fetchBook(MediaItemRecord mediaItemRecord) {
