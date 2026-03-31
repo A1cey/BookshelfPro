@@ -40,8 +40,9 @@
         - [ ] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
     - [ ] MediaItem
         - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
-          [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...)
-        - [ ] Book
+          [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
+        - [ ] Get all media items -> media items
+        - [x] Book
             - [x] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
               pageCount, [authors], [publishDate], [publisher], [publishPlace])
             - [x] ! Change title (newTitle)
@@ -50,8 +51,6 @@
             - [x] ! Change coverImageUrl (newCoverImageUrl)
             - [x] ! Add language (language)
             - [x] ! Remove language (language)
-            - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
-              [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace])
             - [x] ! Change pageCount (newPageCount)
             - [x] ! Add author (author)
             - [x] ! Remove author (author)
