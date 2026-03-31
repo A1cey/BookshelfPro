@@ -23,10 +23,10 @@
     - [ ] Account
         - [x] Create account (username, password, [email])
         - [x] ! Delete account (accountId)
-        - [ ] ! Change username (newUsername)
-        - [ ] ! Change email (newEmail)
-        - [ ] ! Change password (newPassword)
-        - [ ] ! Get account details -> id, username, email
+        - [x] ! Change username (newUsername)
+        - [x] ! Change email (newEmail)
+        - [x] ! Change password (newPassword)
+        - [x] ! Get account details -> id, username, email
         - [ ] ! Get media items -> mediaItems
         - [ ] ! Get reviews -> reviews
     - [ ] Bookshelf
