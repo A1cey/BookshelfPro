@@ -69,7 +69,7 @@ public class JooqMediaItemRepository implements MediaItemRepository {
            .set(MEDIA_ITEM.SUBTITLE, mediaItem.subtitle().subtitle())
            .execute();
 
-        updateLanguages(mediaItem.id(), mediaItem.languages());
+        saveLanguages(mediaItem.id(), mediaItem.languages());
 
         switch (mediaItem) {
             case Book book -> saveBook(book);
@@ -104,17 +104,10 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         return List.of();
     }
 
-    private void saveBook(Book book) {
-        dsl.insertInto(BOOK)
-           .set(BOOK.ID, book.id().value())
-           .set(BOOK.ISBN, book.isbn().value())
-           .set(BOOK.PAGE_COUNT, book.pageCount().pageCount())
-           .set(BOOK.PUBLISHER, book.publisher().publisher())
-           .set(BOOK.PUBLISH_DATE, book.publishDate() != null ? book.publishDate().publishDate() : null)
-           .set(BOOK.PUBLISH_PLACE, book.publishPlace().publishPlace())
+    private void saveLanguages(MediaItemId id, Set<Language> languages) {
+        dsl.insertInto(MEDIA_ITEM_LANGUAGE, MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID, MEDIA_ITEM_LANGUAGE.ISO_CODE)
+           .valuesOfRows(languages.stream().map(lang -> DSL.row(id.value(), lang.isoCode())).toList())
            .execute();
-
-        updateAuthors(book.id(), book.authors());
     }
 
     private void updateLanguages(MediaItemId id, Set<Language> languages) {
@@ -143,6 +136,19 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         }
     }
 
+    private void saveBook(Book book) {
+        dsl.insertInto(BOOK)
+           .set(BOOK.ID, book.id().value())
+           .set(BOOK.ISBN, book.isbn().value())
+           .set(BOOK.PAGE_COUNT, book.pageCount().pageCount())
+           .set(BOOK.PUBLISHER, book.publisher().publisher())
+           .set(BOOK.PUBLISH_DATE, book.publishDate() != null ? book.publishDate().publishDate() : null)
+           .set(BOOK.PUBLISH_PLACE, book.publishPlace().publishPlace())
+           .execute();
+
+        saveAuthors(book.id(), book.authors());
+    }
+
     private void updateBook(Book book) {
         dsl.update(BOOK)
            .set(BOOK.PAGE_COUNT, book.pageCount().pageCount())
@@ -153,6 +159,12 @@ public class JooqMediaItemRepository implements MediaItemRepository {
            .execute();
 
         updateAuthors(book.id(), book.authors());
+    }
+
+    private void saveAuthors(MediaItemId id, Set<Author> authors) {
+        dsl.insertInto(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID, BOOK_AUTHOR.NAME)
+           .valuesOfRows(authors.stream().map(author -> DSL.row(id.value(), author.name())).toList())
+           .execute();
     }
 
     private void updateAuthors(MediaItemId id, Set<Author> authors) {
