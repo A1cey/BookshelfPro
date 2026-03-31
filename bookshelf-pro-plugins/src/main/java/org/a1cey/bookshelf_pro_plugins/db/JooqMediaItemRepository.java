@@ -1,7 +1,6 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +55,13 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         };
     }
 
+    @Override
+    public Set<? extends MediaItem> findByType(MediaItemType type) {
+        return switch (type) {
+            case MediaItemType.BOOK -> fetchAllBooks();
+        };
+    }
+
     @Transactional // TODO: Move this to invocating functions?
     @Override
     public void save(MediaItem mediaItem) {
@@ -99,9 +105,9 @@ public class JooqMediaItemRepository implements MediaItemRepository {
     }
 
     @Override
-    public List<MediaItem> search(MediaItemSearchCriteria searchCriteria) {
+    public Set<? extends MediaItem> search(MediaItemSearchCriteria searchCriteria) {
         // TODO:
-        return List.of();
+        return Set.of();
     }
 
     private void saveLanguages(MediaItemId id, Set<Language> languages) {
@@ -241,4 +247,55 @@ public class JooqMediaItemRepository implements MediaItemRepository {
 
         return builder.build();
     }
+
+    private Set<Book> fetchAllBooks() {
+        return dsl.fetch(BOOK).stream().map(bookRecord -> {
+            var mediaItemRecord = dsl.fetchOne(MEDIA_ITEM, MEDIA_ITEM.ID.eq(bookRecord.getId()));
+
+            if (mediaItemRecord == null) {
+                throw new IllegalStateException("No corresponding media item for book with id " + bookRecord.getId());
+            }
+
+            var authors = dsl.fetch(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID.eq(bookRecord.getId()))
+                             .stream()
+                             .map(author -> new Author(author.getName()))
+                             .collect(Collectors.toSet());
+
+            var languages = dsl.fetch(MEDIA_ITEM_LANGUAGE, MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID.eq(mediaItemRecord.getId()))
+                               .stream()
+                               .map(lang -> new Language(lang.getIsoCode()))
+                               .collect(Collectors.toSet());
+
+            var builder = Book.builder(
+                    new MediaItemId(mediaItemRecord.getId()),
+                    new AccountId(mediaItemRecord.getOwnerId()),
+                    new Title(mediaItemRecord.getTitle()),
+                    new Isbn(bookRecord.getIsbn()),
+                    new PageCount(bookRecord.getPageCount())
+                ).authors(authors)
+                 .languages(languages);
+
+            if (mediaItemRecord.getSubtitle() != null) {
+                builder.subtitle(new Subtitle(mediaItemRecord.getSubtitle()));
+            }
+            if (mediaItemRecord.getDescription() != null) {
+                builder.description(new Description(mediaItemRecord.getDescription()));
+            }
+            if (mediaItemRecord.getCoverImageUrl() != null) {
+                builder.coverImageUrl(URI.create(mediaItemRecord.getCoverImageUrl()));
+            }
+            if (bookRecord.getPublishDate() != null) {
+                builder.publishDate(new PublishDate(bookRecord.getPublishDate()));
+            }
+            if (bookRecord.getPublisher() != null) {
+                builder.publisher(new Publisher(bookRecord.getPublisher()));
+            }
+            if (bookRecord.getPublishPlace() != null) {
+                builder.publishPlace(new PublishPlace(bookRecord.getPublishPlace()));
+            }
+
+            return builder.build();
+        }).collect(Collectors.toSet());
+    }
+
 }

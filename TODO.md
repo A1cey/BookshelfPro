@@ -60,6 +60,7 @@
             - [x] ! Change publishPlace (publishPlace)
             - [x] Get book details -> id, owner, isbn, title, subtitle, description, coverImageUrl, languages, pageCount, authors,
               publishDate, publisher, publishPlace
+            - [x] Get all books -> details of books
         - [ ] Movie/Video
             - ...
         - [ ] Series

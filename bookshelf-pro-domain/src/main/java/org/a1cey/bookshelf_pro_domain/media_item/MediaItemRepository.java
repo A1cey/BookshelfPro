@@ -1,7 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.Id;
 import org.jmolecules.ddd.annotation.Repository;
@@ -11,9 +11,11 @@ public interface MediaItemRepository {
 
     Optional<MediaItem> findById(Id id);
 
+    Set<? extends MediaItem> findByType(MediaItemType type);
+
     void save(MediaItem mediaItem);
 
     void update(MediaItem mediaItem);
 
-    List<MediaItem> search(MediaItemSearchCriteria searchCriteria);
+    Set<? extends MediaItem> search(MediaItemSearchCriteria searchCriteria);
 }

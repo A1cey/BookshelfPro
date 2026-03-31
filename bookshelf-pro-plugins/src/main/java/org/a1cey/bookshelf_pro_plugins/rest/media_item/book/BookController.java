@@ -5,13 +5,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.media_item.book.CreateBookUseCase;
-import org.a1cey.bookshelf_pro_application.media_item.book.GetBookUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.book.GetAllBooksUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.book.GetBookByIdUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.book.UpdateBookUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.CreateBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.GetBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.UpdateBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.result.CreateBookResult;
-import org.a1cey.bookshelf_pro_application.media_item.book.result.GetBookResult;
+import org.a1cey.bookshelf_pro_application.media_item.book.result.GetAllBooksResult;
+import org.a1cey.bookshelf_pro_application.media_item.book.result.GetBookByIdResult;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.media_item.Description;
@@ -41,12 +43,15 @@ public class BookController {
 
     private final CreateBookUseCase createBookUseCase;
     private final UpdateBookUseCase updateBookUseCase;
-    private final GetBookUseCase getBookUseCase;
+    private final GetBookByIdUseCase getBookByIdUseCase;
+    private final GetAllBooksUseCase getAllBooksUseCase;
 
-    public BookController(CreateBookUseCase createBookUseCase, UpdateBookUseCase updateBookUseCase, GetBookUseCase getBookUseCase) {
+    public BookController(CreateBookUseCase createBookUseCase, UpdateBookUseCase updateBookUseCase, GetBookByIdUseCase getBookByIdUseCase
+        , GetAllBooksUseCase getAllBooksUseCase) {
         this.createBookUseCase = createBookUseCase;
         this.updateBookUseCase = updateBookUseCase;
-        this.getBookUseCase = getBookUseCase;
+        this.getBookByIdUseCase = getBookByIdUseCase;
+        this.getAllBooksUseCase = getAllBooksUseCase;
     }
 
     @PostMapping
@@ -90,11 +95,16 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetBookResult> getBook(@PathVariable UUID id) {
+    public ResponseEntity<GetBookByIdResult> getBookById(@PathVariable UUID id) {
         var command = new GetBookCommand(new MediaItemId(id));
-        return getBookUseCase
+        return getBookByIdUseCase
                    .execute(command)
                    .map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping()
+    public ResponseEntity<GetAllBooksResult> getAllBooks() {
+        return ResponseEntity.ok(getAllBooksUseCase.execute());
     }
 }
