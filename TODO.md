@@ -15,12 +15,14 @@
       case to remove this data)
     - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
 - Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate
-- Write extensive Tests
+- Write 10+ Tests + mock
+- Correct exception handling needed
+- Security
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [ ] Account
         - [x] Create account (username, password, [email])
-        - [ ] ! Delete account (accountId)
+        - [x] ! Delete account (accountId)
         - [ ] ! Change username (newUsername)
         - [ ] ! Change email (newEmail)
         - [ ] ! Change password (newPassword)

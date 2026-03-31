@@ -58,6 +58,13 @@ public class JooqAccountRepository implements AccountRepository {
     }
 
     @Override
+    public void delete(AccountId id) {
+        dsl.deleteFrom(ACCOUNT)
+           .where(ACCOUNT.ID.eq(id.value()))
+           .execute();
+    }
+
+    @Override
     public boolean existsUsername(Username name) {
         return dsl.fetchExists(ACCOUNT, ACCOUNT.USERNAME.eq(name.name()));
     }
