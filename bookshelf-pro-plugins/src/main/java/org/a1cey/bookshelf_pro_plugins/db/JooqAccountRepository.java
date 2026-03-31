@@ -58,6 +58,16 @@ public class JooqAccountRepository implements AccountRepository {
     }
 
     @Override
+    public void update(Account account) {
+        dsl.update(ACCOUNT)
+           .set(ACCOUNT.USERNAME, account.name().name())
+           .set(ACCOUNT.PASSWORD, account.password().hashedPassword())
+           .set(ACCOUNT.EMAIL, account.email().map(Email::email).orElse(null))
+           .where(ACCOUNT.ID.eq(account.id().value()))
+           .execute();
+    }
+
+    @Override
     public void delete(AccountId id) {
         dsl.deleteFrom(ACCOUNT)
            .where(ACCOUNT.ID.eq(id.value()))

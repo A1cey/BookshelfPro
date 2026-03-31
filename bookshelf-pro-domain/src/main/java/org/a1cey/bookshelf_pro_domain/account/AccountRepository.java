@@ -11,6 +11,8 @@ public interface AccountRepository {
 
     void save(Account account);
 
+    void update(Account account);
+
     void delete(AccountId id);
 
     boolean existsUsername(Username name);
