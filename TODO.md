@@ -39,6 +39,8 @@
         - [ ] ! Remove label (label)
         - [ ] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
     - [ ] MediaItem
+        - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
+          [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...)
         - [ ] Book
             - [x] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
               pageCount, [authors], [publishDate], [publisher], [publishPlace])
