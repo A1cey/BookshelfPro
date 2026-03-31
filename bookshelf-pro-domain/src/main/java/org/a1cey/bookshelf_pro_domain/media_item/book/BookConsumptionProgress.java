@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item.book;
 
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.MediaItemConsumptionProgress;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 import jakarta.validation.Valid;
@@ -45,4 +46,23 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
         return current.pageCount() > 0 && current.pageCount() < total.pageCount();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof BookConsumptionProgress other)) {
+            return false;
+        }
+
+        return total.equals(other.total()) && current.equals(other.current);
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
+        hashCodeBuilder.append(current);
+        hashCodeBuilder.append(total);
+        return hashCodeBuilder.toHashCode();
+    }
 }

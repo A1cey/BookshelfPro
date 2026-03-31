@@ -3,6 +3,7 @@ package org.a1cey.bookshelf_pro_domain.review;
 import java.time.LocalDateTime;
 
 import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.jmolecules.ddd.annotation.ValueObject;
 
 import jakarta.validation.Valid;
@@ -39,4 +40,28 @@ public final class ReviewChange {
         return consumptionProgress;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ReviewChange other)) {
+            return false;
+        }
+
+        return rating.equals(other.rating())
+                   && comment.equals(other.comment())
+                   && reviewDate.equals(other.reviewDate())
+                   && consumptionProgress.equals(other.consumptionProgress);
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
+        hashCodeBuilder.append(rating);
+        hashCodeBuilder.append(comment);
+        hashCodeBuilder.append(reviewDate);
+        hashCodeBuilder.append(consumptionProgress);
+        return hashCodeBuilder.toHashCode();
+    }
 }
