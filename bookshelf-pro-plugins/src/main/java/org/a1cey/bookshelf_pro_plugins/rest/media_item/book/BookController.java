@@ -5,10 +5,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.media_item.book.CreateBookUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.book.GetBookUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.book.UpdateBookUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.CreateBookCommand;
+import org.a1cey.bookshelf_pro_application.media_item.book.command.GetBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.UpdateBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.result.CreateBookResult;
+import org.a1cey.bookshelf_pro_application.media_item.book.result.GetBookResult;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.media_item.Description;
@@ -24,6 +27,7 @@ import org.a1cey.bookshelf_pro_domain.media_item.book.Publisher;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.book.request.CreateBookRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.book.request.UpdateBookRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,10 +41,12 @@ public class BookController {
 
     private final CreateBookUseCase createBookUseCase;
     private final UpdateBookUseCase updateBookUseCase;
+    private final GetBookUseCase getBookUseCase;
 
-    public BookController(CreateBookUseCase createBookUseCase, UpdateBookUseCase updateBookUseCase) {
+    public BookController(CreateBookUseCase createBookUseCase, UpdateBookUseCase updateBookUseCase, GetBookUseCase getBookUseCase) {
         this.createBookUseCase = createBookUseCase;
         this.updateBookUseCase = updateBookUseCase;
+        this.getBookUseCase = getBookUseCase;
     }
 
     @PostMapping
@@ -81,5 +87,14 @@ public class BookController {
         );
 
         updateBookUseCase.execute(command);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetBookResult> getBook(@PathVariable UUID id) {
+        var command = new GetBookCommand(new MediaItemId(id));
+        return getBookUseCase
+                   .execute(command)
+                   .map(ResponseEntity::ok)
+                   .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

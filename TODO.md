@@ -58,7 +58,7 @@
             - [x] ! Change publishDate (newPublishDate)
             - [x] ! Change publisher (newPublisher)
             - [x] ! Change publishPlace (publishPlace)
-            - [ ] Get book details -> id, owner, isbn, title, subtitle, description, coverImageUrl, languages, pageCount, authors,
+            - [x] Get book details -> id, owner, isbn, title, subtitle, description, coverImageUrl, languages, pageCount, authors,
               publishDate, publisher, publishPlace
         - [ ] Movie/Video
             - ...
