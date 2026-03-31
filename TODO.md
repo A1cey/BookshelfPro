@@ -41,7 +41,7 @@
     - [ ] MediaItem
         - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
-        - [ ] Get all media items -> media items
+        - [x] Get all media items -> media items
         - [x] Book
             - [x] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
               pageCount, [authors], [publishDate], [publisher], [publishPlace])
