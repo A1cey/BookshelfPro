@@ -2,6 +2,7 @@ package org.a1cey.bookshelf_pro_application.media_item.book;
 
 import java.util.NoSuchElementException;
 
+import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.UpdateBookCommand;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
@@ -11,17 +12,21 @@ import org.springframework.stereotype.Service;
 public final class UpdateBookUseCase {
 
     private final MediaItemRepository mediaItemRepository;
+    private final SecurityService securityService;
 
-    public UpdateBookUseCase(MediaItemRepository mediaItemRepository) {
+    public UpdateBookUseCase(MediaItemRepository mediaItemRepository, SecurityService securityService) {
         this.mediaItemRepository = mediaItemRepository;
+        this.securityService = securityService;
     }
 
     public void execute(UpdateBookCommand command) {
+        var account = securityService.checkUser(command.accountId(), command.name(), command.password());
+
         var mediaItem = mediaItemRepository
                             .findById(command.bookId())
                             .orElseThrow(() -> new NoSuchElementException("Book with id " + command.bookId() + " not found"));
 
-        if (!mediaItem.owner().value().equals(command.requestingUser().value())) {
+        if (!mediaItem.owner().equals(account.id())) {
             throw new SecurityException("User not allowed to perform this action as they do not own the media item");
         }
 

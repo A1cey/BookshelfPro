@@ -12,16 +12,18 @@ import org.springframework.stereotype.Service;
 public final class CreateAccountUseCase {
     private final AccountRepository accountRepository;
     private final AccountService accountService;
+    private final IdService idService;
 
-    public CreateAccountUseCase(AccountRepository accountRepository, AccountService accountService) { // TODO: this is a domain service
-        // with jmolecules @Service
+    public CreateAccountUseCase(AccountRepository accountRepository, AccountService accountService, IdService idService) {
         this.accountRepository = accountRepository;
+        // TODO: this is a domain service with jmolecules @Service
         this.accountService = accountService;
+        this.idService = idService;
     }
 
     public CreateAccountResult execute(CreateAccountCommand command) {
         var account = accountService.createAccount(
-            new AccountId(IdService.generateId()),
+            new AccountId(idService.generateId()),
             command.name(),
             command.email().orElse(null),
             command.password()

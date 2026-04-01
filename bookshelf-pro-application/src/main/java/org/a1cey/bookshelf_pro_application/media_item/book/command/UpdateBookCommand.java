@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.account.Password;
+import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.media_item.Description;
 import org.a1cey.bookshelf_pro_domain.media_item.Language;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
@@ -17,7 +19,9 @@ import org.a1cey.bookshelf_pro_domain.media_item.book.PublishPlace;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Publisher;
 
 public record UpdateBookCommand(
-    AccountId requestingUser,
+    AccountId accountId,
+    Username name,
+    Password password,
     MediaItemId bookId,
     Optional<Title> title,
     Optional<Subtitle> subtitle,
