@@ -16,6 +16,8 @@ import org.a1cey.bookshelf_pro_application.media_item.book.result.GetAllBooksRes
 import org.a1cey.bookshelf_pro_application.media_item.book.result.GetBookByIdResult;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.account.Password;
+import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.media_item.Description;
 import org.a1cey.bookshelf_pro_domain.media_item.Language;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
@@ -61,7 +63,9 @@ public class BookController {
     @PostMapping
     public ResponseEntity<CreateBookResult> createBook(@RequestBody CreateBookRequest request) {
         var command = new CreateBookCommand(
-            new AccountId(request.requestingAccountId()),
+            new AccountId(request.accountId()),
+            new Username(request.name()),
+            new Password(request.password()),
             new Title(request.title()),
             Optional.ofNullable(request.subtitle()).map(Subtitle::new),
             Optional.ofNullable(request.description()).map(Description::new),
@@ -82,6 +86,8 @@ public class BookController {
     public void updateBook(@PathVariable UUID id, @RequestBody UpdateBookRequest request) {
         var command = new UpdateBookCommand(
             new AccountId(request.requestingAccountId()),
+            new Username(request.name()),
+            new Password(request.password()),
             new MediaItemId(id),
             Optional.ofNullable(request.title()).map(Title::new),
             Optional.ofNullable(request.subtitle()).map(Subtitle::new),

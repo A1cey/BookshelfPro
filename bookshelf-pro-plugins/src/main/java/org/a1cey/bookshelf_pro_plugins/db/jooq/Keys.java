@@ -7,13 +7,25 @@ package org.a1cey.bookshelf_pro_plugins.db.jooq;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Account;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Book;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookAuthor;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntryLabel;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookAuthorRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookshelfEntryLabelRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookshelfEntryRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressSnapshotRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemLanguageRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewChangeRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewRecord;
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -36,8 +48,16 @@ public class Keys {
     public static final UniqueKey<AccountRecord> ACCOUNT_USERNAME_KEY = Internal.createUniqueKey(Account.ACCOUNT, DSL.name("account_username_key"), new TableField[] { Account.ACCOUNT.USERNAME }, true);
     public static final UniqueKey<BookRecord> BOOK_PKEY = Internal.createUniqueKey(Book.BOOK, DSL.name("book_pkey"), new TableField[] { Book.BOOK.ID }, true);
     public static final UniqueKey<BookAuthorRecord> BOOK_AUTHOR_PKEY = Internal.createUniqueKey(BookAuthor.BOOK_AUTHOR, DSL.name("book_author_pkey"), new TableField[] { BookAuthor.BOOK_AUTHOR.BOOK_ID, BookAuthor.BOOK_AUTHOR.NAME }, true);
+    public static final UniqueKey<BookshelfEntryRecord> BOOKSHELF_ENTRY_OWNER_MEDIA_ITEM_ID_KEY = Internal.createUniqueKey(BookshelfEntry.BOOKSHELF_ENTRY, DSL.name("bookshelf_entry_owner_media_item_id_key"), new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.OWNER, BookshelfEntry.BOOKSHELF_ENTRY.MEDIA_ITEM_ID }, true);
+    public static final UniqueKey<BookshelfEntryRecord> BOOKSHELF_ENTRY_PKEY = Internal.createUniqueKey(BookshelfEntry.BOOKSHELF_ENTRY, DSL.name("bookshelf_entry_pkey"), new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.ID }, true);
+    public static final UniqueKey<BookshelfEntryLabelRecord> BOOKSHELF_ENTRY_LABEL_PKEY = Internal.createUniqueKey(BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL, DSL.name("bookshelf_entry_label_pkey"), new TableField[] { BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL.LABEL }, true);
+    public static final UniqueKey<ConsumptionProgressRecord> CONSUMPTION_PROGRESS_PKEY = Internal.createUniqueKey(ConsumptionProgress.CONSUMPTION_PROGRESS, DSL.name("consumption_progress_pkey"), new TableField[] { ConsumptionProgress.CONSUMPTION_PROGRESS.ID }, true);
+    public static final UniqueKey<ConsumptionProgressSnapshotRecord> CONSUMPTION_PROGRESS_SNAPSHOT_PKEY = Internal.createUniqueKey(ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT, DSL.name("consumption_progress_snapshot_pkey"), new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.ID }, true);
     public static final UniqueKey<MediaItemRecord> MEDIA_ITEM_PKEY = Internal.createUniqueKey(MediaItem.MEDIA_ITEM, DSL.name("media_item_pkey"), new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
     public static final UniqueKey<MediaItemLanguageRecord> MEDIA_ITEM_LANGUAGE_PKEY = Internal.createUniqueKey(MediaItemLanguage.MEDIA_ITEM_LANGUAGE, DSL.name("media_item_language_pkey"), new TableField[] { MediaItemLanguage.MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID, MediaItemLanguage.MEDIA_ITEM_LANGUAGE.ISO_CODE }, true);
+    public static final UniqueKey<ReviewRecord> REVIEW_OWNER_MEDIA_ITEM_ID_KEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_owner_media_item_id_key"), new TableField[] { Review.REVIEW.OWNER, Review.REVIEW.MEDIA_ITEM_ID }, true);
+    public static final UniqueKey<ReviewRecord> REVIEW_PKEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_pkey"), new TableField[] { Review.REVIEW.ID }, true);
+    public static final UniqueKey<ReviewChangeRecord> REVIEW_CHANGE_PKEY = Internal.createUniqueKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_pkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -45,6 +65,14 @@ public class Keys {
 
     public static final ForeignKey<BookRecord, MediaItemRecord> BOOK__BOOK_ID_FKEY = Internal.createForeignKey(Book.BOOK, DSL.name("book_id_fkey"), new TableField[] { Book.BOOK.ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
     public static final ForeignKey<BookAuthorRecord, BookRecord> BOOK_AUTHOR__BOOK_AUTHOR_BOOK_ID_FKEY = Internal.createForeignKey(BookAuthor.BOOK_AUTHOR, DSL.name("book_author_book_id_fkey"), new TableField[] { BookAuthor.BOOK_AUTHOR.BOOK_ID }, Keys.BOOK_PKEY, new TableField[] { Book.BOOK.ID }, true);
+    public static final ForeignKey<BookshelfEntryRecord, MediaItemRecord> BOOKSHELF_ENTRY__BOOKSHELF_ENTRY_MEDIA_ITEM_ID_FKEY = Internal.createForeignKey(BookshelfEntry.BOOKSHELF_ENTRY, DSL.name("bookshelf_entry_media_item_id_fkey"), new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.MEDIA_ITEM_ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
+    public static final ForeignKey<BookshelfEntryRecord, AccountRecord> BOOKSHELF_ENTRY__BOOKSHELF_ENTRY_OWNER_FKEY = Internal.createForeignKey(BookshelfEntry.BOOKSHELF_ENTRY, DSL.name("bookshelf_entry_owner_fkey"), new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
+    public static final ForeignKey<BookshelfEntryLabelRecord, BookshelfEntryRecord> BOOKSHELF_ENTRY_LABEL__BOOKSHELF_ENTRY_LABEL_BOOKSHELF_ENTRY_ID_FKEY = Internal.createForeignKey(BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL, DSL.name("bookshelf_entry_label_bookshelf_entry_id_fkey"), new TableField[] { BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID }, Keys.BOOKSHELF_ENTRY_PKEY, new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.ID }, true);
+    public static final ForeignKey<ConsumptionProgressRecord, BookshelfEntryRecord> CONSUMPTION_PROGRESS__CONSUMPTION_PROGRESS_BOOKSHELF_ENTRY_ID_FKEY = Internal.createForeignKey(ConsumptionProgress.CONSUMPTION_PROGRESS, DSL.name("consumption_progress_bookshelf_entry_id_fkey"), new TableField[] { ConsumptionProgress.CONSUMPTION_PROGRESS.BOOKSHELF_ENTRY_ID }, Keys.BOOKSHELF_ENTRY_PKEY, new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.ID }, true);
     public static final ForeignKey<MediaItemRecord, AccountRecord> MEDIA_ITEM__MEDIA_ITEM_OWNER_ID_FKEY = Internal.createForeignKey(MediaItem.MEDIA_ITEM, DSL.name("media_item_owner_id_fkey"), new TableField[] { MediaItem.MEDIA_ITEM.OWNER_ID }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
     public static final ForeignKey<MediaItemLanguageRecord, MediaItemRecord> MEDIA_ITEM_LANGUAGE__MEDIA_ITEM_LANGUAGE_MEDIA_ITEM_ID_FKEY = Internal.createForeignKey(MediaItemLanguage.MEDIA_ITEM_LANGUAGE, DSL.name("media_item_language_media_item_id_fkey"), new TableField[] { MediaItemLanguage.MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
+    public static final ForeignKey<ReviewRecord, MediaItemRecord> REVIEW__REVIEW_MEDIA_ITEM_ID_FKEY = Internal.createForeignKey(Review.REVIEW, DSL.name("review_media_item_id_fkey"), new TableField[] { Review.REVIEW.MEDIA_ITEM_ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
+    public static final ForeignKey<ReviewRecord, AccountRecord> REVIEW__REVIEW_OWNER_FKEY = Internal.createForeignKey(Review.REVIEW, DSL.name("review_owner_fkey"), new TableField[] { Review.REVIEW.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
+    public static final ForeignKey<ReviewChangeRecord, ConsumptionProgressSnapshotRecord> REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_ID_FKEY = Internal.createForeignKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_consumption_progress_snapshot_id_fkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_ID }, Keys.CONSUMPTION_PROGRESS_SNAPSHOT_PKEY, new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.ID }, true);
+    public static final ForeignKey<ReviewChangeRecord, ReviewRecord> REVIEW_CHANGE__REVIEW_CHANGE_REVIEW_ID_FKEY = Internal.createForeignKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_review_id_fkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.REVIEW_ID }, Keys.REVIEW_PKEY, new TableField[] { Review.REVIEW.ID }, true);
 }

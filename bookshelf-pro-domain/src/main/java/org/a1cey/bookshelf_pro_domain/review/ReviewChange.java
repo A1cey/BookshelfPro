@@ -24,6 +24,13 @@ public final class ReviewChange {
         this.consumptionProgress = consumptionProgress;
     }
 
+    public ReviewChange(Rating rating, Comment comment, LocalDateTime reviewDate, ConsumptionProgressSnapshot consumptionProgress) {
+        this.rating = rating;
+        this.comment = comment;
+        this.reviewDate = reviewDate;
+        this.consumptionProgress = consumptionProgress;
+    }
+
     public Rating rating() {
         return rating;
     }

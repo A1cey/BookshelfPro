@@ -84,11 +84,8 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID id, GetAccountRequest request) {
+    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID id, @RequestBody GetAccountRequest request) {
         var command = new GetAccountCommand(new AccountId(id), new Username(request.name()), new Password(request.password()));
-        return getAccountUseCase
-                   .execute(command)
-                   .map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(getAccountUseCase.execute(command));
     }
 }

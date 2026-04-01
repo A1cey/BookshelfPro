@@ -34,7 +34,7 @@
         - [ ] ! Get playlists -> playlists
         - [ ] ! Get watchlists -> watchlists
         - [ ] BookshelfEntry
-            - [ ] ! Create bookshelf entry (mediaItemId, [consumptionProgress], [labels]) // TODO: or make this a use
+            - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgress], [labels]) // TODO: or make this a use
               case on MediaItem -> Book.addToBookshelf
             - [ ] ! Update consumption progress (MediaItemConsumptionProgress)
             - [ ] ! Add label (label)

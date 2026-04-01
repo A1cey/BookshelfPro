@@ -117,6 +117,7 @@
                     <url>jdbc:postgresql://localhost:5432/bookshelf-pro</url>
                     <user>admin</user>
                     <password>admin</password>
+                    <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>
             <plugin>

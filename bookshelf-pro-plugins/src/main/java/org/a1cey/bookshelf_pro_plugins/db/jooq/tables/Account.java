@@ -11,7 +11,9 @@ import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Keys;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem.MediaItemPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.ReviewPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -153,6 +155,19 @@ public class Account extends TableImpl<AccountRecord> {
         return Arrays.asList(Keys.ACCOUNT_USERNAME_KEY);
     }
 
+    private transient BookshelfEntryPath _bookshelfEntry;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.bookshelf_entry</code> table
+     */
+    public BookshelfEntryPath bookshelfEntry() {
+        if (_bookshelfEntry == null)
+            _bookshelfEntry = new BookshelfEntryPath(this, null, Keys.BOOKSHELF_ENTRY__BOOKSHELF_ENTRY_OWNER_FKEY.getInverseKey());
+
+        return _bookshelfEntry;
+    }
+
     private transient MediaItemPath _mediaItem;
 
     /**
@@ -164,6 +179,37 @@ public class Account extends TableImpl<AccountRecord> {
             _mediaItem = new MediaItemPath(this, null, Keys.MEDIA_ITEM__MEDIA_ITEM_OWNER_ID_FKEY.getInverseKey());
 
         return _mediaItem;
+    }
+
+    private transient ReviewPath _review;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.review</code>
+     * table
+     */
+    public ReviewPath review() {
+        if (_review == null)
+            _review = new ReviewPath(this, null, Keys.REVIEW__REVIEW_OWNER_FKEY.getInverseKey());
+
+        return _review;
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.media_item</code> table, via the
+     * <code>bookshelf_entry_media_item_id_fkey</code> key
+     */
+    public MediaItemPath bookshelfEntryMediaItemIdFkey() {
+        return bookshelfEntry().mediaItem();
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.media_item</code> table, via the
+     * <code>review_media_item_id_fkey</code> key
+     */
+    public MediaItemPath reviewMediaItemIdFkey() {
+        return review().mediaItem();
     }
 
     @Override

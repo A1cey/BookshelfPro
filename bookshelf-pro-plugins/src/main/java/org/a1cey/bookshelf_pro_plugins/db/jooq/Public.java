@@ -10,8 +10,14 @@ import java.util.List;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Account;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Book;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookAuthor;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntryLabel;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
@@ -46,6 +52,26 @@ public class Public extends SchemaImpl {
     public final BookAuthor BOOK_AUTHOR = BookAuthor.BOOK_AUTHOR;
 
     /**
+     * The table <code>public.bookshelf_entry</code>.
+     */
+    public final BookshelfEntry BOOKSHELF_ENTRY = BookshelfEntry.BOOKSHELF_ENTRY;
+
+    /**
+     * The table <code>public.bookshelf_entry_label</code>.
+     */
+    public final BookshelfEntryLabel BOOKSHELF_ENTRY_LABEL = BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL;
+
+    /**
+     * The table <code>public.consumption_progress</code>.
+     */
+    public final ConsumptionProgress CONSUMPTION_PROGRESS = ConsumptionProgress.CONSUMPTION_PROGRESS;
+
+    /**
+     * The table <code>public.consumption_progress_snapshot</code>.
+     */
+    public final ConsumptionProgressSnapshot CONSUMPTION_PROGRESS_SNAPSHOT = ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT;
+
+    /**
      * The table <code>public.media_item</code>.
      */
     public final MediaItem MEDIA_ITEM = MediaItem.MEDIA_ITEM;
@@ -54,6 +80,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.media_item_language</code>.
      */
     public final MediaItemLanguage MEDIA_ITEM_LANGUAGE = MediaItemLanguage.MEDIA_ITEM_LANGUAGE;
+
+    /**
+     * The table <code>public.review</code>.
+     */
+    public final Review REVIEW = Review.REVIEW;
+
+    /**
+     * The table <code>public.review_change</code>.
+     */
+    public final ReviewChange REVIEW_CHANGE = ReviewChange.REVIEW_CHANGE;
 
     /**
      * No further instances allowed
@@ -74,8 +110,14 @@ public class Public extends SchemaImpl {
             Account.ACCOUNT,
             Book.BOOK,
             BookAuthor.BOOK_AUTHOR,
+            BookshelfEntry.BOOKSHELF_ENTRY,
+            BookshelfEntryLabel.BOOKSHELF_ENTRY_LABEL,
+            ConsumptionProgress.CONSUMPTION_PROGRESS,
+            ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT,
             MediaItem.MEDIA_ITEM,
-            MediaItemLanguage.MEDIA_ITEM_LANGUAGE
+            MediaItemLanguage.MEDIA_ITEM_LANGUAGE,
+            Review.REVIEW,
+            ReviewChange.REVIEW_CHANGE
         );
     }
 }

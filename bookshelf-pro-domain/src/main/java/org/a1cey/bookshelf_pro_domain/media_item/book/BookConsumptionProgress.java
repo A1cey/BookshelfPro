@@ -12,7 +12,6 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
     private final PageCount current;
     private final PageCount total;
 
-    // This is package private to be used in Book.createProgress
     BookConsumptionProgress(@Valid PageCount current, @Valid PageCount total) {
         if (current.pageCount() > total.pageCount()) {
             throw new IllegalArgumentException(
@@ -44,6 +43,16 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
     @Override
     public boolean isStarted() {
         return current.pageCount() > 0 && current.pageCount() < total.pageCount();
+    }
+
+    /**
+     * Only use this method if you know that total is valid for the Book this is created for.
+     * Otherwise, use Book.createProgress.
+     * Example:
+     * Reading the progress from the DB must give you a valid total. Therefore, you can use this method.
+     */
+    public static BookConsumptionProgress reconstruct(PageCount current, PageCount total) {
+        return new BookConsumptionProgress(current, total);
     }
 
     @Override

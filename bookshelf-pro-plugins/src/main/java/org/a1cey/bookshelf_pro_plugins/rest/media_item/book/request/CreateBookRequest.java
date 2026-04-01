@@ -8,7 +8,9 @@ import java.util.UUID;
 import org.jspecify.annotations.Nullable;
 
 public record CreateBookRequest(
-    UUID requestingAccountId, // TODO: Replace this with real auth
+    UUID accountId, // TODO: Replace this with real auth
+    String name,
+    String password,
     String title,
     String isbn,
     int pageCount,

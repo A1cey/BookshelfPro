@@ -7,5 +7,4 @@ public interface MediaItemConsumptionProgress {
     boolean isCompleted();
 
     boolean isStarted();
-
 }

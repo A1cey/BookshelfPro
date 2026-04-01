@@ -9,6 +9,8 @@ import org.jspecify.annotations.Nullable;
 
 public record UpdateBookRequest(
     UUID requestingAccountId, // TODO: Replace this with real auth
+    String name,
+    String password,
     @Nullable String title,
     @Nullable String subtitle,
     @Nullable String description,

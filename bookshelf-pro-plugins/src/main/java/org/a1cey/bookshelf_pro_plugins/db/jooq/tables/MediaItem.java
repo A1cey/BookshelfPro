@@ -13,7 +13,9 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.Keys;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Account.AccountPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Book.BookPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage.MediaItemLanguagePath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.ReviewPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
 import org.jooq.Check;
 import org.jooq.Condition;
@@ -196,6 +198,19 @@ public class MediaItem extends TableImpl<MediaItemRecord> {
         return _book;
     }
 
+    private transient BookshelfEntryPath _bookshelfEntry;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.bookshelf_entry</code> table
+     */
+    public BookshelfEntryPath bookshelfEntry() {
+        if (_bookshelfEntry == null)
+            _bookshelfEntry = new BookshelfEntryPath(this, null, Keys.BOOKSHELF_ENTRY__BOOKSHELF_ENTRY_MEDIA_ITEM_ID_FKEY.getInverseKey());
+
+        return _bookshelfEntry;
+    }
+
     private transient MediaItemLanguagePath _mediaItemLanguage;
 
     /**
@@ -207,6 +222,37 @@ public class MediaItem extends TableImpl<MediaItemRecord> {
             _mediaItemLanguage = new MediaItemLanguagePath(this, null, Keys.MEDIA_ITEM_LANGUAGE__MEDIA_ITEM_LANGUAGE_MEDIA_ITEM_ID_FKEY.getInverseKey());
 
         return _mediaItemLanguage;
+    }
+
+    private transient ReviewPath _review;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.review</code>
+     * table
+     */
+    public ReviewPath review() {
+        if (_review == null)
+            _review = new ReviewPath(this, null, Keys.REVIEW__REVIEW_MEDIA_ITEM_ID_FKEY.getInverseKey());
+
+        return _review;
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.account</code> table, via the
+     * <code>bookshelf_entry_owner_fkey</code> key
+     */
+    public AccountPath bookshelfEntryOwnerFkey() {
+        return bookshelfEntry().account();
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.account</code> table, via the <code>review_owner_fkey</code>
+     * key
+     */
+    public AccountPath reviewOwnerFkey() {
+        return review().account();
     }
 
     @Override

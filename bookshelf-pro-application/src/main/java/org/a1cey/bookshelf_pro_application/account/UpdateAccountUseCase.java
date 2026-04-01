@@ -12,7 +12,7 @@ public final class UpdateAccountUseCase {
     private final AccountService accountService;
     private final SecurityService securityService;
 
-    public UpdateAccountUseCase(AccountRepository accountRepository, AccountService accountService, SecurityService securityService) { //
+    public UpdateAccountUseCase(AccountRepository accountRepository, AccountService accountService, SecurityService securityService) {
         this.accountRepository = accountRepository;
         // TODO: this is a domain service with jmolecules @Service
         this.accountService = accountService;

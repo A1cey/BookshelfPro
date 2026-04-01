@@ -26,14 +26,20 @@ public final class Review {
     private final ReviewId id;
     private final MediaItemId mediaItemId;
     private final AccountId owner;
-    private final ArrayList<@Valid ReviewChange> reviewHistory = new ArrayList<>();
+    private final List<@Valid ReviewChange> reviewHistory = new ArrayList<>();
 
-    private Review(ReviewId id, MediaItemId mediaItemId, AccountId owner, ReviewChange reviewChange) {
+    private Review(ReviewId id, MediaItemId mediaItemId, AccountId owner, @Valid ReviewChange reviewChange) {
         this.id = id;
         this.mediaItemId = mediaItemId;
         this.owner = owner;
-
         reviewHistory.add(reviewChange);
+    }
+
+    private Review(ReviewId id, MediaItemId mediaItemId, AccountId owner, List<@Valid ReviewChange> reviewHistory) {
+        this.id = id;
+        this.mediaItemId = mediaItemId;
+        this.owner = owner;
+        this.reviewHistory.addAll(reviewHistory);
     }
 
     private static void validateConsumptionState(ConsumptionProgressSnapshot snapshot) {
@@ -54,6 +60,21 @@ public final class Review {
         var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot);
 
         return new Review(id, mediaItemId, accountId, reviewChange);
+    }
+
+    /**
+     * Only use this method if you know that this is the only review by this user for this media item.
+     * Otherwise, use ReviewService.addReview.
+     * Example:
+     * Reading the review from the DB must give you a valid review. Therefore, you can use this method.
+     */
+    public static Review reconstruct(
+        ReviewId id,
+        MediaItemId mediaItemId,
+        AccountId owner,
+        List<ReviewChange> reviewHistory
+    ) {
+        return new Review(id, mediaItemId, owner, reviewHistory);
     }
 
     public void changeReview(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgressSnapshot,
