@@ -24,7 +24,7 @@ public final class CreateBookUseCase {
             "Account not found: " + command.requestingUser().value()
         ));
 
-        var id = new MediaItemId(IdService.UUIDv4());
+        var id = new MediaItemId(IdService.generateId());
 
         var builder = Book.builder(id, command.requestingUser(), command.title(), command.isbn(), command.pageCount());
 

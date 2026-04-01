@@ -46,8 +46,12 @@ public class BookController {
     private final GetBookByIdUseCase getBookByIdUseCase;
     private final GetAllBooksUseCase getAllBooksUseCase;
 
-    public BookController(CreateBookUseCase createBookUseCase, UpdateBookUseCase updateBookUseCase, GetBookByIdUseCase getBookByIdUseCase
-        , GetAllBooksUseCase getAllBooksUseCase) {
+    public BookController(
+        CreateBookUseCase createBookUseCase,
+        UpdateBookUseCase updateBookUseCase,
+        GetBookByIdUseCase getBookByIdUseCase,
+        GetAllBooksUseCase getAllBooksUseCase
+    ) {
         this.createBookUseCase = createBookUseCase;
         this.updateBookUseCase = updateBookUseCase;
         this.getBookByIdUseCase = getBookByIdUseCase;

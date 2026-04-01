@@ -21,7 +21,7 @@ public final class CreateAccountUseCase {
 
     public CreateAccountResult execute(CreateAccountCommand command) {
         var account = accountService.createAccount(
-            new AccountId(IdService.UUIDv4()),
+            new AccountId(IdService.generateId()),
             command.name(),
             command.email().orElse(null),
             command.password()

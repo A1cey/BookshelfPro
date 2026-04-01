@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_plugins.rest.media_item.book;
+package org.a1cey.bookshelf_pro_plugins.rest.media_item;
 
 import org.a1cey.bookshelf_pro_application.media_item.GetAllMediaItemsUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.result.GetAllMediaItemsResult;
