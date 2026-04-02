@@ -1,14 +1,16 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntry;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryId;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.BookshelfEntryRepository;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgress;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressId;
-import org.a1cey.bookshelf_pro_domain.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgress;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.BookConsumptionProgress;
@@ -41,6 +43,33 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
 
         saveConsumptionProgress(bookshelfEntry, mediaItemType);
         saveLabels(bookshelfEntry);
+    }
+
+    @Override
+    public Optional<BookshelfEntry> findById(BookshelfEntryId bookshelfEntryId) {
+        var record = dsl.fetchOne(BOOKSHELF_ENTRY, BOOKSHELF_ENTRY.ID.eq(bookshelfEntryId.value()));
+
+        if (record == null) {
+            return Optional.empty();
+        }
+
+        var mediaItemId = new MediaItemId(record.getMediaItemId());
+        var owner = new AccountId(record.getOwner());
+        var consumptionProgress = fetchConsumptionProgress(bookshelfEntryId);
+
+        var entry = BookshelfEntry.builder(bookshelfEntryId, mediaItemId, owner, consumptionProgress).build();
+        return Optional.of(entry);
+    }
+
+    @Override
+    public Set<BookshelfEntry> findByAccount(AccountId accountId) {
+        return dsl.fetch(BOOKSHELF_ENTRY, BOOKSHELF_ENTRY.OWNER.eq(accountId.value())).stream().map(record -> {
+            var bookshelfEntryId = new BookshelfEntryId(record.getId());
+            var mediaItemId = new MediaItemId(record.getMediaItemId());
+            var consumptionProgress = fetchConsumptionProgress(bookshelfEntryId);
+
+            return BookshelfEntry.builder(bookshelfEntryId, mediaItemId, accountId, consumptionProgress).build();
+        }).collect(Collectors.toSet());
     }
 
     @Override

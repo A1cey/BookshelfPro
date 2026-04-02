@@ -30,7 +30,7 @@
         - [ ] ! Get media items -> mediaItems
         - [ ] ! Get reviews -> reviews
     - [ ] Bookshelf
-        - [ ] ! Get bookshelf entries -> bookshelfEntries
+        - [x] ! Get bookshelf entries -> bookshelfEntries
         - [ ] ! Get playlists -> playlists
         - [ ] ! Get watchlists -> watchlists
         - [ ] BookshelfEntry
@@ -39,7 +39,23 @@
             - [ ] ! Update consumption progress (MediaItemConsumptionProgress)
             - [ ] ! Add label (label)
             - [ ] ! Remove label (label)
-            - [ ] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
+            - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
+        - [ ] Playlist
+            - [ ] ! Create playlist (title, [items])
+            - [ ] ! Delete playlist (playlistId)
+            - [ ] ! Change title (newTitle)
+            - [ ] ! Add item (bookshelfEntryId)
+            - [ ] ! Remove item (playlistItemId)
+            - [ ] ! Move Item (oldPosition, newPosition)
+            - [ ] ! Get playlist details -> id, title, items
+        - [ ] Watchlist
+            - [ ] ! Create watchlist (title, [items])
+            - [ ] ! Delete watchlist (watchlistId)
+            - [ ] ! Change title (newTitle)
+            - [ ] ! Add item (bookshelfEntryId)
+            - [ ] ! Remove item (watchlistItemId)
+            - [ ] ! Remove items by consumption state (consumptionStates)
+            - [ ] ! Get watchlist details -> id, title, items
     - [ ] MediaItem
         - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
@@ -68,26 +84,10 @@
             - ...
         - [ ] Music
             - ...
-    - Playlist
-        - [ ] ! Create playlist (title, [items])
-        - [ ] ! Delete playlist (playlistId)
-        - [ ] ! Change title (newTitle)
-        - [ ] ! Add item (bookshelfEntryId)
-        - [ ] ! Remove item (playlistItemId)
-        - [ ] ! Move Item (oldPosition, newPosition)
-        - [ ] ! Get playlist details -> id, title, items
-    - Watchlist
-        - [ ] ! Create watchlist (title, [items])
-        - [ ] ! Delete watchlist (watchlistId)
-        - [ ] ! Change title (newTitle)
-        - [ ] ! Add item (bookshelfEntryId)
-        - [ ] ! Remove item (watchlistItemId)
-        - [ ] ! Remove items by consumption state (consumptionStates)
-        - [ ] ! Get watchlist details -> id, title, items
-    - Review
-        - [ ] Create review (mediaItemId, rating, comment)
-        - [ ] ! Delete review (reviewId)
-        - [ ] ! Change review (newRating, newComment)
-        - [ ] ! Change rating (newRating)
-        - [ ] ! Change comment (newComment)
-        - [ ] Get review details -> id, owner, mediaItemId, reviewHistory
+        - [ ] Review
+            - [x] Create review (mediaItemId, rating, comment)
+            - [ ] ! Delete review (reviewId)
+            - [ ] ! Change review (newRating, newComment)
+            - [ ] ! Change rating (newRating)
+            - [ ] ! Change comment (newComment)
+            - [ ] Get review details -> id, owner, mediaItemId, reviewHistory

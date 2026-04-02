@@ -113,7 +113,7 @@ public class BookController {
                    .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<GetAllBooksResult> getAllBooks() {
         return ResponseEntity.ok(getAllBooksUseCase.execute());
     }
