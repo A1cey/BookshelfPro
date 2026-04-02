@@ -10,7 +10,9 @@ import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.review.Comment;
 import org.a1cey.bookshelf_pro_domain.media_item.review.Rating;
+import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.request.ReviewRequest;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,11 +29,11 @@ public class ReviewController {
     }
 
     @PostMapping
-    public void review(@PathVariable UUID mediaItemId, @RequestBody ReviewRequest request) {
+    public void review(@PathVariable UUID mediaItemId, @ParameterObject Credentials credentials, @RequestBody ReviewRequest request) {
         addReviewUseCase.execute(new AddReviewCommand(
-            new AccountId(request.accountId()),
-            new Username(request.name()),
-            new Password(request.password()),
+            new AccountId(credentials.accountId()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
             new MediaItemId(mediaItemId),
             new Rating(request.rating()),
             new Comment(request.comment())

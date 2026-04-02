@@ -6,10 +6,10 @@ import org.a1cey.bookshelf_pro_application.bookshelf.result.GetAllBookshelfEntri
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
-import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.request.GetAllBookshelfEntriesRequest;
+import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,12 +23,12 @@ public class BookshelfController {
     }
 
     @GetMapping("entry")
-    public ResponseEntity<GetAllBookshelfEntriesResult> getAllBookshelfEntries(@RequestBody GetAllBookshelfEntriesRequest request) {
+    public ResponseEntity<GetAllBookshelfEntriesResult> getAllBookshelfEntries(@ParameterObject Credentials credentials) {
         var entries = getAllBookshelfEntriesUseCase.execute(
             new GetAllBookshelfEntriesCommand(
-                new AccountId(request.accountId()),
-                new Username(request.name()),
-                new Password(request.password())
+                new AccountId(credentials.accountId()),
+                new Username(credentials.username()),
+                new Password(credentials.password())
             )
         );
 

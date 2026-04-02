@@ -3,14 +3,10 @@ package org.a1cey.bookshelf_pro_plugins.rest.media_item.book.request;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 
 public record UpdateBookRequest(
-    UUID requestingAccountId, // TODO: Replace this with real auth
-    String name,
-    String password,
     @Nullable String title,
     @Nullable String subtitle,
     @Nullable String description,

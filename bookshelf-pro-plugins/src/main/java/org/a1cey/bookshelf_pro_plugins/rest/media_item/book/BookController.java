@@ -28,8 +28,10 @@ import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PublishDate;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PublishPlace;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Publisher;
+import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.book.request.CreateBookRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.book.request.UpdateBookRequest;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -61,11 +63,11 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateBookResult> createBook(@RequestBody CreateBookRequest request) {
+    public ResponseEntity<CreateBookResult> createBook(@ParameterObject Credentials credentials, @RequestBody CreateBookRequest request) {
         var command = new CreateBookCommand(
-            new AccountId(request.accountId()),
-            new Username(request.name()),
-            new Password(request.password()),
+            new AccountId(credentials.accountId()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
             new Title(request.title()),
             Optional.ofNullable(request.subtitle()).map(Subtitle::new),
             Optional.ofNullable(request.description()).map(Description::new),
@@ -83,11 +85,11 @@ public class BookController {
     }
 
     @PatchMapping("/{id}")
-    public void updateBook(@PathVariable UUID id, @RequestBody UpdateBookRequest request) {
+    public void updateBook(@PathVariable UUID id, @ParameterObject Credentials credentials, @RequestBody UpdateBookRequest request) {
         var command = new UpdateBookCommand(
-            new AccountId(request.requestingAccountId()),
-            new Username(request.name()),
-            new Password(request.password()),
+            new AccountId(credentials.accountId()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
             new MediaItemId(id),
             Optional.ofNullable(request.title()).map(Title::new),
             Optional.ofNullable(request.subtitle()).map(Subtitle::new),

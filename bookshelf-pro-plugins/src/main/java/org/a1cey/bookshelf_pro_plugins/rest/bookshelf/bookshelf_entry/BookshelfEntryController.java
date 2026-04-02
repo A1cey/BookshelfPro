@@ -17,9 +17,10 @@ import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.Label;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.bookshelf_entry.request.AddBookshelfEntryRequest;
-import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.bookshelf_entry.request.GetBookshelfEntryRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.bookshelf_entry.request.UpdateBookshelfEntryRequest;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,20 +37,23 @@ public class BookshelfEntryController {
     private final GetBookshelfEntryUseCase getBookshelfEntryUseCase;
     private final UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase;
 
-    public BookshelfEntryController(AddBookshelfEntryUseCase addBookshelfEntryUseCase, GetBookshelfEntryUseCase getBookshelfEntryUseCase,
-                                    UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase) {
+    public BookshelfEntryController(
+        AddBookshelfEntryUseCase addBookshelfEntryUseCase,
+        GetBookshelfEntryUseCase getBookshelfEntryUseCase,
+        UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase
+    ) {
         this.addBookshelfEntryUseCase = addBookshelfEntryUseCase;
         this.getBookshelfEntryUseCase = getBookshelfEntryUseCase;
         this.updateBookshelfEntryUseCase = updateBookshelfEntryUseCase;
     }
 
     @PostMapping
-    public void addBookshelfEntry(@RequestBody AddBookshelfEntryRequest request) {
+    public void addBookshelfEntry(@ParameterObject Credentials credentials, @RequestBody AddBookshelfEntryRequest request) {
         addBookshelfEntryUseCase.execute(
             new AddBookshelfEntryCommand(
-                new AccountId(request.accountId()),
-                new Username(request.name()),
-                new Password(request.password()),
+                new AccountId(credentials.accountId()),
+                new Username(credentials.username()),
+                new Password(credentials.password()),
                 new MediaItemId(request.mediaItemId()),
                 request.labels().stream().map(Label::new).collect(Collectors.toSet())
             )
@@ -58,14 +62,13 @@ public class BookshelfEntryController {
 
     @GetMapping("/{bookshelfEntryId}")
     public ResponseEntity<GetBookshelfEntryResult> getBookshelfEntry(
-        @PathVariable UUID bookshelfEntryId,
-        @RequestBody GetBookshelfEntryRequest request
+        @PathVariable UUID bookshelfEntryId, @ParameterObject Credentials credentials
     ) {
         var entry = getBookshelfEntryUseCase.execute(
             new GetBookshelfEntryCommand(
-                new AccountId(request.accountId()),
-                new Username(request.name()),
-                new Password(request.password()),
+                new AccountId(credentials.accountId()),
+                new Username(credentials.username()),
+                new Password(credentials.password()),
                 new BookshelfEntryId(bookshelfEntryId)
             )
         );
@@ -74,11 +77,13 @@ public class BookshelfEntryController {
     }
 
     @PatchMapping("/{bookshelfEntryId}")
-    public void updateBookshelfEntry(@PathVariable UUID bookshelfEntryId, @RequestBody UpdateBookshelfEntryRequest request) {
+    public void updateBookshelfEntry(
+        @PathVariable UUID bookshelfEntryId, @ParameterObject Credentials credentials, @RequestBody UpdateBookshelfEntryRequest request
+    ) {
         var command = new UpdateBookshelfEntryCommand(
-            new AccountId(request.accountId()),
-            new Username(request.name()),
-            new Password(request.password()),
+            new AccountId(credentials.accountId()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
             new BookshelfEntryId(bookshelfEntryId),
             Optional.ofNullable(request.consumptionProgressNumber()),
             Optional.ofNullable(request.labels()).map(labels -> labels.stream().map(Label::new).collect(Collectors.toSet()))

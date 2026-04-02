@@ -17,10 +17,10 @@ import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Email;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
+import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.account.request.CreateAccountRequest;
-import org.a1cey.bookshelf_pro_plugins.rest.account.request.DeleteAccountRequest;
-import org.a1cey.bookshelf_pro_plugins.rest.account.request.GetAccountRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.account.request.UpdateAccountRequest;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,7 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<CreateAccountResult> createAccount(@RequestBody CreateAccountRequest request) {
         var command = new CreateAccountCommand(
-            new Username(request.name()),
+            new Username(request.username()),
             Optional.ofNullable(request.email()).map(Email::new),
             new Password(request.password())
         );
@@ -59,11 +59,11 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}")
-    public void updateAccount(@PathVariable UUID id, @RequestBody UpdateAccountRequest request) {
+    public void updateAccount(@PathVariable UUID id, @ParameterObject Credentials credentials, @RequestBody UpdateAccountRequest request) {
         var command = new UpdateAccountCommand(
             new AccountId(id),
-            new Username(request.name()),
-            new Password(request.password()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
             Optional.ofNullable(request.newName()).map(Username::new),
             Optional.ofNullable(request.newPassword()).map(Password::new),
             Optional.ofNullable(request.newEmail()).map(Email::new)
@@ -73,11 +73,11 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAccount(@PathVariable UUID id, @RequestBody DeleteAccountRequest request) {
+    public void deleteAccount(@PathVariable UUID id, @ParameterObject Credentials credentials) {
         var command = new DeleteAccountCommand(
             new AccountId(id),
-            new Username(request.name()),
-            new Password(request.password())
+            new Username(credentials.username()),
+            new Password(credentials.password())
         );
 
         deleteAccountUseCase.execute(command);
@@ -85,8 +85,11 @@ public class AccountController {
 
     // TODO: Also return reviews and mediaItems belonging to this account
     @GetMapping("/{accountId}")
-    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID accountId, @RequestBody GetAccountRequest request) {
-        var command = new GetAccountCommand(new AccountId(accountId), new Username(request.name()), new Password(request.password()));
+    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID accountId, @ParameterObject Credentials credentials) {
+        var command = new GetAccountCommand(
+            new AccountId(accountId), new Username(credentials.username()),
+            new Password(credentials.password())
+        );
         return ResponseEntity.ok(getAccountUseCase.execute(command));
     }
 }
