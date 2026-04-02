@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -21,89 +21,91 @@ public class ReviewChangeRecord extends UpdatableRecordImpl<ReviewChangeRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.review_change.id</code>.
-     */
-    public void setId(UUID value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.review_change.id</code>.
-     */
-    public UUID getId() {
-        return (UUID) get(0);
-    }
-
-    /**
      * Setter for <code>public.review_change.review_id</code>.
      */
     public void setReviewId(UUID value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.review_change.review_id</code>.
      */
     public UUID getReviewId() {
-        return (UUID) get(1);
+        return (UUID) get(0);
     }
 
     /**
      * Setter for <code>public.review_change.rating</code>.
      */
     public void setRating(Double value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.review_change.rating</code>.
      */
     public Double getRating() {
-        return (Double) get(2);
+        return (Double) get(1);
     }
 
     /**
      * Setter for <code>public.review_change.comment</code>.
      */
     public void setComment(String value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.review_change.comment</code>.
      */
     public String getComment() {
-        return (String) get(3);
+        return (String) get(2);
     }
 
     /**
      * Setter for <code>public.review_change.review_date</code>.
      */
     public void setReviewDate(LocalDateTime value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.review_change.review_date</code>.
      */
     public LocalDateTime getReviewDate() {
-        return (LocalDateTime) get(4);
+        return (LocalDateTime) get(3);
     }
 
     /**
      * Setter for
-     * <code>public.review_change.consumption_progress_snapshot_id</code>.
+     * <code>public.review_change.consumption_progress_snapshot_consumption_progress_id</code>.
      */
-    public void setConsumptionProgressSnapshotId(UUID value) {
+    public void setConsumptionProgressSnapshotConsumptionProgressId(UUID value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for
+     * <code>public.review_change.consumption_progress_snapshot_consumption_progress_id</code>.
+     */
+    public UUID getConsumptionProgressSnapshotConsumptionProgressId() {
+        return (UUID) get(4);
+    }
+
+    /**
+     * Setter for
+     * <code>public.review_change.consumption_progress_snapshot_created_at</code>.
+     */
+    public void setConsumptionProgressSnapshotCreatedAt(LocalDateTime value) {
         set(5, value);
     }
 
     /**
      * Getter for
-     * <code>public.review_change.consumption_progress_snapshot_id</code>.
+     * <code>public.review_change.consumption_progress_snapshot_created_at</code>.
      */
-    public UUID getConsumptionProgressSnapshotId() {
-        return (UUID) get(5);
+    public LocalDateTime getConsumptionProgressSnapshotCreatedAt() {
+        return (LocalDateTime) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -111,8 +113,8 @@ public class ReviewChangeRecord extends UpdatableRecordImpl<ReviewChangeRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<UUID> key() {
-        return (Record1) super.key();
+    public Record2<UUID, LocalDateTime> key() {
+        return (Record2) super.key();
     }
 
     // -------------------------------------------------------------------------
@@ -129,15 +131,15 @@ public class ReviewChangeRecord extends UpdatableRecordImpl<ReviewChangeRecord> 
     /**
      * Create a detached, initialised ReviewChangeRecord
      */
-    public ReviewChangeRecord(UUID id, UUID reviewId, Double rating, String comment, LocalDateTime reviewDate, UUID consumptionProgressSnapshotId) {
+    public ReviewChangeRecord(UUID reviewId, Double rating, String comment, LocalDateTime reviewDate, UUID consumptionProgressSnapshotConsumptionProgressId, LocalDateTime consumptionProgressSnapshotCreatedAt) {
         super(ReviewChange.REVIEW_CHANGE);
 
-        setId(id);
         setReviewId(reviewId);
         setRating(rating);
         setComment(comment);
         setReviewDate(reviewDate);
-        setConsumptionProgressSnapshotId(consumptionProgressSnapshotId);
+        setConsumptionProgressSnapshotConsumptionProgressId(consumptionProgressSnapshotConsumptionProgressId);
+        setConsumptionProgressSnapshotCreatedAt(consumptionProgressSnapshotCreatedAt);
         resetChangedOnNotNull();
     }
 }

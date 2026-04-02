@@ -61,11 +61,6 @@ public class ReviewChange extends TableImpl<ReviewChangeRecord> {
     }
 
     /**
-     * The column <code>public.review_change.id</code>.
-     */
-    public final TableField<ReviewChangeRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
-
-    /**
      * The column <code>public.review_change.review_id</code>.
      */
     public final TableField<ReviewChangeRecord, UUID> REVIEW_ID = createField(DSL.name("review_id"), SQLDataType.UUID.nullable(false), this, "");
@@ -87,9 +82,15 @@ public class ReviewChange extends TableImpl<ReviewChangeRecord> {
 
     /**
      * The column
-     * <code>public.review_change.consumption_progress_snapshot_id</code>.
+     * <code>public.review_change.consumption_progress_snapshot_consumption_progress_id</code>.
      */
-    public final TableField<ReviewChangeRecord, UUID> CONSUMPTION_PROGRESS_SNAPSHOT_ID = createField(DSL.name("consumption_progress_snapshot_id"), SQLDataType.UUID.nullable(false), this, "");
+    public final TableField<ReviewChangeRecord, UUID> CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID = createField(DSL.name("consumption_progress_snapshot_consumption_progress_id"), SQLDataType.UUID.nullable(false), this, "");
+
+    /**
+     * The column
+     * <code>public.review_change.consumption_progress_snapshot_created_at</code>.
+     */
+    public final TableField<ReviewChangeRecord, LocalDateTime> CONSUMPTION_PROGRESS_SNAPSHOT_CREATED_AT = createField(DSL.name("consumption_progress_snapshot_created_at"), SQLDataType.LOCALDATETIME(6).nullable(false), this, "");
 
     private ReviewChange(Name alias, Table<ReviewChangeRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -165,7 +166,7 @@ public class ReviewChange extends TableImpl<ReviewChangeRecord> {
 
     @Override
     public List<ForeignKey<ReviewChangeRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_ID_FKEY, Keys.REVIEW_CHANGE__REVIEW_CHANGE_REVIEW_ID_FKEY);
+        return Arrays.asList(Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_FKEY, Keys.REVIEW_CHANGE__REVIEW_CHANGE_REVIEW_ID_FKEY);
     }
 
     private transient ConsumptionProgressSnapshotPath _consumptionProgressSnapshot;
@@ -176,7 +177,7 @@ public class ReviewChange extends TableImpl<ReviewChangeRecord> {
      */
     public ConsumptionProgressSnapshotPath consumptionProgressSnapshot() {
         if (_consumptionProgressSnapshot == null)
-            _consumptionProgressSnapshot = new ConsumptionProgressSnapshotPath(this, Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_ID_FKEY, null);
+            _consumptionProgressSnapshot = new ConsumptionProgressSnapshotPath(this, Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_FKEY, null);
 
         return _consumptionProgressSnapshot;
     }

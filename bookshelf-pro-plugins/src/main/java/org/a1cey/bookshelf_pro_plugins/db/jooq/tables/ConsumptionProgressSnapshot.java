@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Keys;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress.ConsumptionProgressPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange.ReviewChangePath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressSnapshotRecord;
 import org.jooq.Check;
@@ -61,11 +62,6 @@ public class ConsumptionProgressSnapshot extends TableImpl<ConsumptionProgressSn
     }
 
     /**
-     * The column <code>public.consumption_progress_snapshot.id</code>.
-     */
-    public final TableField<ConsumptionProgressSnapshotRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
-
-    /**
      * The column
      * <code>public.consumption_progress_snapshot.consumption_state</code>.
      */
@@ -103,6 +99,12 @@ public class ConsumptionProgressSnapshot extends TableImpl<ConsumptionProgressSn
      * <code>public.consumption_progress_snapshot.total_duration_seconds</code>.
      */
     public final TableField<ConsumptionProgressSnapshotRecord, Integer> TOTAL_DURATION_SECONDS = createField(DSL.name("total_duration_seconds"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column
+     * <code>public.consumption_progress_snapshot.consumption_progress_id</code>.
+     */
+    public final TableField<ConsumptionProgressSnapshotRecord, UUID> CONSUMPTION_PROGRESS_ID = createField(DSL.name("consumption_progress_id"), SQLDataType.UUID.nullable(false).defaultValue(DSL.field(DSL.raw("'00000000-0000-0000-0000-000000000000'::uuid"), SQLDataType.UUID)), this, "");
 
     private ConsumptionProgressSnapshot(Name alias, Table<ConsumptionProgressSnapshotRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -179,6 +181,24 @@ public class ConsumptionProgressSnapshot extends TableImpl<ConsumptionProgressSn
         return Keys.CONSUMPTION_PROGRESS_SNAPSHOT_PKEY;
     }
 
+    @Override
+    public List<ForeignKey<ConsumptionProgressSnapshotRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.CONSUMPTION_PROGRESS_SNAPSHOT__CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID_FKEY);
+    }
+
+    private transient ConsumptionProgressPath _consumptionProgress;
+
+    /**
+     * Get the implicit join path to the
+     * <code>public.consumption_progress</code> table.
+     */
+    public ConsumptionProgressPath consumptionProgress() {
+        if (_consumptionProgress == null)
+            _consumptionProgress = new ConsumptionProgressPath(this, Keys.CONSUMPTION_PROGRESS_SNAPSHOT__CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID_FKEY, null);
+
+        return _consumptionProgress;
+    }
+
     private transient ReviewChangePath _reviewChange;
 
     /**
@@ -187,7 +207,7 @@ public class ConsumptionProgressSnapshot extends TableImpl<ConsumptionProgressSn
      */
     public ReviewChangePath reviewChange() {
         if (_reviewChange == null)
-            _reviewChange = new ReviewChangePath(this, null, Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_ID_FKEY.getInverseKey());
+            _reviewChange = new ReviewChangePath(this, null, Keys.REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_FKEY.getInverseKey());
 
         return _reviewChange;
     }

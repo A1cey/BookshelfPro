@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Keys;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot.ConsumptionProgressSnapshotPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressRecord;
 import org.jooq.Check;
 import org.jooq.Condition;
@@ -190,6 +191,19 @@ public class ConsumptionProgress extends TableImpl<ConsumptionProgressRecord> {
             _bookshelfEntry = new BookshelfEntryPath(this, Keys.CONSUMPTION_PROGRESS__CONSUMPTION_PROGRESS_BOOKSHELF_ENTRY_ID_FKEY, null);
 
         return _bookshelfEntry;
+    }
+
+    private transient ConsumptionProgressSnapshotPath _consumptionProgressSnapshot;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.consumption_progress_snapshot</code> table
+     */
+    public ConsumptionProgressSnapshotPath consumptionProgressSnapshot() {
+        if (_consumptionProgressSnapshot == null)
+            _consumptionProgressSnapshot = new ConsumptionProgressSnapshotPath(this, null, Keys.CONSUMPTION_PROGRESS_SNAPSHOT__CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID_FKEY.getInverseKey());
+
+        return _consumptionProgressSnapshot;
     }
 
     @Override

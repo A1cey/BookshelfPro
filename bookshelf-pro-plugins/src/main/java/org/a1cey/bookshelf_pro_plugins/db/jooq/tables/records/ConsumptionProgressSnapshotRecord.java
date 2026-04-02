@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
-import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -21,25 +21,11 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.consumption_progress_snapshot.id</code>.
-     */
-    public void setId(UUID value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.consumption_progress_snapshot.id</code>.
-     */
-    public UUID getId() {
-        return (UUID) get(0);
-    }
-
-    /**
      * Setter for
      * <code>public.consumption_progress_snapshot.consumption_state</code>.
      */
     public void setConsumptionState(String value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
@@ -47,35 +33,35 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.consumption_state</code>.
      */
     public String getConsumptionState() {
-        return (String) get(1);
+        return (String) get(0);
     }
 
     /**
      * Setter for <code>public.consumption_progress_snapshot.type</code>.
      */
     public void setType(String value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.consumption_progress_snapshot.type</code>.
      */
     public String getType() {
-        return (String) get(2);
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>public.consumption_progress_snapshot.created_at</code>.
      */
     public void setCreatedAt(LocalDateTime value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.consumption_progress_snapshot.created_at</code>.
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(3);
+        return (LocalDateTime) get(2);
     }
 
     /**
@@ -83,7 +69,7 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.current_page</code>.
      */
     public void setCurrentPage(Integer value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
@@ -91,21 +77,21 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.current_page</code>.
      */
     public Integer getCurrentPage() {
-        return (Integer) get(4);
+        return (Integer) get(3);
     }
 
     /**
      * Setter for <code>public.consumption_progress_snapshot.total_pages</code>.
      */
     public void setTotalPages(Integer value) {
-        set(5, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.consumption_progress_snapshot.total_pages</code>.
      */
     public Integer getTotalPages() {
-        return (Integer) get(5);
+        return (Integer) get(4);
     }
 
     /**
@@ -113,7 +99,7 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.current_duration_seconds</code>.
      */
     public void setCurrentDurationSeconds(Integer value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
@@ -121,7 +107,7 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.current_duration_seconds</code>.
      */
     public Integer getCurrentDurationSeconds() {
-        return (Integer) get(6);
+        return (Integer) get(5);
     }
 
     /**
@@ -129,7 +115,7 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.total_duration_seconds</code>.
      */
     public void setTotalDurationSeconds(Integer value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
@@ -137,7 +123,23 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
      * <code>public.consumption_progress_snapshot.total_duration_seconds</code>.
      */
     public Integer getTotalDurationSeconds() {
-        return (Integer) get(7);
+        return (Integer) get(6);
+    }
+
+    /**
+     * Setter for
+     * <code>public.consumption_progress_snapshot.consumption_progress_id</code>.
+     */
+    public void setConsumptionProgressId(UUID value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for
+     * <code>public.consumption_progress_snapshot.consumption_progress_id</code>.
+     */
+    public UUID getConsumptionProgressId() {
+        return (UUID) get(7);
     }
 
     // -------------------------------------------------------------------------
@@ -145,8 +147,8 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
     // -------------------------------------------------------------------------
 
     @Override
-    public Record1<UUID> key() {
-        return (Record1) super.key();
+    public Record2<UUID, LocalDateTime> key() {
+        return (Record2) super.key();
     }
 
     // -------------------------------------------------------------------------
@@ -163,10 +165,9 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
     /**
      * Create a detached, initialised ConsumptionProgressSnapshotRecord
      */
-    public ConsumptionProgressSnapshotRecord(UUID id, String consumptionState, String type, LocalDateTime createdAt, Integer currentPage, Integer totalPages, Integer currentDurationSeconds, Integer totalDurationSeconds) {
+    public ConsumptionProgressSnapshotRecord(String consumptionState, String type, LocalDateTime createdAt, Integer currentPage, Integer totalPages, Integer currentDurationSeconds, Integer totalDurationSeconds, UUID consumptionProgressId) {
         super(ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT);
 
-        setId(id);
         setConsumptionState(consumptionState);
         setType(type);
         setCreatedAt(createdAt);
@@ -174,6 +175,7 @@ public class ConsumptionProgressSnapshotRecord extends UpdatableRecordImpl<Consu
         setTotalPages(totalPages);
         setCurrentDurationSeconds(currentDurationSeconds);
         setTotalDurationSeconds(totalDurationSeconds);
+        setConsumptionProgressId(consumptionProgressId);
         resetChangedOnNotNull();
     }
 }

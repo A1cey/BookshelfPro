@@ -8,9 +8,12 @@ import org.jmolecules.ddd.annotation.ValueObject;
 import jakarta.validation.Valid;
 
 @ValueObject
-public record ReviewChange(@Valid Rating rating, Comment comment, LocalDateTime reviewDate,
-                           ConsumptionProgressSnapshot consumptionProgressSnapshot) {
-
+public record ReviewChange(
+    @Valid Rating rating,
+    Comment comment,
+    LocalDateTime reviewDate,
+    ConsumptionProgressSnapshot consumptionProgressSnapshot
+) {
     public ReviewChange(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgress) {
         this(rating, comment, LocalDateTime.now(), consumptionProgress);
     }
@@ -20,10 +23,5 @@ public record ReviewChange(@Valid Rating rating, Comment comment, LocalDateTime 
         this.comment = comment;
         this.reviewDate = reviewDate;
         this.consumptionProgressSnapshot = consumptionProgressSnapshot;
-    }
-
-    @Override
-    public Rating rating() {
-        return rating;
     }
 }

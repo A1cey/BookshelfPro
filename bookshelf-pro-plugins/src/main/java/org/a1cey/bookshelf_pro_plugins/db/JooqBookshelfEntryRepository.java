@@ -1,5 +1,6 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.a1cey.bookshelf_pro_plugins.db.jooq.Tables.BOOKSHELF_ENTRY;
 import static org.a1cey.bookshelf_pro_plugins.db.jooq.Tables.BOOKSHELF_ENTRY_LABEL;
 import static org.a1cey.bookshelf_pro_plugins.db.jooq.Tables.CONSUMPTION_PROGRESS;
+import static org.a1cey.bookshelf_pro_plugins.db.jooq.Tables.CONSUMPTION_PROGRESS_SNAPSHOT;
 
 @Repository
 public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
@@ -119,6 +121,14 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         updateConsumptionProgress(bookshelfEntry.consumptionProgress());
     }
 
+    @Override
+    public LocalDateTime findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId) {
+        return dsl.select(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT))
+                  .from(CONSUMPTION_PROGRESS_SNAPSHOT)
+                  .where(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID.eq(consumptionProgressId.value()))
+                  .fetchOne(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT));
+    }
+
     private void saveLabels(BookshelfEntry bookshelfEntry) {
         dsl.insertInto(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BOOKSHELF_ENTRY_LABEL.LABEL)
            .valuesOfRows(
@@ -163,13 +173,17 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
                            .set(CONSUMPTION_PROGRESS.STATE, bookshelfEntry.consumptionProgress().state().name())
                            .set(CONSUMPTION_PROGRESS.TYPE, mediaItemType.name());
 
-        switch (bookshelfEntry.consumptionProgress().progress()) {
+        var consumptionProgress = bookshelfEntry.consumptionProgress();
+
+        switch (consumptionProgress.progress()) {
             case BookConsumptionProgress bookConsumptionProgress ->
                 statement.set(CONSUMPTION_PROGRESS.CURRENT_PAGE, bookConsumptionProgress.current().pageCount())
                          .set(CONSUMPTION_PROGRESS.TOTAL_PAGES, bookConsumptionProgress.total().pageCount()).execute();
             default ->
                 throw new IllegalStateException("Unexpected consumption progress type: " + bookshelfEntry.consumptionProgress().progress());
         }
+
+        saveConsumptionProgressSnapshot(consumptionProgress);
     }
 
     private void updateConsumptionProgress(ConsumptionProgress progress) {
@@ -182,6 +196,8 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         };
 
         statement.where(CONSUMPTION_PROGRESS.ID.eq(progress.id().value())).execute();
+
+        saveConsumptionProgressSnapshot(progress);
     }
 
     private ConsumptionProgress fetchConsumptionProgress(BookshelfEntryId bookshelfEntryId) {
@@ -207,6 +223,24 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             new ConsumptionProgressId(record.getId()),
             mediaItemConsumptionProgress
         );
+    }
+
+    private void saveConsumptionProgressSnapshot(ConsumptionProgress consumptionProgress) {
+        var consumptionProgressSnapshot = consumptionProgress.snapshot();
+
+        var statement = dsl.insertInto(CONSUMPTION_PROGRESS_SNAPSHOT)
+                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, consumptionProgress.id().value())
+                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_STATE, consumptionProgress.state().name())
+                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.TYPE, consumptionProgress.state().name());
+
+        switch (consumptionProgressSnapshot.progress()) {
+            case BookConsumptionProgress bookConsumptionProgress ->
+                statement.set(CONSUMPTION_PROGRESS_SNAPSHOT.CURRENT_PAGE, bookConsumptionProgress.current().pageCount())
+                         .set(CONSUMPTION_PROGRESS_SNAPSHOT.TOTAL_PAGES, bookConsumptionProgress.total().pageCount())
+                         .set(CONSUMPTION_PROGRESS_SNAPSHOT.TYPE, MediaItemType.BOOK.name())
+                         .execute();
+            default -> throw new IllegalStateException("Unexpected media consumption progress type: " + consumptionProgress.progress());
+        }
     }
 
 }

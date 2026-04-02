@@ -64,6 +64,6 @@ public class AddReviewUseCase {
             bookshelfEntry.consumptionProgress().snapshot()
         );
 
-        reviewRepository.save(review);
+        reviewRepository.save(review, bookshelfEntry);
     }
 }

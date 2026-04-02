@@ -2,9 +2,10 @@ package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
@@ -27,11 +28,12 @@ import static org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.REVIEW;
 
 @Repository
 public class JooqReviewRepository implements ReviewRepository {
-
     private final DSLContext dsl;
+    private final BookshelfEntryRepository bookshelfEntryRepository;
 
-    public JooqReviewRepository(DSLContext dsl) {
+    public JooqReviewRepository(DSLContext dsl, BookshelfEntryRepository bookshelfEntryRepository) {
         this.dsl = dsl;
+        this.bookshelfEntryRepository = bookshelfEntryRepository;
     }
 
     @Override
@@ -62,15 +64,13 @@ public class JooqReviewRepository implements ReviewRepository {
 
     @Transactional
     @Override
-    public void save(Review review) {
+    public void save(Review review, BookshelfEntry bookshelfEntry) {
         dsl.insertInto(REVIEW)
            .set(REVIEW.ID, review.id().value())
            .set(REVIEW.MEDIA_ITEM_ID, review.mediaItemId().value())
            .set(REVIEW.OWNER, review.owner().value()).execute();
 
-        var consumptionProgressSnapshotId = fetchConsumptionProgressSnapshotId(review.consumptionProgressSnapshot());
-
-        saveReviewChange(review, consumptionProgressSnapshotId);
+        saveReviewChange(review, bookshelfEntry);
     }
 
     @Transactional
@@ -79,31 +79,41 @@ public class JooqReviewRepository implements ReviewRepository {
         dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value())).execute();
     }
 
-    private void saveReviewChange(Review review, UUID consumption_progress_snapshot_id) {
+    private void saveReviewChange(Review review, BookshelfEntry bookshelfEntry) {
+        var creationDate = bookshelfEntryRepository
+                               .findLatestConsumptionProgressSnapshotCreationDate(bookshelfEntry.consumptionProgress().id());
+
         dsl.insertInto(REVIEW_CHANGE)
            .set(REVIEW_CHANGE.REVIEW_ID, review.id().value())
            .set(REVIEW_CHANGE.COMMENT, review.comment().comment())
            .set(REVIEW_CHANGE.RATING, (double) review.rating().rating())
            .set(REVIEW_CHANGE.REVIEW_DATE, review.reviewDate())
-           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_ID, consumption_progress_snapshot_id)
+           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID, bookshelfEntry.consumptionProgress().id().value())
+           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CREATED_AT, creationDate)
            .execute();
     }
 
     private List<ReviewChange> fetchReviewChanges(ReviewId reviewId) {
         return dsl.fetch(REVIEW_CHANGE, REVIEW_CHANGE.REVIEW_ID.eq(reviewId.value()))
                   .stream()
-                  .map(reviewChange -> {
-                      var rating = new Rating(reviewChange.getRating().floatValue());
-                      var comment = new Comment(reviewChange.getComment());
-                      var reviewDate = reviewChange.getReviewDate();
+                  .map(reviewChangeRecord -> {
+                      var rating = new Rating(reviewChangeRecord.getRating().floatValue());
+                      var comment = new Comment(reviewChangeRecord.getComment());
+                      var reviewDate = reviewChangeRecord.getReviewDate();
                       var consumptionProgressSnapshotRecord = dsl.fetchOne(
                           CONSUMPTION_PROGRESS_SNAPSHOT,
-                          CONSUMPTION_PROGRESS_SNAPSHOT.ID.eq(reviewChange.getConsumptionProgressSnapshotId())
+                          CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID
+                              .eq(reviewChangeRecord.getConsumptionProgressSnapshotConsumptionProgressId())
+                              .and(
+                                  CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT.eq(reviewChangeRecord.getConsumptionProgressSnapshotCreatedAt())
+                              )
                       );
 
                       if (consumptionProgressSnapshotRecord == null) {
                           throw new IllegalStateException(
-                              "No Consumption Progress Snapshot found for review change with id: " + reviewChange.getId()
+                              "No Consumption Progress Snapshot found for consumption progress with id: "
+                                  + reviewChangeRecord.getConsumptionProgressSnapshotConsumptionProgressId()
+                                  + " and creation time: " + reviewChangeRecord.getConsumptionProgressSnapshotCreatedAt()
                           );
                       }
 
@@ -125,9 +135,5 @@ public class JooqReviewRepository implements ReviewRepository {
                       var consumptionProgressSnapshot = new ConsumptionProgressSnapshot(consumptionState, mediaItemConsumptionProgress);
                       return new ReviewChange(rating, comment, reviewDate, consumptionProgressSnapshot);
                   }).toList();
-    }
-
-    private UUID fetchConsumptionProgressSnapshotId(ConsumptionProgressSnapshot consumptionProgressSnapshot) {
-        dsl.fetchOne(CONSUMPTION_PROGRESS_SNAPSHOT, CONSUMPTION_PROGRESS_SNAPSHOT.)
     }
 }
