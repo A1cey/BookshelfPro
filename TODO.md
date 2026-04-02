@@ -20,15 +20,15 @@
 - Security
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
-    - [ ] Account
+    - [x] Account
         - [x] Create account (username, password, [email])
         - [x] ! Delete account (accountId)
         - [x] ! Change username (newUsername)
         - [x] ! Change email (newEmail)
         - [x] ! Change password (newPassword)
         - [x] ! Get account details -> id, username, email
-        - [ ] ! Get media items -> mediaItems
-        - [ ] ! Get reviews -> reviews
+        - [x] ! Get media items -> mediaItems
+        - [x] ! Get reviews -> reviews
     - [ ] Bookshelf
         - [x] ! Get bookshelf entries -> bookshelfEntries
         - [ ] ! Get playlists -> playlists

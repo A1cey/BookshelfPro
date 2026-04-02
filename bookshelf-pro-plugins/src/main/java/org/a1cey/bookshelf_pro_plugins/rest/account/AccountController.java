@@ -83,9 +83,10 @@ public class AccountController {
         deleteAccountUseCase.execute(command);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID id, @RequestBody GetAccountRequest request) {
-        var command = new GetAccountCommand(new AccountId(id), new Username(request.name()), new Password(request.password()));
+    // TODO: Also return reviews and mediaItems belonging to this account
+    @GetMapping("/{accountId}")
+    public ResponseEntity<GetAccountResult> getAccount(@PathVariable UUID accountId, @RequestBody GetAccountRequest request) {
+        var command = new GetAccountCommand(new AccountId(accountId), new Username(request.name()), new Password(request.password()));
         return ResponseEntity.ok(getAccountUseCase.execute(command));
     }
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.Id;
+import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.jmolecules.ddd.annotation.Repository;
 
 @Repository
@@ -12,6 +13,8 @@ public interface MediaItemRepository {
     Optional<MediaItem> findById(Id id);
 
     Set<? extends MediaItem> findByType(MediaItemType type);
+
+    Set<? extends MediaItem> findByOwner(AccountId accountId);
 
     void save(MediaItem mediaItem);
 

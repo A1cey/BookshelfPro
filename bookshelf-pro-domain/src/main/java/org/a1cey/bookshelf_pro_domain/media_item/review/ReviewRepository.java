@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_domain.media_item.review;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
@@ -11,6 +12,8 @@ import org.jmolecules.ddd.annotation.Repository;
 public interface ReviewRepository {
 
     Optional<Review> findById(ReviewId id);
+
+    Set<Review> findByOwner(AccountId accountId);
 
     boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 

@@ -2,6 +2,8 @@ package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
@@ -50,6 +52,20 @@ public class JooqReviewRepository implements ReviewRepository {
         var reviewChanges = fetchReviewChanges(reviewId);
 
         return Optional.of(Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges));
+    }
+
+    @Override
+    public Set<Review> findByOwner(AccountId owner) {
+        return dsl.fetch(REVIEW, REVIEW.OWNER.eq(owner.value()))
+                  .stream()
+                  .map(reviewRecord -> {
+                      var reviewId = new ReviewId(reviewRecord.getId());
+                      var mediaItemId = new MediaItemId(reviewRecord.getMediaItemId());
+                      var reviewChanges = fetchReviewChanges(reviewId);
+
+                      return Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges);
+                  })
+                  .collect(Collectors.toSet());
     }
 
     @Override

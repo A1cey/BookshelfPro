@@ -62,6 +62,15 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         };
     }
 
+    @Override
+    public Set<? extends MediaItem> findByOwner(AccountId owner) {
+        return dsl.fetch(MEDIA_ITEM, MEDIA_ITEM.OWNER_ID.eq(owner.value()))
+                  .stream()
+                  .map(mediaItemRecord -> switch (MediaItemType.valueOf(mediaItemRecord.getType())) {
+                      case MediaItemType.BOOK -> fetchBook(mediaItemRecord);
+                  }).collect(Collectors.toSet());
+    }
+
     @Transactional // TODO: Move this to invocating functions?
     @Override
     public void save(MediaItem mediaItem) {
