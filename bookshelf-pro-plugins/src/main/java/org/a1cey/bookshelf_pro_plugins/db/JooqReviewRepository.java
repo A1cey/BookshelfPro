@@ -2,6 +2,7 @@ package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
@@ -59,18 +60,33 @@ public class JooqReviewRepository implements ReviewRepository {
         );
     }
 
+    @Transactional
     @Override
     public void save(Review review) {
         dsl.insertInto(REVIEW)
            .set(REVIEW.ID, review.id().value())
            .set(REVIEW.MEDIA_ITEM_ID, review.mediaItemId().value())
            .set(REVIEW.OWNER, review.owner().value()).execute();
+
+        var consumptionProgressSnapshotId = fetchConsumptionProgressSnapshotId(review.consumptionProgressSnapshot());
+
+        saveReviewChange(review, consumptionProgressSnapshotId);
     }
 
     @Transactional
     @Override
     public void delete(ReviewId reviewId) {
         dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value())).execute();
+    }
+
+    private void saveReviewChange(Review review, UUID consumption_progress_snapshot_id) {
+        dsl.insertInto(REVIEW_CHANGE)
+           .set(REVIEW_CHANGE.REVIEW_ID, review.id().value())
+           .set(REVIEW_CHANGE.COMMENT, review.comment().comment())
+           .set(REVIEW_CHANGE.RATING, (double) review.rating().rating())
+           .set(REVIEW_CHANGE.REVIEW_DATE, review.reviewDate())
+           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_ID, consumption_progress_snapshot_id)
+           .execute();
     }
 
     private List<ReviewChange> fetchReviewChanges(ReviewId reviewId) {
@@ -109,5 +125,9 @@ public class JooqReviewRepository implements ReviewRepository {
                       var consumptionProgressSnapshot = new ConsumptionProgressSnapshot(consumptionState, mediaItemConsumptionProgress);
                       return new ReviewChange(rating, comment, reviewDate, consumptionProgressSnapshot);
                   }).toList();
+    }
+
+    private UUID fetchConsumptionProgressSnapshotId(ConsumptionProgressSnapshot consumptionProgressSnapshot) {
+        dsl.fetchOne(CONSUMPTION_PROGRESS_SNAPSHOT, CONSUMPTION_PROGRESS_SNAPSHOT.)
     }
 }

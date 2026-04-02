@@ -76,6 +76,12 @@ public final class BookshelfEntry {
         labels.remove(label);
     }
 
+    public void changeLabels(Set<@Valid Label> newLabels, AccountId userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        labels.clear();
+        labels.addAll(newLabels);
+    }
+
     public static final class BookshelfEntryBuilder {
 
         private final BookshelfEntryId id;

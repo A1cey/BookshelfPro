@@ -23,4 +23,5 @@ public interface BookshelfEntryRepository {
 
     Optional<ConsumptionProgressSnapshot> findLatestConsumptionSnapshot(BookshelfEntryId bookshelfEntryId);
 
+    void update(BookshelfEntry bookshelfEntry);
 }

@@ -45,6 +45,11 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
         return current.pageCount() > 0 && current.pageCount() < total.pageCount();
     }
 
+    @Override
+    public BookConsumptionProgress update(int newCurrent) {
+        return new BookConsumptionProgress(new PageCount(newCurrent), total);
+    }
+
     /**
      * Only use this method if you know that total is valid for the Book this is created for.
      * Otherwise, use Book.createProgress.

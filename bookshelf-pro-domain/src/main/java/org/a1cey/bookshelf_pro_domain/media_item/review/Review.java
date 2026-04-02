@@ -119,8 +119,8 @@ public final class Review {
         return reviewHistory.getLast().reviewDate();
     }
 
-    public ConsumptionProgressSnapshot consumptionProgress() {
-        return reviewHistory.getLast().consumptionProgress();
+    public ConsumptionProgressSnapshot consumptionProgressSnapshot() {
+        return reviewHistory.getLast().consumptionProgressSnapshot();
     }
 
     public List<ReviewChange> reviewHistory() {

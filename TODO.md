@@ -33,13 +33,13 @@
         - [x] ! Get bookshelf entries -> bookshelfEntries
         - [ ] ! Get playlists -> playlists
         - [ ] ! Get watchlists -> watchlists
-        - [ ] BookshelfEntry
-            - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgress], [labels]) // TODO: or make this a use
+        - [x] BookshelfEntry
+            - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgressSnapshot], [labels]) // TODO: or make this a use
               case on MediaItem -> Book.addToBookshelf
-            - [ ] ! Update consumption progress (MediaItemConsumptionProgress)
-            - [ ] ! Add label (label)
-            - [ ] ! Remove label (label)
-            - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgress, labels
+            - [x] ! Update consumption progress (MediaItemConsumptionProgress)
+            - [x] ! Add label (label)
+            - [x] ! Remove label (label)
+            - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgressSnapshot, labels
         - [ ] Playlist
             - [ ] ! Create playlist (title, [items])
             - [ ] ! Delete playlist (playlistId)

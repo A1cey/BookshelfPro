@@ -8,6 +8,7 @@ import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.Label;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
@@ -111,6 +112,50 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         return Optional.empty();
     }
 
+    @Transactional
+    @Override
+    public void update(BookshelfEntry bookshelfEntry) {
+        updateLabels(bookshelfEntry.id(), bookshelfEntry.labels());
+        updateConsumptionProgress(bookshelfEntry.consumptionProgress());
+    }
+
+    private void saveLabels(BookshelfEntry bookshelfEntry) {
+        dsl.insertInto(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BOOKSHELF_ENTRY_LABEL.LABEL)
+           .valuesOfRows(
+               bookshelfEntry
+                   .labels()
+                   .stream()
+                   .map(label -> DSL.row(bookshelfEntry.id().value(), label.name()))
+                   .toList()
+           ).execute();
+    }
+
+    private void updateLabels(BookshelfEntryId bookshelfEntryId, Set<Label> labels) {
+        var existingLabels = dsl
+                                 .select(BOOKSHELF_ENTRY_LABEL.LABEL)
+                                 .from(BOOKSHELF_ENTRY_LABEL)
+                                 .where(BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID.eq(bookshelfEntryId.value()))
+                                 .fetchSet(BOOKSHELF_ENTRY_LABEL.LABEL);
+
+        var newLabels = labels.stream().map(Label::name).collect(Collectors.toSet());
+
+        var labelsToDelete = existingLabels.stream().filter(label -> !newLabels.contains(label)).toList();
+        var labelsToInsert = newLabels.stream().filter(label -> !existingLabels.contains(label)).toList();
+
+        if (!labelsToDelete.isEmpty()) {
+            dsl.deleteFrom(BOOKSHELF_ENTRY_LABEL)
+               .where(BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID.eq(bookshelfEntryId.value()))
+               .and(BOOKSHELF_ENTRY_LABEL.LABEL.in(labelsToDelete))
+               .execute();
+        }
+
+        if (!labelsToInsert.isEmpty()) {
+            dsl.insertInto(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BOOKSHELF_ENTRY_LABEL.LABEL)
+               .valuesOfRows(labelsToInsert.stream().map(label -> DSL.row(bookshelfEntryId.value(), label)).toList())
+               .execute();
+        }
+    }
+
     private void saveConsumptionProgress(BookshelfEntry bookshelfEntry, MediaItemType mediaItemType) {
         var statement = dsl.insertInto(CONSUMPTION_PROGRESS)
                            .set(CONSUMPTION_PROGRESS.ID, bookshelfEntry.consumptionProgress().id().value())
@@ -127,15 +172,16 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         }
     }
 
-    private void saveLabels(BookshelfEntry bookshelfEntry) {
-        dsl.insertInto(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BOOKSHELF_ENTRY_LABEL.LABEL)
-           .valuesOfRows(
-               bookshelfEntry
-                   .labels()
-                   .stream()
-                   .map(label -> DSL.row(bookshelfEntry.id().value(), label.name()))
-                   .toList()
-           ).execute();
+    private void updateConsumptionProgress(ConsumptionProgress progress) {
+        var statement = dsl.update(CONSUMPTION_PROGRESS).set(CONSUMPTION_PROGRESS.STATE, progress.state().name());
+
+        statement = switch (progress.progress()) {
+            case BookConsumptionProgress bookConsumptionProgress ->
+                statement.set(CONSUMPTION_PROGRESS.CURRENT_PAGE, bookConsumptionProgress.current().pageCount());
+            default -> throw new IllegalStateException("Unexpected consumption progress type: " + progress.progress());
+        };
+
+        statement.where(CONSUMPTION_PROGRESS.ID.eq(progress.id().value())).execute();
     }
 
     private ConsumptionProgress fetchConsumptionProgress(BookshelfEntryId bookshelfEntryId) {
@@ -162,4 +208,5 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             mediaItemConsumptionProgress
         );
     }
+
 }
