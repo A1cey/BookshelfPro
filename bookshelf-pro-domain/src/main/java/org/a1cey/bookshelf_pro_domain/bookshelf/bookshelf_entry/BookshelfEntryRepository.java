@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
-import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.jmolecules.ddd.annotation.Repository;
@@ -24,8 +23,6 @@ public interface BookshelfEntryRepository {
     LocalDateTime findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId);
 
     boolean existsByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
-
-    Optional<ConsumptionProgressSnapshot> findLatestConsumptionSnapshot(BookshelfEntryId bookshelfEntryId);
 
     void update(BookshelfEntry bookshelfEntry);
 }

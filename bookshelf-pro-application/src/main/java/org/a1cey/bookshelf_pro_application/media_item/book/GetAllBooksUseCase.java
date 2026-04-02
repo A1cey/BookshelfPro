@@ -2,6 +2,7 @@ package org.a1cey.bookshelf_pro_application.media_item.book;
 
 import java.util.stream.Collectors;
 
+import org.a1cey.bookshelf_pro_application.dto.BookDto;
 import org.a1cey.bookshelf_pro_application.media_item.book.result.GetAllBooksResult;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;

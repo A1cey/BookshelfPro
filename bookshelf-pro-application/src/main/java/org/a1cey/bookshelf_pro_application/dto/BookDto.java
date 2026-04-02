@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_application.media_item.book;
+package org.a1cey.bookshelf_pro_application.dto;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ public record BookDto(
     String publisher,
     String publishPlace,
     int pageCount
-) {
+) implements MediaItemDto {
 
     public static BookDto from(Book book) {
         return new BookDto(

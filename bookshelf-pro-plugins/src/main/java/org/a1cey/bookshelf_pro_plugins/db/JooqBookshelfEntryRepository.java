@@ -12,7 +12,6 @@ import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRe
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.Label;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
-import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.BookConsumptionProgress;
@@ -59,8 +58,9 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         var mediaItemId = new MediaItemId(record.getMediaItemId());
         var owner = new AccountId(record.getOwner());
         var consumptionProgress = fetchConsumptionProgress(bookshelfEntryId);
+        var labels = fetchLabels(bookshelfEntryId);
 
-        var entry = BookshelfEntry.builder(bookshelfEntryId, mediaItemId, owner, consumptionProgress).build();
+        var entry = BookshelfEntry.builder(bookshelfEntryId, mediaItemId, owner, consumptionProgress).labels(labels).build();
         return Optional.of(entry);
     }
 
@@ -70,8 +70,9 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             var bookshelfEntryId = new BookshelfEntryId(record.getId());
             var mediaItemId = new MediaItemId(record.getMediaItemId());
             var consumptionProgress = fetchConsumptionProgress(bookshelfEntryId);
+            var labels = fetchLabels(bookshelfEntryId);
 
-            return BookshelfEntry.builder(bookshelfEntryId, mediaItemId, accountId, consumptionProgress).build();
+            return BookshelfEntry.builder(bookshelfEntryId, mediaItemId, accountId, consumptionProgress).labels(labels).build();
         }).collect(Collectors.toSet());
     }
 
@@ -89,13 +90,15 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
 
         var bookshelfEntryId = new BookshelfEntryId(bookshelfEntryRecord.getId());
         var consumptionProgress = fetchConsumptionProgress(bookshelfEntryId);
+        var labels = fetchLabels(bookshelfEntryId);
 
         var bookshelfEntry = BookshelfEntry.builder(
-            bookshelfEntryId,
-            mediaItemId,
-            accountId,
-            consumptionProgress
-        ).build();
+                bookshelfEntryId,
+                mediaItemId,
+                accountId,
+                consumptionProgress
+            ).labels(labels)
+             .build();
 
         return Optional.of(bookshelfEntry);
     }
@@ -107,11 +110,6 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             BOOKSHELF_ENTRY.ID.eq(accountId.value())
                               .and(BOOKSHELF_ENTRY.MEDIA_ITEM_ID.eq(mediaItemId.value()))
         );
-    }
-
-    @Override
-    public Optional<ConsumptionProgressSnapshot> findLatestConsumptionSnapshot(BookshelfEntryId bookshelfEntryId) {
-        return Optional.empty();
     }
 
     @Transactional
@@ -164,6 +162,13 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
                .valuesOfRows(labelsToInsert.stream().map(label -> DSL.row(bookshelfEntryId.value(), label)).toList())
                .execute();
         }
+    }
+
+    private Set<Label> fetchLabels(BookshelfEntryId bookshelfEntryId) {
+        return dsl.fetch(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID.eq(bookshelfEntryId.value()))
+                  .stream()
+                  .map(labelRecord -> new Label(labelRecord.getLabel()))
+                  .collect(Collectors.toSet());
     }
 
     private void saveConsumptionProgress(BookshelfEntry bookshelfEntry, MediaItemType mediaItemType) {
