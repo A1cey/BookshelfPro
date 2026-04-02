@@ -22,7 +22,8 @@
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [x] Account
         - [x] Create account (username, password, [email])
-        - [x] ! Delete account (accountId)
+        - [ ] ! Delete account (accountId) TODO: should this delete the bookshelf and/or comments, also what to do with owner of
+          mediaItems?, just set Account to deleted? (this would mean also checking if account is not deleted when checking request)
         - [x] ! Change username (newUsername)
         - [x] ! Change email (newEmail)
         - [x] ! Change password (newPassword)
@@ -84,10 +85,10 @@
             - ...
         - [ ] Music
             - ...
-        - [ ] Review
+        - [x] Review
             - [x] Create review (mediaItemId, rating, comment)
-            - [ ] ! Delete review (reviewId)
-            - [ ] ! Change review (newRating, newComment)
-            - [ ] ! Change rating (newRating)
-            - [ ] ! Change comment (newComment)
-            - [ ] Get review details -> id, owner, mediaItemId, reviewHistory
+            - [x] ! Delete review (reviewId)
+            - [x] ! Change review (newRating, newComment)
+            - [x] ! Change rating (newRating)
+            - [x] ! Change comment (newComment)
+            - [x] Get review details -> id, owner, mediaItemId, reviewHistory

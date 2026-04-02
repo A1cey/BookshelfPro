@@ -31,7 +31,7 @@ public final class CreateAccountUseCase {
 
         accountRepository.save(account);
 
-        return new CreateAccountResult(account.id());
+        return new CreateAccountResult(account.id().value());
     }
 
 }

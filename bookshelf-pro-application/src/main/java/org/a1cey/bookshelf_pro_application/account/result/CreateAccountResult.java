@@ -1,5 +1,5 @@
 package org.a1cey.bookshelf_pro_application.account.result;
 
-import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import java.util.UUID;
 
-public record CreateAccountResult(AccountId id) {}
+public record CreateAccountResult(UUID accountId) {}

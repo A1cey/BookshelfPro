@@ -40,6 +40,10 @@ public class UpdateReviewUseCase {
                          .findById(command.reviewId())
                          .orElseThrow(() -> new IllegalArgumentException("Review with id " + command.reviewId() + " not found"));
 
+        if (!review.owner().equals(account.id())) {
+            throw new SecurityException("User not allowed to perform this action as they do not own the review");
+        }
+
         var bookshelfEntry = bookshelfEntryRepository
                                  .findByAccountAndMediaItem(account.id(), review.mediaItemId())
                                  .orElseGet(() -> addBookshelfEntryUseCase.execute(

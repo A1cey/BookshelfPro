@@ -2,11 +2,9 @@ package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
 import java.util.NoSuchElementException;
 
-import org.a1cey.bookshelf_pro_application.IdService;
 import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.UpdateBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,15 +12,10 @@ public class UpdateBookshelfEntryUseCase {
 
     private final SecurityService securityService;
     private final BookshelfEntryRepository bookshelfEntryRepository;
-    private final MediaItemRepository mediaItemRepository;
-    private final IdService idService;
 
-    public UpdateBookshelfEntryUseCase(SecurityService securityService, BookshelfEntryRepository bookshelfEntryRepository,
-                                       MediaItemRepository mediaItemRepository, IdService idService) {
+    public UpdateBookshelfEntryUseCase(SecurityService securityService, BookshelfEntryRepository bookshelfEntryRepository) {
         this.securityService = securityService;
         this.bookshelfEntryRepository = bookshelfEntryRepository;
-        this.mediaItemRepository = mediaItemRepository;
-        this.idService = idService;
     }
 
     public void execute(UpdateBookshelfEntryCommand command) {

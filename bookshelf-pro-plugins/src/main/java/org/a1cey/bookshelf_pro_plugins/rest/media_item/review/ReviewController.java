@@ -4,9 +4,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.a1cey.bookshelf_pro_application.media_item.review.AddReviewUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.review.DeleteReviewUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.review.GetAllReviewsUseCase;
+import org.a1cey.bookshelf_pro_application.media_item.review.GetReviewUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.UpdateReviewUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.AddReviewCommand;
+import org.a1cey.bookshelf_pro_application.media_item.review.command.DeleteReviewCommand;
+import org.a1cey.bookshelf_pro_application.media_item.review.command.GetAllReviewsCommand;
+import org.a1cey.bookshelf_pro_application.media_item.review.command.GetReviewCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.UpdateReviewCommand;
+import org.a1cey.bookshelf_pro_application.media_item.review.result.GetAllReviewsResult;
+import org.a1cey.bookshelf_pro_application.media_item.review.result.GetReviewResult;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
@@ -18,6 +26,9 @@ import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.request.ReviewRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.media_item.request.UpdateReviewRequest;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +43,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReviewController {
     private final AddReviewUseCase addReviewUseCase;
     private final UpdateReviewUseCase updateReviewUseCase;
+    private final DeleteReviewUseCase deleteReviewUseCase;
+    private final GetReviewUseCase getReviewUseCase;
+    private final GetAllReviewsUseCase getAllReviewsUseCase;
 
-    public ReviewController(AddReviewUseCase addReviewUseCase, UpdateReviewUseCase updateReviewUseCase) {
+    public ReviewController(AddReviewUseCase addReviewUseCase, UpdateReviewUseCase updateReviewUseCase,
+                            DeleteReviewUseCase deleteReviewUseCase, GetReviewUseCase getReviewUseCase,
+                            GetAllReviewsUseCase getAllReviewsUseCase) {
         this.addReviewUseCase = addReviewUseCase;
         this.updateReviewUseCase = updateReviewUseCase;
+        this.deleteReviewUseCase = deleteReviewUseCase;
+        this.getReviewUseCase = getReviewUseCase;
+        this.getAllReviewsUseCase = getAllReviewsUseCase;
     }
 
     @PostMapping
@@ -65,4 +84,28 @@ public class ReviewController {
             Optional.ofNullable(request.comment()).map(Comment::new)
         ));
     }
+
+    @DeleteMapping("/{reviewId}")
+    public void delete(
+        @PathVariable UUID reviewId,
+        @ParameterObject Credentials credentials
+    ) {
+        deleteReviewUseCase.execute(new DeleteReviewCommand(
+            new AccountId(credentials.accountId()),
+            new Username(credentials.username()),
+            new Password(credentials.password()),
+            new ReviewId(reviewId)
+        ));
+    }
+
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<GetReviewResult> getReview(@PathVariable UUID reviewId) {
+        return ResponseEntity.of(getReviewUseCase.execute(new GetReviewCommand(new ReviewId(reviewId))));
+    }
+
+    @GetMapping
+    public ResponseEntity<GetAllReviewsResult> getAllReviews(@PathVariable UUID mediaItemId) {
+        return ResponseEntity.ok(getAllReviewsUseCase.execute(new GetAllReviewsCommand(new MediaItemId(mediaItemId))));
+    }
+
 }

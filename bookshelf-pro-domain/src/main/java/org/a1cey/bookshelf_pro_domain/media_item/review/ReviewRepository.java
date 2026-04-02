@@ -15,6 +15,8 @@ public interface ReviewRepository {
 
     Set<Review> findByOwner(AccountId accountId);
 
+    Set<Review> findByMediaItemId(MediaItemId mediaItemId);
+
     boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
     void save(Review review, BookshelfEntry bookshelfEntry);
