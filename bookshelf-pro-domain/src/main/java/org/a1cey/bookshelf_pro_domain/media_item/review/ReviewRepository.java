@@ -19,6 +19,8 @@ public interface ReviewRepository {
 
     void save(Review review, BookshelfEntry bookshelfEntry);
 
+    void update(Review review, BookshelfEntry bookshelfEntry);
+
     void delete(ReviewId reviewId);
 
 }

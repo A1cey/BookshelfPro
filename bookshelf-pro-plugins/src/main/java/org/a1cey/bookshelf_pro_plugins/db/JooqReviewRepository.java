@@ -84,8 +84,14 @@ public class JooqReviewRepository implements ReviewRepository {
         dsl.insertInto(REVIEW)
            .set(REVIEW.ID, review.id().value())
            .set(REVIEW.MEDIA_ITEM_ID, review.mediaItemId().value())
-           .set(REVIEW.OWNER, review.owner().value()).execute();
+           .set(REVIEW.OWNER, review.owner().value())
+           .execute();
 
+        saveReviewChange(review, bookshelfEntry);
+    }
+
+    @Override
+    public void update(Review review, BookshelfEntry bookshelfEntry) {
         saveReviewChange(review, bookshelfEntry);
     }
 

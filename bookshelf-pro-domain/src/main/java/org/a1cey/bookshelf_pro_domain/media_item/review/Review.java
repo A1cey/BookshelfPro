@@ -77,8 +77,12 @@ public final class Review {
         return new Review(id, mediaItemId, owner, reviewHistory);
     }
 
-    public void changeReview(Rating rating, Comment comment, ConsumptionProgressSnapshot consumptionProgressSnapshot,
-                             AccountId userRequestingChange) {
+    public void changeReview(
+        Rating rating,
+        Comment comment,
+        ConsumptionProgressSnapshot consumptionProgressSnapshot,
+        AccountId userRequestingChange
+    ) {
         validateConsumptionState(consumptionProgressSnapshot);
         OwnershipPolicy.validate(owner, userRequestingChange, id);
 
@@ -117,10 +121,6 @@ public final class Review {
 
     public LocalDateTime reviewDate() {
         return reviewHistory.getLast().reviewDate();
-    }
-
-    public ConsumptionProgressSnapshot consumptionProgressSnapshot() {
-        return reviewHistory.getLast().consumptionProgressSnapshot();
     }
 
     public List<ReviewChange> reviewHistory() {
