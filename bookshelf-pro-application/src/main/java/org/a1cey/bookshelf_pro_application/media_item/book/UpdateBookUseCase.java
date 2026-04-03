@@ -34,16 +34,16 @@ public final class UpdateBookUseCase {
             throw new IllegalArgumentException("Book id does not match a book but another media item type: " + mediaItem.type());
         }
 
-        command.title().ifPresent(newTitle -> book.changeTitle(newTitle, book.owner()));
-        command.subtitle().ifPresent(subtitle -> book.changeSubtitle(subtitle, book.owner()));
-        command.description().ifPresent(newDescription -> book.changeDescription(newDescription, book.owner()));
-        command.coverImageUrl().ifPresent(newCoverImageUrl -> book.changeCoverImageUrl(newCoverImageUrl, book.owner()));
-        command.languages().ifPresent(newLanguages -> book.changeLanguages(newLanguages, book.owner()));
-        command.pageCount().ifPresent(newPageCount -> book.changePageCount(newPageCount, book.owner()));
-        command.publisher().ifPresent(newPublisher -> book.changePublisher(newPublisher, book.owner()));
-        command.publishDate().ifPresent(newPublishDate -> book.changePublishDate(newPublishDate, book.owner()));
-        command.publishPlace().ifPresent(newPublishPlace -> book.changePublishPlace(newPublishPlace, book.owner()));
-        command.authors().ifPresent(newAuthors -> book.changeAuthors(newAuthors, book.owner()));
+        command.title().ifPresent(newTitle -> book.changeTitle(newTitle, account.id()));
+        command.subtitle().ifPresent(subtitle -> book.changeSubtitle(subtitle, account.id()));
+        command.description().ifPresent(newDescription -> book.changeDescription(newDescription, account.id()));
+        command.coverImageUrl().ifPresent(newCoverImageUrl -> book.changeCoverImageUrl(newCoverImageUrl, account.id()));
+        command.languages().ifPresent(newLanguages -> book.changeLanguages(newLanguages, account.id()));
+        command.pageCount().ifPresent(newPageCount -> book.changePageCount(newPageCount, account.id()));
+        command.publisher().ifPresent(newPublisher -> book.changePublisher(newPublisher, account.id()));
+        command.publishDate().ifPresent(newPublishDate -> book.changePublishDate(newPublishDate, account.id()));
+        command.publishPlace().ifPresent(newPublishPlace -> book.changePublishPlace(newPublishPlace, account.id()));
+        command.authors().ifPresent(newAuthors -> book.changeAuthors(newAuthors, account.id()));
 
         mediaItemRepository.update(book);
     }

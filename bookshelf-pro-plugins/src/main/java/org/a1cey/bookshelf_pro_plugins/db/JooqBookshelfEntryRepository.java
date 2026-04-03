@@ -12,6 +12,7 @@ import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRe
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.Label;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.BookConsumptionProgress;
@@ -47,6 +48,7 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         saveLabels(bookshelfEntry);
     }
 
+    @Transactional
     @Override
     public Optional<BookshelfEntry> findById(BookshelfEntryId bookshelfEntryId) {
         var record = dsl.fetchOne(BOOKSHELF_ENTRY, BOOKSHELF_ENTRY.ID.eq(bookshelfEntryId.value()));
@@ -64,6 +66,7 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         return Optional.of(entry);
     }
 
+    @Transactional
     @Override
     public Set<BookshelfEntry> findByAccount(AccountId accountId) {
         return dsl.fetch(BOOKSHELF_ENTRY, BOOKSHELF_ENTRY.OWNER.eq(accountId.value())).stream().map(record -> {
@@ -76,6 +79,7 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         }).collect(Collectors.toSet());
     }
 
+    @Transactional
     @Override
     public Optional<BookshelfEntry> findByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId) {
         var bookshelfEntryRecord = dsl.fetchOne(
@@ -107,8 +111,8 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
     public boolean existsByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId) {
         return dsl.fetchExists(
             BOOKSHELF_ENTRY,
-            BOOKSHELF_ENTRY.ID.eq(accountId.value())
-                              .and(BOOKSHELF_ENTRY.MEDIA_ITEM_ID.eq(mediaItemId.value()))
+            BOOKSHELF_ENTRY.OWNER.eq(accountId.value())
+                                 .and(BOOKSHELF_ENTRY.MEDIA_ITEM_ID.eq(mediaItemId.value()))
         );
     }
 
@@ -120,11 +124,13 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
     }
 
     @Override
-    public LocalDateTime findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId) {
-        return dsl.select(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT))
-                  .from(CONSUMPTION_PROGRESS_SNAPSHOT)
-                  .where(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID.eq(consumptionProgressId.value()))
-                  .fetchOne(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT));
+    public Optional<LocalDateTime> findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId) {
+        var date = dsl.select(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT))
+                      .from(CONSUMPTION_PROGRESS_SNAPSHOT)
+                      .where(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID.eq(consumptionProgressId.value()))
+                      .fetchOne(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT));
+
+        return Optional.ofNullable(date);
     }
 
     private void saveLabels(BookshelfEntry bookshelfEntry) {
@@ -226,7 +232,8 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
 
         return new ConsumptionProgress(
             new ConsumptionProgressId(record.getId()),
-            mediaItemConsumptionProgress
+            mediaItemConsumptionProgress,
+            ConsumptionState.valueOf(record.getState())
         );
     }
 
@@ -235,8 +242,7 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
 
         var statement = dsl.insertInto(CONSUMPTION_PROGRESS_SNAPSHOT)
                            .set(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, consumptionProgress.id().value())
-                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_STATE, consumptionProgress.state().name())
-                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.TYPE, consumptionProgress.state().name());
+                           .set(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_STATE, consumptionProgress.state().name());
 
         switch (consumptionProgressSnapshot.progress()) {
             case BookConsumptionProgress bookConsumptionProgress ->

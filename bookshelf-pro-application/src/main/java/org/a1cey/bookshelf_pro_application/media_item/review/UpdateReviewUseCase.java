@@ -1,10 +1,7 @@
 package org.a1cey.bookshelf_pro_application.media_item.review;
 
-import java.util.Set;
-
 import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.AddBookshelfEntryUseCase;
-import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.AddBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.UpdateReviewCommand;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewRepository;
@@ -42,14 +39,8 @@ public class UpdateReviewUseCase {
 
         var bookshelfEntry = bookshelfEntryRepository
                                  .findByAccountAndMediaItem(account.id(), review.mediaItemId())
-                                 .orElseGet(() -> addBookshelfEntryUseCase.execute(
-                                     new AddBookshelfEntryCommand(
-                                         command.accountId(),
-                                         command.name(),
-                                         command.password(),
-                                         review.mediaItemId(),
-                                         Set.of()
-                                     )
+                                 .orElseThrow(() -> new IllegalStateException(
+                                     "Bookshelf entry with id " + review.mediaItemId() + " not found even though a review exists"
                                  ));
 
         if (command.newComment().isEmpty()) {

@@ -126,5 +126,4 @@ public final class Review {
     public List<ReviewChange> reviewHistory() {
         return Collections.unmodifiableList(reviewHistory);
     }
-
 }

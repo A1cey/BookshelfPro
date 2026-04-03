@@ -9,9 +9,10 @@ import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.springframework.stereotype.Service;
 
+// TODO: Security is a infrastructure concern. This and authentication checks should be moved into the plugin layer
 @Service
 public final class SecurityService {
-    AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     public SecurityService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;

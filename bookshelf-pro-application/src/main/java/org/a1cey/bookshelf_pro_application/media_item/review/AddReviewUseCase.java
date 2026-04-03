@@ -41,6 +41,7 @@ public class AddReviewUseCase {
     public void execute(AddReviewCommand command) {
         var account = securityService.checkUser(command.accountId(), command.name(), command.password());
 
+        // TODO: the side effect of creating a bookshelf entry must be documented in the domain and a domain service should be used
         var bookshelfEntry = bookshelfEntryRepository
                                  .findByAccountAndMediaItem(account.id(), command.mediaItemId())
                                  .orElseGet(() -> addBookshelfEntryUseCase.execute(

@@ -8,6 +8,7 @@ import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
@@ -45,7 +46,7 @@ public class AddBookshelfEntryUseCase {
             case Book book -> book.createProgress(new PageCount(0));
             default -> throw new IllegalStateException("Unexpected media item type: " + mediaItem);
         };
-        var consumptionProgress = new ConsumptionProgress(consumptionProgressId, mediaConsumptionProgress);
+        var consumptionProgress = new ConsumptionProgress(consumptionProgressId, mediaConsumptionProgress, ConsumptionState.NOT_STARTED);
 
         var bookshelfEntryId = new BookshelfEntryId(idService.generateId());
         var bookshelfEntry = BookshelfEntry.builder(

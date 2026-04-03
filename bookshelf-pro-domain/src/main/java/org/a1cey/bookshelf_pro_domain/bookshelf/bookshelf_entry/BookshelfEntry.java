@@ -22,7 +22,7 @@ public final class BookshelfEntry {
     private final MediaItemId mediaItemId;
     private final AccountId owner;
     @Valid
-    private final ConsumptionProgress consumptionProgress;
+    private final ConsumptionProgress consumptionProgress; // Interior mutability via updateConsumptionProgress
     private final Set<@Valid Label> labels;
 
     private BookshelfEntry(

@@ -20,7 +20,7 @@ public interface BookshelfEntryRepository {
 
     Optional<BookshelfEntry> findByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
-    LocalDateTime findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId);
+    Optional<LocalDateTime> findLatestConsumptionProgressSnapshotCreationDate(ConsumptionProgressId consumptionProgressId);
 
     boolean existsByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
