@@ -87,10 +87,11 @@
             - ...
         - [ ] Music
             - ...
-        - [ ] Review
+        - [x] Review
             - [x] Create review (mediaItemId, rating, comment)
-            - [ ] ! Delete review (reviewId)
-            - [ ] ! Change review (newRating, newComment)
-            - [ ] ! Change rating (newRating)
-            - [ ] ! Change comment (newComment)
-            - [ ] Get review details -> id, owner, mediaItemId, reviewHistory
+            - [x] ! Delete review (reviewId)
+            - [x] ! Change review (newRating, newComment)
+            - [x] ! Change rating (newRating)
+            - [x] ! Change comment (newComment)
+            - [x] Get review details -> id, owner, mediaItemId, reviewHistory
+            - [x] Get all reviews for media item

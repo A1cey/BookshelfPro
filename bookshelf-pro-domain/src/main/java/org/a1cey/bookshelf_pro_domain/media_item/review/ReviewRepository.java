@@ -15,12 +15,14 @@ public interface ReviewRepository {
 
     Set<Review> findByOwner(AccountId accountId);
 
+    Set<Review> findByMediaItemId(MediaItemId mediaItemId);
+
     boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
     void save(Review review, BookshelfEntry bookshelfEntry);
 
     void update(Review review, BookshelfEntry bookshelfEntry);
 
-    void delete(ReviewId reviewId);
+    void delete(ReviewId reviewId, AccountId owner);
 
 }

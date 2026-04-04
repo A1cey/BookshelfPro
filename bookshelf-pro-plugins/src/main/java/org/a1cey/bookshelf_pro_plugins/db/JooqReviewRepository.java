@@ -71,6 +71,20 @@ public class JooqReviewRepository implements ReviewRepository {
     }
 
     @Override
+    public Set<Review> findByMediaItemId(MediaItemId mediaItemId) {
+        return dsl.fetch(REVIEW, REVIEW.MEDIA_ITEM_ID.eq(mediaItemId.value()))
+                  .stream()
+                  .map(reviewRecord -> {
+                      var reviewId = new ReviewId(reviewRecord.getId());
+                      var owner = new AccountId(reviewRecord.getOwner());
+                      var reviewChanges = fetchReviewChanges(reviewId);
+
+                      return Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges);
+                  })
+                  .collect(Collectors.toSet());
+    }
+
+    @Override
     public boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId) {
         return dsl.fetchExists(
             REVIEW,
@@ -100,8 +114,8 @@ public class JooqReviewRepository implements ReviewRepository {
 
     @Transactional
     @Override
-    public void delete(ReviewId reviewId) {
-        dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value())).execute();
+    public void delete(ReviewId reviewId, AccountId owner) {
+        dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value()).and(REVIEW.OWNER.eq(owner.value()))).execute();
     }
 
     // TODO: this shouldnt take bookshelfEntry -> violation of concerns
