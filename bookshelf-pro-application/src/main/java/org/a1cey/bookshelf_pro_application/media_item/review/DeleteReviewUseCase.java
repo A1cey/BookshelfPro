@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DeleteReviewUseCase {
-
     private final ReviewRepository reviewRepository;
     private final SecurityService securityService;
 

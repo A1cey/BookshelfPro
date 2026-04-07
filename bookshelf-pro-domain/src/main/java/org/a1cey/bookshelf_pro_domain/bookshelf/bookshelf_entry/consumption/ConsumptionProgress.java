@@ -14,9 +14,9 @@ public final class ConsumptionProgress {
     @Valid
     private MediaItemConsumptionProgress progress;
 
-    public ConsumptionProgress(ConsumptionProgressId id, MediaItemConsumptionProgress progress) {
+    public ConsumptionProgress(ConsumptionProgressId id, MediaItemConsumptionProgress progress, ConsumptionState initialState) {
         this.id = id;
-        this.state = ConsumptionState.NOT_STARTED.nextState(progress);
+        this.state = initialState.nextState(progress);
         this.progress = progress;
     }
 

@@ -9,7 +9,10 @@
       provide and easy way of cleaning up Watchlists a use case has been added: RemoveWatchlistItemsByStateUseCase accepting a
       Set<ConsumptionState>
     - Book authors are unique (a set)
+    - If a Review is created for a media item that is not in the bookshelf, a new bookshelf entry for this media item is created. // TOOD:
+      model this in the domain
 - Should Media Item have the type attribute -> Matching on instanceof(mediaItem) is another possibility
+- JOIN Sql for fetching multiple tables (book (media items), review)
 - Deleting bookshelf affects watchlists and playlists as they reference the id
     - Either do not allow deletion of bookshelf entries by user (reasonable as it tracks consumption and labels and the user has so good use
       case to remove this data)
@@ -92,3 +95,4 @@
             - [x] ! Change rating (newRating)
             - [x] ! Change comment (newComment)
             - [x] Get review details -> id, owner, mediaItemId, reviewHistory
+            - [x] Get all reviews for media item

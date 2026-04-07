@@ -38,6 +38,7 @@ public class JooqReviewRepository implements ReviewRepository {
         this.bookshelfEntryRepository = bookshelfEntryRepository;
     }
 
+    @Transactional
     @Override
     public Optional<Review> findById(ReviewId id) {
         var record = dsl.fetchOne(REVIEW, REVIEW.ID.eq(id.value()));
@@ -54,6 +55,7 @@ public class JooqReviewRepository implements ReviewRepository {
         return Optional.of(Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges));
     }
 
+    @Transactional
     @Override
     public Set<Review> findByOwner(AccountId owner) {
         return dsl.fetch(REVIEW, REVIEW.OWNER.eq(owner.value()))
@@ -104,6 +106,7 @@ public class JooqReviewRepository implements ReviewRepository {
         saveReviewChange(review, bookshelfEntry);
     }
 
+    @Transactional
     @Override
     public void update(Review review, BookshelfEntry bookshelfEntry) {
         saveReviewChange(review, bookshelfEntry);
@@ -116,9 +119,13 @@ public class JooqReviewRepository implements ReviewRepository {
         dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value())).execute();
     }
 
+    // TODO: this shouldnt take bookshelfEntry -> violation of concerns
     private void saveReviewChange(Review review, BookshelfEntry bookshelfEntry) {
         var creationDate = bookshelfEntryRepository
-                               .findLatestConsumptionProgressSnapshotCreationDate(bookshelfEntry.consumptionProgress().id());
+                               .findLatestConsumptionProgressSnapshotCreationDate(bookshelfEntry.consumptionProgress().id())
+                               .orElseThrow(() -> new IllegalStateException(
+                                   "No snapshot creation date for consumption progress with id" + bookshelfEntry.consumptionProgress().id()
+                               ));
 
         dsl.insertInto(REVIEW_CHANGE)
            .set(REVIEW_CHANGE.REVIEW_ID, review.id().value())

@@ -51,7 +51,6 @@ public final class Book extends MediaItem {
 
         super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, languages);
         this.isbn = isbn;
-        this.subtitle = subtitle;
         this.authors = new HashSet<>(authors); // prevent modification from outside
         this.publishDate = publishDate;
         this.publisher = publisher;
