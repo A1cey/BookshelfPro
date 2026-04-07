@@ -14,6 +14,7 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem.MediaItemPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.ReviewPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists.WatchlistsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -192,6 +193,19 @@ public class Account extends TableImpl<AccountRecord> {
             _review = new ReviewPath(this, null, Keys.REVIEW__REVIEW_OWNER_FKEY.getInverseKey());
 
         return _review;
+    }
+
+    private transient WatchlistsPath _watchlists;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.watchlists</code>
+     * table
+     */
+    public WatchlistsPath watchlists() {
+        if (_watchlists == null)
+            _watchlists = new WatchlistsPath(this, null, Keys.WATCHLISTS__WATCHLISTS_OWNER_FKEY.getInverseKey());
+
+        return _watchlists;
     }
 
     /**

@@ -24,5 +24,7 @@ public interface BookshelfEntryRepository {
 
     boolean existsByAccountAndMediaItem(AccountId accountId, MediaItemId mediaItemId);
 
+    boolean existsByAccountAndId(AccountId accountId, BookshelfEntryId bookshelfEntryId);
+
     void update(BookshelfEntry bookshelfEntry);
 }

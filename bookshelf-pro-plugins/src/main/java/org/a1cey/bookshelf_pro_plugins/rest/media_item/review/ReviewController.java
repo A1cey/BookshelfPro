@@ -6,26 +6,15 @@ import java.util.UUID;
 import org.a1cey.bookshelf_pro_application.media_item.review.AddReviewUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.DeleteReviewUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.GetAllReviewsUseCase;
-<<<<<<< HEAD
-import org.a1cey.bookshelf_pro_application.media_item.review.GetReviewUseCase;
-=======
 import org.a1cey.bookshelf_pro_application.media_item.review.GetReviewByIdUseCase;
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
 import org.a1cey.bookshelf_pro_application.media_item.review.UpdateReviewUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.AddReviewCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.DeleteReviewCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.GetAllReviewsCommand;
-<<<<<<< HEAD
-import org.a1cey.bookshelf_pro_application.media_item.review.command.GetReviewCommand;
-import org.a1cey.bookshelf_pro_application.media_item.review.command.UpdateReviewCommand;
-import org.a1cey.bookshelf_pro_application.media_item.review.result.GetAllReviewsResult;
-import org.a1cey.bookshelf_pro_application.media_item.review.result.GetReviewResult;
-=======
 import org.a1cey.bookshelf_pro_application.media_item.review.command.GetReviewByIdCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.UpdateReviewCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.result.GetAllReviewsResult;
 import org.a1cey.bookshelf_pro_application.media_item.review.result.GetReviewByIdResult;
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
@@ -55,29 +44,21 @@ public class ReviewController {
     private final AddReviewUseCase addReviewUseCase;
     private final UpdateReviewUseCase updateReviewUseCase;
     private final DeleteReviewUseCase deleteReviewUseCase;
-<<<<<<< HEAD
-    private final GetReviewUseCase getReviewUseCase;
     private final GetAllReviewsUseCase getAllReviewsUseCase;
-
-    public ReviewController(AddReviewUseCase addReviewUseCase, UpdateReviewUseCase updateReviewUseCase,
-                            DeleteReviewUseCase deleteReviewUseCase, GetReviewUseCase getReviewUseCase,
-=======
     private final GetReviewByIdUseCase getReviewByIdUseCase;
-    private final GetAllReviewsUseCase getAllReviewsUseCase;
 
-    public ReviewController(AddReviewUseCase addReviewUseCase, UpdateReviewUseCase updateReviewUseCase,
-                            DeleteReviewUseCase deleteReviewUseCase, GetReviewByIdUseCase getReviewByIdUseCase,
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
-                            GetAllReviewsUseCase getAllReviewsUseCase) {
+    public ReviewController(
+        AddReviewUseCase addReviewUseCase,
+        UpdateReviewUseCase updateReviewUseCase,
+        DeleteReviewUseCase deleteReviewUseCase,
+        GetAllReviewsUseCase getAllReviewsUseCase,
+        GetReviewByIdUseCase getReviewByIdUseCase
+    ) {
         this.addReviewUseCase = addReviewUseCase;
         this.updateReviewUseCase = updateReviewUseCase;
         this.deleteReviewUseCase = deleteReviewUseCase;
-<<<<<<< HEAD
-        this.getReviewUseCase = getReviewUseCase;
-=======
-        this.getReviewByIdUseCase = getReviewByIdUseCase;
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
         this.getAllReviewsUseCase = getAllReviewsUseCase;
+        this.getReviewByIdUseCase = getReviewByIdUseCase;
     }
 
     @PostMapping
@@ -109,7 +90,6 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-<<<<<<< HEAD
     public void delete(
         @PathVariable UUID reviewId,
         @ParameterObject Credentials credentials
@@ -119,33 +99,17 @@ public class ReviewController {
             new Username(credentials.username()),
             new Password(credentials.password()),
             new ReviewId(reviewId)
-=======
-    public void delete(@PathVariable UUID reviewId, @ParameterObject Credentials credentials) {
-        deleteReviewUseCase.execute(new DeleteReviewCommand(
-            new ReviewId(reviewId),
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password())
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
         ));
     }
 
     @GetMapping("/{reviewId}")
-<<<<<<< HEAD
-    public ResponseEntity<GetReviewResult> getReview(@PathVariable UUID reviewId) {
-        return ResponseEntity.of(getReviewUseCase.execute(new GetReviewCommand(new ReviewId(reviewId))));
-=======
     public ResponseEntity<GetReviewByIdResult> getReviewById(@PathVariable UUID reviewId) {
         return ResponseEntity.of(getReviewByIdUseCase.execute(new GetReviewByIdCommand(new ReviewId(reviewId))));
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
     }
 
     @GetMapping
     public ResponseEntity<GetAllReviewsResult> getAllReviews(@PathVariable UUID mediaItemId) {
         return ResponseEntity.ok(getAllReviewsUseCase.execute(new GetAllReviewsCommand(new MediaItemId(mediaItemId))));
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> 8e445b1acaa87311be1e7031008f5be9a8fb53ed
 }

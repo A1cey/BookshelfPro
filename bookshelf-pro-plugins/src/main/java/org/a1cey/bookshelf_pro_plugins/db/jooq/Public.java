@@ -18,6 +18,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
@@ -92,6 +94,16 @@ public class Public extends SchemaImpl {
     public final ReviewChange REVIEW_CHANGE = ReviewChange.REVIEW_CHANGE;
 
     /**
+     * The table <code>public.watchlist_items</code>.
+     */
+    public final WatchlistItems WATCHLIST_ITEMS = WatchlistItems.WATCHLIST_ITEMS;
+
+    /**
+     * The table <code>public.watchlists</code>.
+     */
+    public final Watchlists WATCHLISTS = Watchlists.WATCHLISTS;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -117,7 +129,9 @@ public class Public extends SchemaImpl {
             MediaItem.MEDIA_ITEM,
             MediaItemLanguage.MEDIA_ITEM_LANGUAGE,
             Review.REVIEW,
-            ReviewChange.REVIEW_CHANGE
+            ReviewChange.REVIEW_CHANGE,
+            WatchlistItems.WATCHLIST_ITEMS,
+            Watchlists.WATCHLISTS
         );
     }
 }

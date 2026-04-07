@@ -12,7 +12,7 @@ import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
 import org.jspecify.annotations.Nullable;
 
 public record BookDto(
-    UUID bookId,
+    UUID mediaItemId,
     UUID ownerId,
     String title,
     String subtitle,

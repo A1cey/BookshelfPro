@@ -52,14 +52,14 @@
             - [ ] ! Remove item (playlistItemId)
             - [ ] ! Move Item (oldPosition, newPosition)
             - [ ] ! Get playlist details -> id, title, items
-        - [ ] Watchlist
-            - [ ] ! Create watchlist (title, [items])
-            - [ ] ! Delete watchlist (watchlistId)
-            - [ ] ! Change title (newTitle)
-            - [ ] ! Add item (bookshelfEntryId)
-            - [ ] ! Remove item (watchlistItemId)
-            - [ ] ! Remove items by consumption state (consumptionStates)
-            - [ ] ! Get watchlist details -> id, title, items
+        - [x] Watchlist
+            - [x] ! Create watchlist (title, [items])
+            - [x] ! Delete watchlist (watchlistId)
+            - [x] ! Change title (newTitle)
+            - [x] ! Add item (bookshelfEntryId)
+            - [x] ! Remove item (watchlistItemId)
+            - [x] ! Remove items by consumption state (consumptionStates)
+            - [x] ! Get watchlist details -> id, title, items
     - [ ] MediaItem
         - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items

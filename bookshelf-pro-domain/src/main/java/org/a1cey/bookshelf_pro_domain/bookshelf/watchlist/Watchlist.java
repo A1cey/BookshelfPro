@@ -17,9 +17,9 @@ public final class Watchlist {
     @Identity
     private final WatchlistId id;
     private final AccountId owner;
-    private final LinkedHashSet<BookshelfEntryId> items; // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot
+    // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot be rearranged
+    private final LinkedHashSet<BookshelfEntryId> items;
     private Title title;
-    // be rearranged
 
     public Watchlist(WatchlistId id, AccountId owner, Title title, SequencedSet<BookshelfEntryId> items) {
         this.id = id;
@@ -47,6 +47,12 @@ public final class Watchlist {
 
     public SequencedSet<BookshelfEntryId> items() {
         return Collections.unmodifiableSequencedSet(items);
+    }
+
+    public void changeItems(SequencedSet<BookshelfEntryId> newItems, AccountId userRequestingChange) {
+        OwnershipPolicy.validate(owner, userRequestingChange, id);
+        items.clear();
+        items.addAll(newItems);
     }
 
     public boolean addItem(BookshelfEntryId item, AccountId userRequestingChange) {

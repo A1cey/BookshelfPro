@@ -46,6 +46,11 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
     }
 
     @Override
+    public boolean isNotStarted() {
+        return current.pageCount() == 0 && total.pageCount() != 0;
+    }
+
+    @Override
     public BookConsumptionProgress update(int newCurrent) {
         return new BookConsumptionProgress(new PageCount(newCurrent), total);
     }

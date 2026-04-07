@@ -15,6 +15,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists;
 
 
 /**
@@ -77,4 +79,14 @@ public class Tables {
      * The table <code>public.review_change</code>.
      */
     public static final ReviewChange REVIEW_CHANGE = ReviewChange.REVIEW_CHANGE;
+
+    /**
+     * The table <code>public.watchlist_items</code>.
+     */
+    public static final WatchlistItems WATCHLIST_ITEMS = WatchlistItems.WATCHLIST_ITEMS;
+
+    /**
+     * The table <code>public.watchlists</code>.
+     */
+    public static final Watchlists WATCHLISTS = Watchlists.WATCHLISTS;
 }

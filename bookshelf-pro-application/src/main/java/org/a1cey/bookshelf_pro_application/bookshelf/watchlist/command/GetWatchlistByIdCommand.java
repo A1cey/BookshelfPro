@@ -1,13 +1,13 @@
-package org.a1cey.bookshelf_pro_application.media_item.review.command;
+package org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
-import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.watchlist.WatchlistId;
 
-public record DeleteReviewCommand(
+public record GetWatchlistByIdCommand(
     AccountId owner,
     Username name,
     Password password,
-    ReviewId reviewId
+    WatchlistId watchlistId
 ) {}

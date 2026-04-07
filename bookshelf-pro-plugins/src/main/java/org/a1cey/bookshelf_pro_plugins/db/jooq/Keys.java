@@ -15,6 +15,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookAuthorRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookRecord;
@@ -26,6 +28,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemLanguageR
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewChangeRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.WatchlistItemsRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.WatchlistsRecord;
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -58,6 +62,8 @@ public class Keys {
     public static final UniqueKey<ReviewRecord> REVIEW_OWNER_MEDIA_ITEM_ID_KEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_owner_media_item_id_key"), new TableField[] { Review.REVIEW.OWNER, Review.REVIEW.MEDIA_ITEM_ID }, true);
     public static final UniqueKey<ReviewRecord> REVIEW_PKEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_pkey"), new TableField[] { Review.REVIEW.ID }, true);
     public static final UniqueKey<ReviewChangeRecord> REVIEW_CHANGE_PKEY = Internal.createUniqueKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_pkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.REVIEW_ID, ReviewChange.REVIEW_CHANGE.REVIEW_DATE }, true);
+    public static final UniqueKey<WatchlistItemsRecord> WATCHLIST_ITEMS_PKEY = Internal.createUniqueKey(WatchlistItems.WATCHLIST_ITEMS, DSL.name("watchlist_items_pkey"), new TableField[] { WatchlistItems.WATCHLIST_ITEMS.WATCHLIST_ID, WatchlistItems.WATCHLIST_ITEMS.BOOKSHELF_ENTRY_ID }, true);
+    public static final UniqueKey<WatchlistsRecord> WATCHLISTS_PKEY = Internal.createUniqueKey(Watchlists.WATCHLISTS, DSL.name("watchlists_pkey"), new TableField[] { Watchlists.WATCHLISTS.ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -76,4 +82,7 @@ public class Keys {
     public static final ForeignKey<ReviewRecord, AccountRecord> REVIEW__REVIEW_OWNER_FKEY = Internal.createForeignKey(Review.REVIEW, DSL.name("review_owner_fkey"), new TableField[] { Review.REVIEW.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
     public static final ForeignKey<ReviewChangeRecord, ConsumptionProgressSnapshotRecord> REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_FKEY = Internal.createForeignKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_consumption_progress_snapshot_fkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID, ReviewChange.REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CREATED_AT }, Keys.CONSUMPTION_PROGRESS_SNAPSHOT_PKEY, new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT }, true);
     public static final ForeignKey<ReviewChangeRecord, ReviewRecord> REVIEW_CHANGE__REVIEW_CHANGE_REVIEW_ID_FKEY = Internal.createForeignKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_review_id_fkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.REVIEW_ID }, Keys.REVIEW_PKEY, new TableField[] { Review.REVIEW.ID }, true);
+    public static final ForeignKey<WatchlistItemsRecord, BookshelfEntryRecord> WATCHLIST_ITEMS__WATCHLIST_ITEMS_BOOKSHELF_ENTRY_ID_FKEY = Internal.createForeignKey(WatchlistItems.WATCHLIST_ITEMS, DSL.name("watchlist_items_bookshelf_entry_id_fkey"), new TableField[] { WatchlistItems.WATCHLIST_ITEMS.BOOKSHELF_ENTRY_ID }, Keys.BOOKSHELF_ENTRY_PKEY, new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.ID }, true);
+    public static final ForeignKey<WatchlistItemsRecord, WatchlistsRecord> WATCHLIST_ITEMS__WATCHLIST_ITEMS_WATCHLIST_ID_FKEY = Internal.createForeignKey(WatchlistItems.WATCHLIST_ITEMS, DSL.name("watchlist_items_watchlist_id_fkey"), new TableField[] { WatchlistItems.WATCHLIST_ITEMS.WATCHLIST_ID }, Keys.WATCHLISTS_PKEY, new TableField[] { Watchlists.WATCHLISTS.ID }, true);
+    public static final ForeignKey<WatchlistsRecord, AccountRecord> WATCHLISTS__WATCHLISTS_OWNER_FKEY = Internal.createForeignKey(Watchlists.WATCHLISTS, DSL.name("watchlists_owner_fkey"), new TableField[] { Watchlists.WATCHLISTS.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
 }

@@ -116,6 +116,15 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         );
     }
 
+    @Override
+    public boolean existsByAccountAndId(AccountId accountId, BookshelfEntryId bookshelfEntryId) {
+        return dsl.fetchExists(
+            BOOKSHELF_ENTRY,
+            BOOKSHELF_ENTRY.OWNER.eq(accountId.value())
+                                 .and(BOOKSHELF_ENTRY.ID.eq(bookshelfEntryId.value()))
+        );
+    }
+
     @Transactional
     @Override
     public void update(BookshelfEntry bookshelfEntry) {

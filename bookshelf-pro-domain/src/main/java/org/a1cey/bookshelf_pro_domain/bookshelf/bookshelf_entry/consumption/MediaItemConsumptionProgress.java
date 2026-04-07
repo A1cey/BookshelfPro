@@ -8,6 +8,8 @@ public interface MediaItemConsumptionProgress {
 
     boolean isStarted();
 
+    boolean isNotStarted();
+
     /**
      * Create a new MediaItemConsumptionProgress that is valid for the same media item.
      * Provide the new current consumption value.
