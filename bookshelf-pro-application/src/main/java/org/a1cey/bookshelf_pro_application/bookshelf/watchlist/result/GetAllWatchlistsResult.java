@@ -4,4 +4,4 @@ import java.util.Set;
 
 import org.a1cey.bookshelf_pro_application.dto.WatchlistDto;
 
-public record GetAllWatchlistResult(Set<WatchlistDto> watchlists) {}
+public record GetAllWatchlistsResult(Set<WatchlistDto> watchlists) {}

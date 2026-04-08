@@ -33,10 +33,10 @@
         - [x] ! Get account details -> id, username, email
         - [x] ! Get media items -> mediaItems
         - [x] ! Get reviews -> reviews
-    - [ ] Bookshelf
+    - [x] Bookshelf
         - [x] ! Get bookshelf entries -> bookshelfEntries
-        - [ ] ! Get playlists -> playlists
-        - [ ] ! Get watchlists -> watchlists
+        - [x] ! Get playlists -> playlists
+        - [x] ! Get watchlists -> watchlists
         - [x] BookshelfEntry
             - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgressSnapshot], [labels]) // TODO: or make this a use
               case on MediaItem -> Book.addToBookshelf
@@ -44,14 +44,15 @@
             - [x] ! Add label (label)
             - [x] ! Remove label (label)
             - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgressSnapshot, labels
-        - [ ] Playlist
-            - [ ] ! Create playlist (title, [items])
-            - [ ] ! Delete playlist (playlistId)
-            - [ ] ! Change title (newTitle)
-            - [ ] ! Add item (bookshelfEntryId)
-            - [ ] ! Remove item (playlistItemId)
-            - [ ] ! Move Item (oldPosition, newPosition)
-            - [ ] ! Get playlist details -> id, title, items
+        - [x] Playlist
+            - [x] ! Create playlist (title, [items])
+            - [x] ! Delete playlist (playlistId)
+            - [x] ! Change title (newTitle)
+              // TODO: document that first items are added, then items are removed, then items are moved in update request
+            - [x] ! Add item (bookshelfEntryId)
+            - [x] ! Remove item (playlistItemId)
+            - [x] ! Move Item (oldPosition, newPosition)
+            - [x] ! Get playlist details -> id, title, items
         - [x] Watchlist
             - [x] ! Create watchlist (title, [items])
             - [x] ! Delete watchlist (watchlistId)

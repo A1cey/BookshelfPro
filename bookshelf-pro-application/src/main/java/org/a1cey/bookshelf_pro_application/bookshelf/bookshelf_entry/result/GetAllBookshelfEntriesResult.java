@@ -1,4 +1,4 @@
-package org.a1cey.bookshelf_pro_application.bookshelf.result;
+package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result;
 
 import java.util.Set;
 

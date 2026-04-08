@@ -13,6 +13,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
@@ -69,6 +71,16 @@ public class Tables {
      * The table <code>public.media_item_language</code>.
      */
     public static final MediaItemLanguage MEDIA_ITEM_LANGUAGE = MediaItemLanguage.MEDIA_ITEM_LANGUAGE;
+
+    /**
+     * The table <code>public.playlist_items</code>.
+     */
+    public static final PlaylistItems PLAYLIST_ITEMS = PlaylistItems.PLAYLIST_ITEMS;
+
+    /**
+     * The table <code>public.playlists</code>.
+     */
+    public static final Playlists PLAYLISTS = Playlists.PLAYLISTS;
 
     /**
      * The table <code>public.review</code>.

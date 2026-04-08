@@ -16,6 +16,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
@@ -84,6 +86,16 @@ public class Public extends SchemaImpl {
     public final MediaItemLanguage MEDIA_ITEM_LANGUAGE = MediaItemLanguage.MEDIA_ITEM_LANGUAGE;
 
     /**
+     * The table <code>public.playlist_items</code>.
+     */
+    public final PlaylistItems PLAYLIST_ITEMS = PlaylistItems.PLAYLIST_ITEMS;
+
+    /**
+     * The table <code>public.playlists</code>.
+     */
+    public final Playlists PLAYLISTS = Playlists.PLAYLISTS;
+
+    /**
      * The table <code>public.review</code>.
      */
     public final Review REVIEW = Review.REVIEW;
@@ -128,6 +140,8 @@ public class Public extends SchemaImpl {
             ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT,
             MediaItem.MEDIA_ITEM,
             MediaItemLanguage.MEDIA_ITEM_LANGUAGE,
+            PlaylistItems.PLAYLIST_ITEMS,
+            Playlists.PLAYLISTS,
             Review.REVIEW,
             ReviewChange.REVIEW_CHANGE,
             WatchlistItems.WATCHLIST_ITEMS,

@@ -1,7 +1,6 @@
 package org.a1cey.bookshelf_pro_application.media_item.review;
 
 import org.a1cey.bookshelf_pro_application.SecurityService;
-import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.AddBookshelfEntryUseCase;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.UpdateReviewCommand;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewRepository;
@@ -12,18 +11,15 @@ public class UpdateReviewUseCase {
     private final ReviewRepository reviewRepository;
     private final SecurityService securityService;
     private final BookshelfEntryRepository bookshelfEntryRepository;
-    private final AddBookshelfEntryUseCase addBookshelfEntryUseCase;
 
     public UpdateReviewUseCase(
         ReviewRepository reviewRepository,
         SecurityService securityService,
-        BookshelfEntryRepository bookshelfEntryRepository,
-        AddBookshelfEntryUseCase addBookshelfEntryUseCase
+        BookshelfEntryRepository bookshelfEntryRepository
     ) {
         this.reviewRepository = reviewRepository;
         this.securityService = securityService;
         this.bookshelfEntryRepository = bookshelfEntryRepository;
-        this.addBookshelfEntryUseCase = addBookshelfEntryUseCase;
     }
 
     public void execute(UpdateReviewCommand command) {

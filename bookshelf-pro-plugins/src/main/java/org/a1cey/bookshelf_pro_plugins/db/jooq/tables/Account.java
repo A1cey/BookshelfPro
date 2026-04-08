@@ -13,6 +13,7 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.Keys;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.Public;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem.MediaItemPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists.PlaylistsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.ReviewPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists.WatchlistsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
@@ -180,6 +181,19 @@ public class Account extends TableImpl<AccountRecord> {
             _mediaItem = new MediaItemPath(this, null, Keys.MEDIA_ITEM__MEDIA_ITEM_OWNER_ID_FKEY.getInverseKey());
 
         return _mediaItem;
+    }
+
+    private transient PlaylistsPath _playlists;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.playlists</code>
+     * table
+     */
+    public PlaylistsPath playlists() {
+        if (_playlists == null)
+            _playlists = new PlaylistsPath(this, null, Keys.PLAYLISTS__PLAYLISTS_OWNER_FKEY.getInverseKey());
+
+        return _playlists;
     }
 
     private transient ReviewPath _review;

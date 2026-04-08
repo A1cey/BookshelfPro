@@ -5,11 +5,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.AddBookshelfEntryUseCase;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.GetAllBookshelfEntriesUseCase;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.GetBookshelfEntryUseCase;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.UpdateBookshelfEntryUseCase;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.AddBookshelfEntryCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.GetAllBookshelfEntriesCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.GetBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.UpdateBookshelfEntryCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result.GetAllBookshelfEntriesResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result.GetBookshelfEntryResult;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.account.Password;
@@ -36,15 +39,17 @@ public class BookshelfEntryController {
     private final AddBookshelfEntryUseCase addBookshelfEntryUseCase;
     private final GetBookshelfEntryUseCase getBookshelfEntryUseCase;
     private final UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase;
+    private final GetAllBookshelfEntriesUseCase getAllBookshelfEntriesUseCase;
 
     public BookshelfEntryController(
         AddBookshelfEntryUseCase addBookshelfEntryUseCase,
         GetBookshelfEntryUseCase getBookshelfEntryUseCase,
-        UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase
-    ) {
+        UpdateBookshelfEntryUseCase updateBookshelfEntryUseCase,
+        GetAllBookshelfEntriesUseCase getAllBookshelfEntriesUseCase) {
         this.addBookshelfEntryUseCase = addBookshelfEntryUseCase;
         this.getBookshelfEntryUseCase = getBookshelfEntryUseCase;
         this.updateBookshelfEntryUseCase = updateBookshelfEntryUseCase;
+        this.getAllBookshelfEntriesUseCase = getAllBookshelfEntriesUseCase;
     }
 
     @PostMapping
@@ -90,5 +95,18 @@ public class BookshelfEntryController {
         );
 
         updateBookshelfEntryUseCase.execute(command);
+    }
+
+    @GetMapping
+    public ResponseEntity<GetAllBookshelfEntriesResult> getAllBookshelfEntries(@ParameterObject Credentials credentials) {
+        var entries = getAllBookshelfEntriesUseCase.execute(
+            new GetAllBookshelfEntriesCommand(
+                new AccountId(credentials.accountId()),
+                new Username(credentials.username()),
+                new Password(credentials.password())
+            )
+        );
+
+        return ResponseEntity.ok(entries);
     }
 }

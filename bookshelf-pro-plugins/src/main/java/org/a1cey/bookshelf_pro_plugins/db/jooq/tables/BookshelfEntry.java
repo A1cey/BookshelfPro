@@ -15,6 +15,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Account.AccountPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntryLabel.BookshelfEntryLabelPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress.ConsumptionProgressPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem.MediaItemPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems.PlaylistItemsPath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists.PlaylistsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems.WatchlistItemsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Watchlists.WatchlistsPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.BookshelfEntryRecord;
@@ -208,6 +210,19 @@ public class BookshelfEntry extends TableImpl<BookshelfEntryRecord> {
         return _consumptionProgress;
     }
 
+    private transient PlaylistItemsPath _playlistItems;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.playlist_items</code> table
+     */
+    public PlaylistItemsPath playlistItems() {
+        if (_playlistItems == null)
+            _playlistItems = new PlaylistItemsPath(this, null, Keys.PLAYLIST_ITEMS__PLAYLIST_ITEMS_BOOKSHELF_ENTRY_ID_FKEY.getInverseKey());
+
+        return _playlistItems;
+    }
+
     private transient WatchlistItemsPath _watchlistItems;
 
     /**
@@ -219,6 +234,14 @@ public class BookshelfEntry extends TableImpl<BookshelfEntryRecord> {
             _watchlistItems = new WatchlistItemsPath(this, null, Keys.WATCHLIST_ITEMS__WATCHLIST_ITEMS_BOOKSHELF_ENTRY_ID_FKEY.getInverseKey());
 
         return _watchlistItems;
+    }
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.playlists</code> table
+     */
+    public PlaylistsPath playlists() {
+        return playlistItems().playlists();
     }
 
     /**

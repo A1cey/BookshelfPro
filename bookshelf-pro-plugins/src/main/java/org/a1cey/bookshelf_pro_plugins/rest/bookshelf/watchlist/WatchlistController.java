@@ -17,7 +17,7 @@ import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.GetAllWat
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.GetWatchlistByIdCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.RemoveWatchlistItemsByConsumptionStateCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.UpdateWatchlistCommand;
-import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetAllWatchlistResult;
+import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetAllWatchlistsResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetWatchlistByIdResult;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
@@ -107,7 +107,7 @@ public class WatchlistController {
     }
 
     @GetMapping
-    public ResponseEntity<GetAllWatchlistResult> getAllWatchlists(@ParameterObject Credentials credentials) {
+    public ResponseEntity<GetAllWatchlistsResult> getAllWatchlists(@ParameterObject Credentials credentials) {
         return ResponseEntity.ok(getAllWatchlistsUseCase.execute(new GetAllWatchlistsCommand(
             new AccountId(credentials.accountId()),
             new Username(credentials.username()),

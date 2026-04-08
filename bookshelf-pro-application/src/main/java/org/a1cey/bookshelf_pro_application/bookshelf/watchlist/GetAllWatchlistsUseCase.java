@@ -4,7 +4,7 @@ import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.GetAllWatchlistsCommand;
-import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetAllWatchlistResult;
+import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetAllWatchlistsResult;
 import org.a1cey.bookshelf_pro_application.dto.WatchlistDto;
 import org.a1cey.bookshelf_pro_domain.bookshelf.watchlist.WatchlistRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class GetAllWatchlistsUseCase {
         this.watchlistRepository = watchlistRepository;
     }
 
-    public GetAllWatchlistResult execute(GetAllWatchlistsCommand command) {
+    public GetAllWatchlistsResult execute(GetAllWatchlistsCommand command) {
         var account = securityService.checkUser(command.owner(), command.name(), command.password());
 
         var watchlists = watchlistRepository
@@ -31,6 +31,6 @@ public class GetAllWatchlistsUseCase {
                              .map(WatchlistDto::from)
                              .collect(Collectors.toSet());
 
-        return new GetAllWatchlistResult(watchlists);
+        return new GetAllWatchlistsResult(watchlists);
     }
 }

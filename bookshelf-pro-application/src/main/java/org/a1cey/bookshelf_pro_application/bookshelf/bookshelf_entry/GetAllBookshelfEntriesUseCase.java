@@ -1,10 +1,10 @@
-package org.a1cey.bookshelf_pro_application.bookshelf;
+package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
 import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_application.SecurityService;
-import org.a1cey.bookshelf_pro_application.bookshelf.command.GetAllBookshelfEntriesCommand;
-import org.a1cey.bookshelf_pro_application.bookshelf.result.GetAllBookshelfEntriesResult;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.GetAllBookshelfEntriesCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result.GetAllBookshelfEntriesResult;
 import org.a1cey.bookshelf_pro_application.dto.BookshelfEntryDto;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.springframework.stereotype.Service;

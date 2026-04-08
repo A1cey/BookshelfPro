@@ -7,11 +7,11 @@ import java.util.List;
 import org.a1cey.bookshelf_pro_domain.OwnershipPolicy;
 import org.a1cey.bookshelf_pro_domain.Title;
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.PositiveOrZero;
 
 @AggregateRoot
 public final class Playlist {
@@ -19,11 +19,11 @@ public final class Playlist {
     @Identity
     private final PlaylistId id;
     private final AccountId owner;
-    private final LinkedList<PlaylistItem> items; // LinkedList is best for inserting/removing
+    private final List<BookshelfEntryId> items;
     @Valid
     private Title title;
 
-    public Playlist(PlaylistId id, AccountId owner, Title title, List<PlaylistItem> items) {
+    public Playlist(PlaylistId id, AccountId owner, Title title, List<BookshelfEntryId> items) {
         this.id = id;
         this.owner = owner;
         this.title = title;
@@ -47,42 +47,53 @@ public final class Playlist {
         title = newTitle;
     }
 
-    public List<PlaylistItem> items() {
+    public List<BookshelfEntryId> items() {
         return Collections.unmodifiableList(items);
     }
 
-    public void addItem(PlaylistItem item, AccountId userRequestingChange) {
+    public void addItem(NewPlaylistItem newPlaylistItem, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
-        items.addLast(item);
+
+        if (newPlaylistItem.position().isPresent()) {
+            if (newPlaylistItem.position().get().value() > items.size()) {
+                throw new IllegalArgumentException(
+                    "position (" + newPlaylistItem.position() + ") is greater than length of playlist (" + items.size() + ")."
+                );
+            }
+            items.add(newPlaylistItem.position().get().value(), newPlaylistItem.item());
+        } else {
+            items.addLast(newPlaylistItem.item());
+        }
     }
 
-    public void moveItem(@PositiveOrZero int oldPosition, @PositiveOrZero int newPosition, AccountId userRequestingChange) {
+    public void moveItem(MovePlayListItem movePlayListItem, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
 
-        if (oldPosition < 0) {
-            throw new IllegalArgumentException("oldPosition (" + oldPosition + ") is less than 0.");
-        }
-        if (oldPosition >= items.size()) {
+        if (movePlayListItem.oldPosition().value() >= items.size()) {
             throw new IllegalArgumentException(
-                "oldPosition (" + oldPosition + ") is greater than length of playlist (" + items.size() + " items)."
+                "oldPosition (" + movePlayListItem.oldPosition() + ") is greater than length of playlist (" + items.size() + ")."
             );
         }
-        if (newPosition < 0) {
-            throw new IllegalArgumentException("oldPosition (" + oldPosition + ")  is less than 0.");
-        }
-        if (newPosition >= items.size()) {
+        if (movePlayListItem.newPosition().value() >= items.size()) {
             throw new IllegalArgumentException(
-                "oldPosition (" + oldPosition + ")  is greater than length of playlist (" + items.size() + " items)."
+                "newPosition (" + movePlayListItem.newPosition() + ")  is greater than length of playlist (" + items.size() + ")."
             );
         }
 
-        var item = items.remove(oldPosition);
-        items.add(newPosition, item);
+        var item = items.remove(movePlayListItem.oldPosition().value());
+        items.add(movePlayListItem.newPosition().value(), item);
     }
 
-    public boolean removeItem(PlaylistItemId itemId, AccountId userRequestingChange) {
+    public void removeItem(PlaylistPosition position, AccountId userRequestingChange) {
         OwnershipPolicy.validate(owner, userRequestingChange, id);
-        return items.removeIf(item -> item.id().equals(itemId));
+
+        if (position.value() >= items.size()) {
+            throw new IllegalArgumentException(
+                "position (" + position + ")  is greater than length of playlist (" + items.size() + ")."
+            );
+        }
+
+        items.remove(position.value());
     }
 
 }

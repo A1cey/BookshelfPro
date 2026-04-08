@@ -13,6 +13,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ReviewChange;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.WatchlistItems;
@@ -26,6 +28,8 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgres
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressSnapshotRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemLanguageRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.PlaylistItemsRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.PlaylistsRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewChangeRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewRecord;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.WatchlistItemsRecord;
@@ -59,6 +63,9 @@ public class Keys {
     public static final UniqueKey<ConsumptionProgressSnapshotRecord> CONSUMPTION_PROGRESS_SNAPSHOT_PKEY = Internal.createUniqueKey(ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT, DSL.name("consumption_progress_snapshot_pkey"), new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT }, true);
     public static final UniqueKey<MediaItemRecord> MEDIA_ITEM_PKEY = Internal.createUniqueKey(MediaItem.MEDIA_ITEM, DSL.name("media_item_pkey"), new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
     public static final UniqueKey<MediaItemLanguageRecord> MEDIA_ITEM_LANGUAGE_PKEY = Internal.createUniqueKey(MediaItemLanguage.MEDIA_ITEM_LANGUAGE, DSL.name("media_item_language_pkey"), new TableField[] { MediaItemLanguage.MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID, MediaItemLanguage.MEDIA_ITEM_LANGUAGE.ISO_CODE }, true);
+    public static final UniqueKey<PlaylistItemsRecord> PLAYLIST_ITEMS_PKEY = Internal.createUniqueKey(PlaylistItems.PLAYLIST_ITEMS, DSL.name("playlist_items_pkey"), new TableField[] { PlaylistItems.PLAYLIST_ITEMS.PLAYLIST_ID, PlaylistItems.PLAYLIST_ITEMS.BOOKSHELF_ENTRY_ID }, true);
+    public static final UniqueKey<PlaylistItemsRecord> PLAYLIST_ITEMS_POSITION_PLAYLIST_ID_KEY = Internal.createUniqueKey(PlaylistItems.PLAYLIST_ITEMS, DSL.name("playlist_items_position_playlist_id_key"), new TableField[] { PlaylistItems.PLAYLIST_ITEMS.POSITION, PlaylistItems.PLAYLIST_ITEMS.PLAYLIST_ID }, true);
+    public static final UniqueKey<PlaylistsRecord> PLAYLISTS_PKEY = Internal.createUniqueKey(Playlists.PLAYLISTS, DSL.name("playlists_pkey"), new TableField[] { Playlists.PLAYLISTS.ID }, true);
     public static final UniqueKey<ReviewRecord> REVIEW_OWNER_MEDIA_ITEM_ID_KEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_owner_media_item_id_key"), new TableField[] { Review.REVIEW.OWNER, Review.REVIEW.MEDIA_ITEM_ID }, true);
     public static final UniqueKey<ReviewRecord> REVIEW_PKEY = Internal.createUniqueKey(Review.REVIEW, DSL.name("review_pkey"), new TableField[] { Review.REVIEW.ID }, true);
     public static final UniqueKey<ReviewChangeRecord> REVIEW_CHANGE_PKEY = Internal.createUniqueKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_pkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.REVIEW_ID, ReviewChange.REVIEW_CHANGE.REVIEW_DATE }, true);
@@ -78,6 +85,9 @@ public class Keys {
     public static final ForeignKey<ConsumptionProgressSnapshotRecord, ConsumptionProgressRecord> CONSUMPTION_PROGRESS_SNAPSHOT__CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID_FKEY = Internal.createForeignKey(ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT, DSL.name("consumption_progress_snapshot_consumption_progress_id_fkey"), new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID }, Keys.CONSUMPTION_PROGRESS_PKEY, new TableField[] { ConsumptionProgress.CONSUMPTION_PROGRESS.ID }, true);
     public static final ForeignKey<MediaItemRecord, AccountRecord> MEDIA_ITEM__MEDIA_ITEM_OWNER_ID_FKEY = Internal.createForeignKey(MediaItem.MEDIA_ITEM, DSL.name("media_item_owner_id_fkey"), new TableField[] { MediaItem.MEDIA_ITEM.OWNER_ID }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
     public static final ForeignKey<MediaItemLanguageRecord, MediaItemRecord> MEDIA_ITEM_LANGUAGE__MEDIA_ITEM_LANGUAGE_MEDIA_ITEM_ID_FKEY = Internal.createForeignKey(MediaItemLanguage.MEDIA_ITEM_LANGUAGE, DSL.name("media_item_language_media_item_id_fkey"), new TableField[] { MediaItemLanguage.MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
+    public static final ForeignKey<PlaylistItemsRecord, BookshelfEntryRecord> PLAYLIST_ITEMS__PLAYLIST_ITEMS_BOOKSHELF_ENTRY_ID_FKEY = Internal.createForeignKey(PlaylistItems.PLAYLIST_ITEMS, DSL.name("playlist_items_bookshelf_entry_id_fkey"), new TableField[] { PlaylistItems.PLAYLIST_ITEMS.BOOKSHELF_ENTRY_ID }, Keys.BOOKSHELF_ENTRY_PKEY, new TableField[] { BookshelfEntry.BOOKSHELF_ENTRY.ID }, true);
+    public static final ForeignKey<PlaylistItemsRecord, PlaylistsRecord> PLAYLIST_ITEMS__PLAYLIST_ITEMS_PLAYLIST_ID_FKEY = Internal.createForeignKey(PlaylistItems.PLAYLIST_ITEMS, DSL.name("playlist_items_playlist_id_fkey"), new TableField[] { PlaylistItems.PLAYLIST_ITEMS.PLAYLIST_ID }, Keys.PLAYLISTS_PKEY, new TableField[] { Playlists.PLAYLISTS.ID }, true);
+    public static final ForeignKey<PlaylistsRecord, AccountRecord> PLAYLISTS__PLAYLISTS_OWNER_FKEY = Internal.createForeignKey(Playlists.PLAYLISTS, DSL.name("playlists_owner_fkey"), new TableField[] { Playlists.PLAYLISTS.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
     public static final ForeignKey<ReviewRecord, MediaItemRecord> REVIEW__REVIEW_MEDIA_ITEM_ID_FKEY = Internal.createForeignKey(Review.REVIEW, DSL.name("review_media_item_id_fkey"), new TableField[] { Review.REVIEW.MEDIA_ITEM_ID }, Keys.MEDIA_ITEM_PKEY, new TableField[] { MediaItem.MEDIA_ITEM.ID }, true);
     public static final ForeignKey<ReviewRecord, AccountRecord> REVIEW__REVIEW_OWNER_FKEY = Internal.createForeignKey(Review.REVIEW, DSL.name("review_owner_fkey"), new TableField[] { Review.REVIEW.OWNER }, Keys.ACCOUNT_PKEY, new TableField[] { Account.ACCOUNT.ID }, true);
     public static final ForeignKey<ReviewChangeRecord, ConsumptionProgressSnapshotRecord> REVIEW_CHANGE__REVIEW_CHANGE_CONSUMPTION_PROGRESS_SNAPSHOT_FKEY = Internal.createForeignKey(ReviewChange.REVIEW_CHANGE, DSL.name("review_change_consumption_progress_snapshot_fkey"), new TableField[] { ReviewChange.REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID, ReviewChange.REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CREATED_AT }, Keys.CONSUMPTION_PROGRESS_SNAPSHOT_PKEY, new TableField[] { ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT }, true);
