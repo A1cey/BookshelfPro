@@ -2,31 +2,26 @@ package org.a1cey.bookshelf_pro_application.bookshelf.playlist;
 
 import java.util.stream.Collectors;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
-import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.GetAllPlaylistsCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.result.GetAllPlaylistsResult;
 import org.a1cey.bookshelf_pro_application.dto.PlaylistDto;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GetAllPlaylistsUseCase {
-    private final SecurityService securityService;
     private final PlaylistRepository playlistRepository;
+    private final CurrentUserProvider currentUserProvider;
 
-    public GetAllPlaylistsUseCase(
-        SecurityService securityService,
-        PlaylistRepository playlistRepository
-    ) {
-        this.securityService = securityService;
+    public GetAllPlaylistsUseCase(PlaylistRepository playlistRepository, CurrentUserProvider currentUserProvider) {
         this.playlistRepository = playlistRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
-    public GetAllPlaylistsResult execute(GetAllPlaylistsCommand command) {
-        var account = securityService.checkUser(command.owner(), command.name(), command.password());
-
+    public GetAllPlaylistsResult execute() {
+        var owner = currentUserProvider.currentUser();
         var playlists = playlistRepository
-                            .findByOwner(account.id())
+                            .findByOwner(owner.id())
                             .stream()
                             .map(PlaylistDto::from)
                             .collect(Collectors.toSet());

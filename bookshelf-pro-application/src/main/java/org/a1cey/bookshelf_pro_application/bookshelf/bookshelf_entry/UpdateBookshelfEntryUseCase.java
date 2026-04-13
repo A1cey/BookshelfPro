@@ -2,25 +2,24 @@ package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
 import java.util.NoSuchElementException;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.UpdateBookshelfEntryCommand;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdateBookshelfEntryUseCase {
 
-    private final SecurityService securityService;
     private final BookshelfEntryRepository bookshelfEntryRepository;
+    private final CurrentUserProvider currentUserProvider;
 
-    public UpdateBookshelfEntryUseCase(SecurityService securityService, BookshelfEntryRepository bookshelfEntryRepository) {
-        this.securityService = securityService;
+    public UpdateBookshelfEntryUseCase(BookshelfEntryRepository bookshelfEntryRepository, CurrentUserProvider currentUserProvider) {
         this.bookshelfEntryRepository = bookshelfEntryRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public void execute(UpdateBookshelfEntryCommand command) {
-        var user = securityService.checkUser(command.accountId(), command.name(), command.password());
-
+        var user = currentUserProvider.currentUser();
         var bookshelfEntry = bookshelfEntryRepository
                                  .findById(command.bookshelfEntryId())
                                  .orElseThrow(() -> new NoSuchElementException(

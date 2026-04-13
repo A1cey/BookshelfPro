@@ -1,30 +1,40 @@
 package org.a1cey.bookshelf_pro_application.account;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.account.command.UpdateAccountCommand;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
+import org.a1cey.bookshelf_pro_application.security.PasswordHasher;
 import org.a1cey.bookshelf_pro_domain.account.AccountRepository;
 import org.a1cey.bookshelf_pro_domain.account.AccountService;
+import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.springframework.stereotype.Service;
 
 @Service
 public final class UpdateAccountUseCase {
     private final AccountRepository accountRepository;
     private final AccountService accountService;
-    private final SecurityService securityService;
+    private final CurrentUserProvider currentUserProvider;
+    private final PasswordHasher passwordHasher;
 
-    public UpdateAccountUseCase(AccountRepository accountRepository, AccountService accountService, SecurityService securityService) {
+    public UpdateAccountUseCase(
+        AccountRepository accountRepository,
+        AccountService accountService,
+        CurrentUserProvider currentUserProvider,
+        PasswordHasher passwordHasher) {
         this.accountRepository = accountRepository;
-        // TODO: this is a domain service with jmolecules @Service
         this.accountService = accountService;
-        this.securityService = securityService;
+        this.currentUserProvider = currentUserProvider;
+        this.passwordHasher = passwordHasher;
     }
 
     public void execute(UpdateAccountCommand command) {
-        var account = securityService.checkUser(command.accountId(), command.name(), command.password());
+        var account = currentUserProvider.currentUser();
 
-        command.newName().ifPresent(newName -> accountService.changeUsername(account, newName, command.accountId()));
-        command.newPassword().ifPresent(newPassword -> account.changePassword(newPassword, command.accountId()));
-        command.newEmail().ifPresent(newEmail -> account.changeEmail(newEmail, command.accountId()));
+        command.newName().ifPresent(newName -> accountService.changeUsername(account, newName, account.id()));
+        command.newRawPassword().ifPresent(newRawPassword -> {
+            var hashedPassword = new Password(passwordHasher.hash(newRawPassword));
+            account.changePassword(hashedPassword, account.id());
+        });
+        command.newEmail().ifPresent(newEmail -> account.changeEmail(newEmail, account.id()));
 
         accountRepository.update(account);
     }

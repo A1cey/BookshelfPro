@@ -9,6 +9,8 @@ public interface AccountRepository {
 
     Optional<Account> findById(AccountId id);
 
+    Optional<Account> findByUsername(Username username);
+
     void save(Account account);
 
     void update(Account account);

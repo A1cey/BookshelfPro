@@ -48,6 +48,32 @@ public class JooqAccountRepository implements AccountRepository {
     }
 
     @Override
+    public Optional<Account> findByUsername(Username username) {
+        var record = dsl.fetchOne(ACCOUNT, ACCOUNT.USERNAME.eq(username.name()));
+
+        if (record == null) {
+            return Optional.empty();
+        }
+
+        var emailStr = record.getEmail();
+
+        Email email = null;
+
+        if (emailStr != null) {
+            email = new Email(emailStr);
+        }
+
+        var account = new Account(
+            new AccountId(record.getId()),
+            username,
+            email,
+            new Password(record.getPassword())
+        );
+
+        return Optional.of(account);
+    }
+
+    @Override
     public void save(Account account) {
         dsl.insertInto(ACCOUNT)
            .set(ACCOUNT.ID, account.id().value())

@@ -2,26 +2,26 @@ package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
 import java.util.Optional;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.GetBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result.GetBookshelfEntryResult;
 import org.a1cey.bookshelf_pro_application.dto.BookshelfEntryDto;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GetBookshelfEntryUseCase {
 
-    private final SecurityService securityService;
     private final BookshelfEntryRepository bookshelfEntryRepository;
+    private final CurrentUserProvider currentUserProvider;
 
-    public GetBookshelfEntryUseCase(SecurityService securityService, BookshelfEntryRepository bookshelfEntryRepository) {
-        this.securityService = securityService;
+    public GetBookshelfEntryUseCase(BookshelfEntryRepository bookshelfEntryRepository, CurrentUserProvider currentUserProvider) {
         this.bookshelfEntryRepository = bookshelfEntryRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public Optional<GetBookshelfEntryResult> execute(GetBookshelfEntryCommand command) {
-        var owner = securityService.checkUser(command.accountId(), command.name(), command.password());
+        var owner = currentUserProvider.currentUser();
         return bookshelfEntryRepository
                    .findById(command.bookshelfEntryId())
                    .map(entry -> {

@@ -1,9 +1,9 @@
 package org.a1cey.bookshelf_pro_application.media_item.book;
 
 import org.a1cey.bookshelf_pro_application.IdService;
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.media_item.book.command.CreateBookCommand;
 import org.a1cey.bookshelf_pro_application.media_item.book.result.CreateBookResult;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
@@ -13,20 +13,19 @@ import org.springframework.stereotype.Service;
 public final class CreateBookUseCase {
     private final MediaItemRepository mediaItemRepository;
     private final IdService idService;
-    private final SecurityService securityService;
+    private final CurrentUserProvider currentUserProvider;
 
-    public CreateBookUseCase(MediaItemRepository mediaItemRepository, IdService idService, SecurityService securityService) {
+    public CreateBookUseCase(MediaItemRepository mediaItemRepository, IdService idService, CurrentUserProvider currentUserProvider) {
         this.mediaItemRepository = mediaItemRepository;
         this.idService = idService;
-        this.securityService = securityService;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public CreateBookResult execute(CreateBookCommand command) {
-        var account = securityService.checkUser(command.accountId(), command.name(), command.password());
-
+        var owner = currentUserProvider.currentUser();
         var id = new MediaItemId(idService.generateId());
 
-        var builder = Book.builder(id, account.id(), command.title(), command.isbn(), command.pageCount());
+        var builder = Book.builder(id, owner.id(), command.title(), command.isbn(), command.pageCount());
 
         command.authors().ifPresent(builder::authors);
         command.publisher().ifPresent(builder::publisher);

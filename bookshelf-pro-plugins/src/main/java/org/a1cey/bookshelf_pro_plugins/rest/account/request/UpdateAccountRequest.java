@@ -4,6 +4,6 @@ import org.jspecify.annotations.Nullable;
 
 public record UpdateAccountRequest(
     @Nullable String newName,
-    @Nullable String newPassword,
+    @Nullable String newRawPassword,
     @Nullable String newEmail
 ) {}

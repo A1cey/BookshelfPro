@@ -1,6 +1,7 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,7 +78,10 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         dsl.insertInto(MEDIA_ITEM)
            .set(MEDIA_ITEM.ID, mediaItem.id().value())
            .set(MEDIA_ITEM.OWNER_ID, mediaItem.owner().value())
-           .set(MEDIA_ITEM.COVER_IMAGE_URL, mediaItem.coverImageUrl() != null ? mediaItem.coverImageUrl().toString() : null)
+           .set(
+               MEDIA_ITEM.COVER_IMAGE_URL,
+               mediaItem.coverImageUrl() != null ? Objects.requireNonNull(mediaItem.coverImageUrl()).toString() : null
+           )
            .set(MEDIA_ITEM.DESCRIPTION, mediaItem.description().description())
            .set(MEDIA_ITEM.TYPE, mediaItem.type().name())
            .set(MEDIA_ITEM.TITLE, mediaItem.title().title())
@@ -97,7 +101,10 @@ public class JooqMediaItemRepository implements MediaItemRepository {
     @Override
     public void update(MediaItem mediaItem) {
         dsl.update(MEDIA_ITEM)
-           .set(MEDIA_ITEM.COVER_IMAGE_URL, mediaItem.coverImageUrl() != null ? mediaItem.coverImageUrl().toString() : null)
+           .set(
+               MEDIA_ITEM.COVER_IMAGE_URL,
+               mediaItem.coverImageUrl() != null ? Objects.requireNonNull(mediaItem.coverImageUrl()).toString() : null
+           )
            .set(MEDIA_ITEM.DESCRIPTION, mediaItem.description().description())
            .set(MEDIA_ITEM.TITLE, mediaItem.title().title())
            .set(MEDIA_ITEM.SUBTITLE, mediaItem.subtitle().subtitle())

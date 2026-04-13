@@ -11,24 +11,19 @@ import org.a1cey.bookshelf_pro_application.bookshelf.playlist.GetPlaylistByIdUse
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.UpdatePlaylistUseCase;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.CreatePlaylistCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.DeletePlaylistCommand;
-import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.GetAllPlaylistsCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.GetPlaylistByIdCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.UpdatePlaylistCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.playlist.result.CreatePlaylistResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.result.GetAllPlaylistsResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.result.GetPlaylistByIdResult;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.account.AccountId;
-import org.a1cey.bookshelf_pro_domain.account.Password;
-import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.MovePlayListItem;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.NewPlaylistItem;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistPosition;
-import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.playlist.request.CreatePlaylistRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.playlist.request.UpdatePlaylistRequest;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,25 +59,15 @@ public class PlaylistController {
     }
 
     @PostMapping
-    public void createPlaylist(
-        @ParameterObject Credentials credentials,
-        @RequestBody CreatePlaylistRequest request
-    ) {
-        createPlaylistUseCase.execute(new CreatePlaylistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
+    public ResponseEntity<CreatePlaylistResult> createPlaylist(@RequestBody CreatePlaylistRequest request) {
+        return ResponseEntity.ok(createPlaylistUseCase.execute(new CreatePlaylistCommand(
             new Title(request.title()),
             request.itemsAsBookshelfEntryIds().stream().map(BookshelfEntryId::new).toList()
-        ));
+        )));
     }
 
     @PatchMapping("/{playlistId}")
-    public void updatePlaylist(
-        @PathVariable UUID playlistId,
-        @ParameterObject Credentials credentials,
-        @RequestBody UpdatePlaylistRequest request
-    ) {
+    public void updatePlaylist(@PathVariable UUID playlistId, @RequestBody UpdatePlaylistRequest request) {
         var newItems = Optional
                            .ofNullable(request.newItems())
                            .map(items -> items
@@ -104,9 +89,6 @@ public class PlaylistController {
                             );
 
         updatePlaylistUseCase.execute(new UpdatePlaylistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
             new PlaylistId(playlistId),
             Optional.ofNullable(request.newTitle()).map(Title::new),
             newItems,
@@ -117,33 +99,17 @@ public class PlaylistController {
     }
 
     @DeleteMapping("/{playlistId}")
-    public void deletePlaylist(@PathVariable UUID playlistId, @ParameterObject Credentials credentials) {
-        deletePlaylistUseCase.execute(new DeletePlaylistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
-            new PlaylistId(playlistId)
-        ));
+    public void deletePlaylist(@PathVariable UUID playlistId) {
+        deletePlaylistUseCase.execute(new DeletePlaylistCommand(new PlaylistId(playlistId)));
     }
 
     @GetMapping
-    public ResponseEntity<GetAllPlaylistsResult> getAllPlaylists(@ParameterObject Credentials credentials) {
-        return ResponseEntity.ok(getAllPlaylistsUseCase.execute(new GetAllPlaylistsCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password())
-        )));
+    public ResponseEntity<GetAllPlaylistsResult> getAllPlaylists() {
+        return ResponseEntity.ok(getAllPlaylistsUseCase.execute());
     }
 
     @GetMapping("/{playlistId}")
-    public ResponseEntity<GetPlaylistByIdResult> getPlaylistById(
-        @PathVariable UUID playlistId, @ParameterObject Credentials credentials
-    ) {
-        return ResponseEntity.of(getPlaylistByIdUseCase.execute(new GetPlaylistByIdCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
-            new PlaylistId(playlistId)
-        )));
+    public ResponseEntity<GetPlaylistByIdResult> getPlaylistById(@PathVariable UUID playlistId) {
+        return ResponseEntity.of(getPlaylistByIdUseCase.execute(new GetPlaylistByIdCommand(new PlaylistId(playlistId))));
     }
 }

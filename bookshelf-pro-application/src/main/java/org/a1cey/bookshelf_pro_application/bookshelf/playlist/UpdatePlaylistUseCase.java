@@ -1,30 +1,28 @@
 package org.a1cey.bookshelf_pro_application.bookshelf.playlist;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.playlist.command.UpdatePlaylistCommand;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UpdatePlaylistUseCase {
-    private final SecurityService securityService;
     private final org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistRepository playlistRepository;
     private final BookshelfEntryRepository bookshelfEntryRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     public UpdatePlaylistUseCase(
-        SecurityService securityService,
         PlaylistRepository playlistRepository,
-        BookshelfEntryRepository bookshelfEntryRepository
-    ) {
-        this.securityService = securityService;
+        BookshelfEntryRepository bookshelfEntryRepository,
+        CurrentUserProvider currentUserProvider) {
         this.playlistRepository = playlistRepository;
         this.bookshelfEntryRepository = bookshelfEntryRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public void execute(UpdatePlaylistCommand command) {
-        var account = securityService.checkUser(command.owner(), command.name(), command.password());
-
+        var owner = currentUserProvider.currentUser();
         var playlist = playlistRepository
                            .findById(command.playlistId())
                            .orElseThrow(
@@ -32,7 +30,7 @@ public class UpdatePlaylistUseCase {
                            );
 
         if (command.newTitle().isPresent()) {
-            playlist.changeTitle(command.newTitle().get(), account.id());
+            playlist.changeTitle(command.newTitle().get(), owner.id());
         }
 
         command
@@ -40,12 +38,12 @@ public class UpdatePlaylistUseCase {
             .ifPresent(
                 items ->
                     items.forEach(newPlaylistItem -> {
-                        if (!bookshelfEntryRepository.existsByAccountAndId(account.id(), newPlaylistItem.item())) {
+                        if (!bookshelfEntryRepository.existsByAccountAndId(owner.id(), newPlaylistItem.item())) {
                             throw new IllegalArgumentException(
                                 "Bookshelf entry with id " + newPlaylistItem + " not found for user"
                             );
                         }
-                        playlist.addItem(newPlaylistItem, account.id());
+                        playlist.addItem(newPlaylistItem, owner.id());
                     })
             );
 
@@ -57,13 +55,13 @@ public class UpdatePlaylistUseCase {
                         if (playlist.items().size() <= position.value()) {
                             throw new IllegalArgumentException("Position " + position + " greater than playlist length");
                         }
-                        playlist.removeItem(position, account.id());
+                        playlist.removeItem(position, owner.id());
                     }));
 
         command
             .moveItems()
             .ifPresent(moveItems ->
-                           moveItems.forEach(moveItem -> playlist.moveItem(moveItem, account.id()))
+                           moveItems.forEach(moveItem -> playlist.moveItem(moveItem, owner.id()))
             );
 
         playlistRepository.update(playlist);

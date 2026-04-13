@@ -1,8 +1,9 @@
 package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
 import org.a1cey.bookshelf_pro_application.IdService;
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.AddBookshelfEntryCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.result.AddBookshelfEntryResult;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
@@ -17,21 +18,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class AddBookshelfEntryUseCase {
 
-    private final SecurityService securityService;
     private final BookshelfEntryRepository bookshelfEntryRepository;
     private final MediaItemRepository mediaItemRepository;
     private final IdService idService;
+    private final CurrentUserProvider currentUserProvider;
 
-    public AddBookshelfEntryUseCase(SecurityService securityService, BookshelfEntryRepository bookshelfEntryRepository,
-                                    MediaItemRepository mediaItemRepository, IdService idService) {
-        this.securityService = securityService;
+    public AddBookshelfEntryUseCase(
+        BookshelfEntryRepository bookshelfEntryRepository,
+        MediaItemRepository mediaItemRepository,
+        IdService idService,
+        CurrentUserProvider currentUserProvider) {
         this.bookshelfEntryRepository = bookshelfEntryRepository;
         this.mediaItemRepository = mediaItemRepository;
         this.idService = idService;
+        this.currentUserProvider = currentUserProvider;
     }
 
-    public BookshelfEntry execute(AddBookshelfEntryCommand command) {
-        var owner = securityService.checkUser(command.accountId(), command.name(), command.password());
+    public AddBookshelfEntryResult execute(AddBookshelfEntryCommand command) {
+        var owner = currentUserProvider.currentUser();
 
         if (bookshelfEntryRepository.existsByAccountAndMediaItem(owner.id(), command.mediaItemId())) {
             throw new IllegalArgumentException("Bookshelf entry already exists");
@@ -59,6 +63,6 @@ public class AddBookshelfEntryUseCase {
 
         bookshelfEntryRepository.save(bookshelfEntry, mediaItem.type());
 
-        return bookshelfEntry;
+        return new AddBookshelfEntryResult(bookshelfEntryId.value());
     }
 }

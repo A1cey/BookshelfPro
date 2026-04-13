@@ -15,10 +15,9 @@
     - Either do not allow deletion of bookshelf entries by user (reasonable as it tracks consumption and labels and the user has so good use
       case to remove this data)
     - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
-- Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate
+- Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate checks authorization
 - Write 10+ Tests + mock
 - Correct exception handling needed
-- Security
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [x] Account
@@ -64,7 +63,7 @@
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
         - [x] Get all media items -> media items
         - [x] Book
-            - [x] Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
+            - [x] ! Create book (isbn, title, [subtitle], [description], [coverImageUrl], [languages],
               pageCount, [authors], [publishDate], [publisher], [publishPlace])
             - [x] ! Change title (newTitle)
             - [x] ! Change subtitle (newSubtitle)
@@ -88,7 +87,7 @@
         - [ ] Music
             - ...
         - [x] Review
-            - [x] Create review (mediaItemId, rating, comment)
+            - [x] ! Create review (mediaItemId, rating, comment)
             - [x] ! Delete review (reviewId)
             - [x] ! Change review (newRating, newComment)
             - [x] ! Change rating (newRating)

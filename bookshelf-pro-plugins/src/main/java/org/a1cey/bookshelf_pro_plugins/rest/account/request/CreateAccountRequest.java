@@ -4,6 +4,6 @@ import org.jspecify.annotations.Nullable;
 
 public record CreateAccountRequest(
     String username,
-    String password, // TODO: This is unsecure
+    String rawPassword, // TODO: This is unsecure
     @Nullable String email
 ) {}

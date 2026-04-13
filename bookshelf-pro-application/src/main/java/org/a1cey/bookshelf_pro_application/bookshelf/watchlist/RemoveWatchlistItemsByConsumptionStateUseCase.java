@@ -4,8 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.RemoveWatchlistItemsByConsumptionStateCommand;
+import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
@@ -14,23 +14,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RemoveWatchlistItemsByConsumptionStateUseCase {
-    private final SecurityService securityService;
     private final WatchlistRepository watchlistRepository;
     private final BookshelfEntryRepository bookshelfEntryRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     public RemoveWatchlistItemsByConsumptionStateUseCase(
-        SecurityService securityService,
         WatchlistRepository watchlistRepository,
-        BookshelfEntryRepository bookshelfEntryRepository
-    ) {
-        this.securityService = securityService;
+        BookshelfEntryRepository bookshelfEntryRepository,
+        CurrentUserProvider currentUserProvider) {
         this.watchlistRepository = watchlistRepository;
         this.bookshelfEntryRepository = bookshelfEntryRepository;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public void execute(RemoveWatchlistItemsByConsumptionStateCommand command) {
-        var account = securityService.checkUser(command.owner(), command.name(), command.password());
-
+        var owner = currentUserProvider.currentUser();
         var watchlist = watchlistRepository
                             .findById(command.watchlistId())
                             .orElseThrow(
@@ -47,7 +45,7 @@ public class RemoveWatchlistItemsByConsumptionStateUseCase {
                                  .map(BookshelfEntry::id)
                                  .toList();
 
-        watchlist.changeItems(new LinkedHashSet<>(remainingItems), account.id());
+        watchlist.changeItems(new LinkedHashSet<>(remainingItems), owner.id());
         watchlistRepository.update(watchlist);
     }
 

@@ -13,23 +13,18 @@ import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.RemoveWatchlistIt
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.UpdateWatchlistUseCase;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.CreateWatchlistCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.DeleteWatchlistCommand;
-import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.GetAllWatchlistsCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.GetWatchlistByIdCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.RemoveWatchlistItemsByConsumptionStateCommand;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.command.UpdateWatchlistCommand;
+import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.CreateWatchlistResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetAllWatchlistsResult;
 import org.a1cey.bookshelf_pro_application.bookshelf.watchlist.result.GetWatchlistByIdResult;
 import org.a1cey.bookshelf_pro_domain.Title;
-import org.a1cey.bookshelf_pro_domain.account.AccountId;
-import org.a1cey.bookshelf_pro_domain.account.Password;
-import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.watchlist.WatchlistId;
-import org.a1cey.bookshelf_pro_plugins.rest.Credentials;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.watchlist.request.CreateWatchlistRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.watchlist.request.RemoveWatchlistItemsByConsumptionStateRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.bookshelf.watchlist.request.UpdateWatchlistRequest;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,29 +59,19 @@ public class WatchlistController {
     }
 
     @PostMapping
-    public void createWatchlist(
-        @ParameterObject Credentials credentials,
-        @RequestBody CreateWatchlistRequest request
-    ) {
-        createWatchlistUseCase.execute(new CreateWatchlistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
+    public ResponseEntity<CreateWatchlistResult> createWatchlist(@RequestBody CreateWatchlistRequest request) {
+        return ResponseEntity.ok(createWatchlistUseCase.execute(new CreateWatchlistCommand(
             new Title(request.title()),
             new LinkedHashSet<>(request.itemsAsBookshelfEntryIds().stream().map(BookshelfEntryId::new).toList())
-        ));
+        )));
     }
 
     @PatchMapping("/{watchlistId}")
     public void updateWatchlist(
         @PathVariable UUID watchlistId,
-        @ParameterObject Credentials credentials,
         @RequestBody UpdateWatchlistRequest request
     ) {
         updateWatchlistUseCase.execute(new UpdateWatchlistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
             new WatchlistId(watchlistId),
             Optional.ofNullable(request.newTitle()).map(Title::new),
             Optional.ofNullable(request.newItemsAsBookshelfEntryIds())
@@ -97,34 +82,18 @@ public class WatchlistController {
     }
 
     @DeleteMapping("/{watchlistId}")
-    public void deleteWatchlist(@PathVariable UUID watchlistId, @ParameterObject Credentials credentials) {
-        deleteWatchlistUseCase.execute(new DeleteWatchlistCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
-            new WatchlistId(watchlistId)
-        ));
+    public void deleteWatchlist(@PathVariable UUID watchlistId) {
+        deleteWatchlistUseCase.execute(new DeleteWatchlistCommand(new WatchlistId(watchlistId)));
     }
 
     @GetMapping
-    public ResponseEntity<GetAllWatchlistsResult> getAllWatchlists(@ParameterObject Credentials credentials) {
-        return ResponseEntity.ok(getAllWatchlistsUseCase.execute(new GetAllWatchlistsCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password())
-        )));
+    public ResponseEntity<GetAllWatchlistsResult> getAllWatchlists() {
+        return ResponseEntity.ok(getAllWatchlistsUseCase.execute());
     }
 
     @GetMapping("/{watchlistId}")
-    public ResponseEntity<GetWatchlistByIdResult> getWatchlistById(
-        @PathVariable UUID watchlistId, @ParameterObject Credentials credentials
-    ) {
-        return ResponseEntity.of(getWatchlistByIdUseCase.execute(new GetWatchlistByIdCommand(
-            new AccountId(credentials.accountId()),
-            new Username(credentials.username()),
-            new Password(credentials.password()),
-            new WatchlistId(watchlistId)
-        )));
+    public ResponseEntity<GetWatchlistByIdResult> getWatchlistById(@PathVariable UUID watchlistId) {
+        return ResponseEntity.of(getWatchlistByIdUseCase.execute(new GetWatchlistByIdCommand(new WatchlistId(watchlistId))));
     }
 
     /**
@@ -133,14 +102,10 @@ public class WatchlistController {
     @PatchMapping("/{watchlistId}/remove-items-by-consumption")
     public void removeWatchlistItemsByConsumptionState(
         @PathVariable UUID watchlistId,
-        @ParameterObject Credentials credentials,
         @RequestBody RemoveWatchlistItemsByConsumptionStateRequest request
     ) {
         removeWatchlistItemsByConsumptionStateUseCase.execute(
             new RemoveWatchlistItemsByConsumptionStateCommand(
-                new AccountId(credentials.accountId()),
-                new Username(credentials.username()),
-                new Password(credentials.password()),
                 new WatchlistId(watchlistId),
                 request.consumptionStates()
             )
