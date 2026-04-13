@@ -127,6 +127,10 @@ public class JooqWatchlistRepository implements WatchlistRepository {
     }
 
     private void saveWatchlistItems(Watchlist watchlist) {
+        if (watchlist.items().isEmpty()) {
+            return;
+        }
+
         dsl.insertInto(WATCHLIST_ITEMS, WATCHLIST_ITEMS.WATCHLIST_ID, WATCHLIST_ITEMS.BOOKSHELF_ENTRY_ID)
            .valuesOfRows(
                watchlist

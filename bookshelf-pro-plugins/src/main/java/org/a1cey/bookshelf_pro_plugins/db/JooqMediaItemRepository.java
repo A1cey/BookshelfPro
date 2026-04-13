@@ -120,12 +120,20 @@ public class JooqMediaItemRepository implements MediaItemRepository {
     }
 
     private void saveLanguages(MediaItemId id, Set<Language> languages) {
+        if (languages.isEmpty()) {
+            return;
+        }
+
         dsl.insertInto(MEDIA_ITEM_LANGUAGE, MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID, MEDIA_ITEM_LANGUAGE.ISO_CODE)
            .valuesOfRows(languages.stream().map(lang -> DSL.row(id.value(), lang.isoCode())).toList())
            .execute();
     }
 
     private void updateLanguages(MediaItemId id, Set<Language> languages) {
+        if (languages.isEmpty()) {
+            return;
+        }
+
         var existingLanguages = dsl
                                     .select(MEDIA_ITEM_LANGUAGE.ISO_CODE)
                                     .from(MEDIA_ITEM_LANGUAGE)
@@ -177,12 +185,20 @@ public class JooqMediaItemRepository implements MediaItemRepository {
     }
 
     private void saveAuthors(MediaItemId id, Set<Author> authors) {
+        if (authors.isEmpty()) {
+            return;
+        }
+
         dsl.insertInto(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID, BOOK_AUTHOR.NAME)
            .valuesOfRows(authors.stream().map(author -> DSL.row(id.value(), author.name())).toList())
            .execute();
     }
 
     private void updateAuthors(MediaItemId id, Set<Author> authors) {
+        if (authors.isEmpty()) {
+            return;
+        }
+
         var existingAuthors = dsl
                                   .select(BOOK_AUTHOR.NAME)
                                   .from(BOOK_AUTHOR)

@@ -143,6 +143,10 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
     }
 
     private void saveLabels(BookshelfEntry bookshelfEntry) {
+        if (bookshelfEntry.labels().isEmpty()) {
+            return;
+        }
+
         dsl.insertInto(BOOKSHELF_ENTRY_LABEL, BOOKSHELF_ENTRY_LABEL.BOOKSHELF_ENTRY_ID, BOOKSHELF_ENTRY_LABEL.LABEL)
            .valuesOfRows(
                bookshelfEntry
@@ -154,6 +158,10 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
     }
 
     private void updateLabels(BookshelfEntryId bookshelfEntryId, Set<Label> labels) {
+        if (labels.isEmpty()) {
+            return;
+        }
+
         var existingLabels = dsl
                                  .select(BOOKSHELF_ENTRY_LABEL.LABEL)
                                  .from(BOOKSHELF_ENTRY_LABEL)

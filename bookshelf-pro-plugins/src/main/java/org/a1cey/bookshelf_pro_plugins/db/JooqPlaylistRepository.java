@@ -127,6 +127,10 @@ public class JooqPlaylistRepository implements PlaylistRepository {
     }
 
     private void savePlaylistItems(Playlist playlist) {
+        if (playlist.items().isEmpty()) {
+            return;
+        }
+
         dsl.insertInto(PLAYLIST_ITEMS, PLAYLIST_ITEMS.PLAYLIST_ID, PLAYLIST_ITEMS.BOOKSHELF_ENTRY_ID, PLAYLIST_ITEMS.POSITION)
            .valuesOfRows(
                IntStream
