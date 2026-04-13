@@ -36,6 +36,9 @@ public final class Review {
     }
 
     private Review(ReviewId id, MediaItemId mediaItemId, AccountId owner, List<@Valid ReviewChange> reviewHistory) {
+        if (reviewHistory.isEmpty()) {
+            throw new IllegalArgumentException("Review history cannot be empty during construction.");
+        }
         this.id = id;
         this.mediaItemId = mediaItemId;
         this.owner = owner;
@@ -51,8 +54,11 @@ public final class Review {
     }
 
     static Review create(
-        ReviewId id, MediaItemId mediaItemId, AccountId accountId,
-        Rating rating, Comment comment,
+        ReviewId id,
+        MediaItemId mediaItemId,
+        AccountId accountId,
+        Rating rating,
+        Comment comment,
         ConsumptionProgressSnapshot consumptionProgressSnapshot
     ) {
         validateConsumptionState(consumptionProgressSnapshot);
@@ -74,6 +80,9 @@ public final class Review {
         AccountId owner,
         List<ReviewChange> reviewHistory
     ) {
+        if (reviewHistory.isEmpty()) {
+            throw new IllegalArgumentException("Review history cannot be empty during reconstruction.");
+        }
         return new Review(id, mediaItemId, owner, reviewHistory);
     }
 
