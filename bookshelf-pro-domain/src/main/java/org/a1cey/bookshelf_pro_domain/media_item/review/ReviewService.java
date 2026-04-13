@@ -23,7 +23,7 @@ public final class ReviewService {
         ConsumptionProgressSnapshot snapshot
     ) {
         if (reviewRepository.existsByUserAndMediaItem(accountId, mediaItemId)) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                 "User " + accountId + " has already reviewed media item " + mediaItemId
             );
         }

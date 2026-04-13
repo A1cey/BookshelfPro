@@ -1,7 +1,5 @@
 package org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry;
 
-import java.util.NoSuchElementException;
-
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.UpdateBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
@@ -22,7 +20,7 @@ public class UpdateBookshelfEntryUseCase {
         var user = currentUserProvider.currentUser();
         var bookshelfEntry = bookshelfEntryRepository
                                  .findById(command.bookshelfEntryId())
-                                 .orElseThrow(() -> new NoSuchElementException(
+                                 .orElseThrow(() -> new IllegalArgumentException(
                                      "Book entry with id " + command.bookshelfEntryId() + " not found")
                                  );
 

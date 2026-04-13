@@ -47,7 +47,7 @@ public final class Review {
 
     private static void validateConsumptionState(ConsumptionProgressSnapshot snapshot) {
         if (snapshot.state() == ConsumptionState.NOT_STARTED) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                 "Cannot review a medium the user has not started to consume."
             );
         }

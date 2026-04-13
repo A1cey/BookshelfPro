@@ -1,7 +1,5 @@
 package org.a1cey.bookshelf_pro_application.media_item.book;
 
-import java.util.NoSuchElementException;
-
 import org.a1cey.bookshelf_pro_application.media_item.book.command.UpdateBookCommand;
 import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
@@ -23,7 +21,7 @@ public final class UpdateBookUseCase {
         var owner = currentUserProvider.currentUser();
         var mediaItem = mediaItemRepository
                             .findById(command.bookId())
-                            .orElseThrow(() -> new NoSuchElementException("Book with id " + command.bookId() + " not found"));
+                            .orElseThrow(() -> new IllegalArgumentException("Book with id " + command.bookId() + " not found"));
 
         if (!mediaItem.owner().equals(owner.id())) {
             throw new SecurityException("User not allowed to perform this action as they do not own the media item");

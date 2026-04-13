@@ -17,7 +17,6 @@
     - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
 - Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate checks authorization
 - Write 10+ Tests + mock
-- Correct exception handling needed
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [x] Account

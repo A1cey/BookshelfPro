@@ -32,7 +32,7 @@ public final class AccountService {
 
     private void validateUserNameIsUnique(Username name) {
         if (this.accountRepository.existsUsername(name)) {
-            throw new IllegalStateException("Username " + name.name() + " already exists");
+            throw new IllegalArgumentException("Username " + name.name() + " already exists");
         }
     }
 

@@ -236,7 +236,7 @@ public class JooqMediaItemRepository implements MediaItemRepository {
         var bookRecord = dsl.fetchOne(BOOK, BOOK.ID.eq(id));
 
         if (bookRecord == null) {
-            throw new RuntimeException("Invalid DB state: No book record found for media item " + id);
+            throw new IllegalStateException("Invalid DB state: No book record found for media item " + id);
         }
 
         var authors = dsl.fetch(BOOK_AUTHOR, BOOK_AUTHOR.BOOK_ID.eq(bookRecord.getId()))
