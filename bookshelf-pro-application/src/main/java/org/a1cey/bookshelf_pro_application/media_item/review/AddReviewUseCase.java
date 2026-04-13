@@ -1,11 +1,8 @@
 package org.a1cey.bookshelf_pro_application.media_item.review;
 
-import java.util.Set;
-
 import org.a1cey.bookshelf_pro_application.IdService;
 import org.a1cey.bookshelf_pro_application.SecurityService;
 import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.AddBookshelfEntryUseCase;
-import org.a1cey.bookshelf_pro_application.bookshelf.bookshelf_entry.command.AddBookshelfEntryCommand;
 import org.a1cey.bookshelf_pro_application.media_item.review.command.AddReviewCommand;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewId;
@@ -41,18 +38,9 @@ public class AddReviewUseCase {
     public void execute(AddReviewCommand command) {
         var account = securityService.checkUser(command.accountId(), command.name(), command.password());
 
-        // TODO: the side effect of creating a bookshelf entry must be documented in the domain and a domain service should be used
         var bookshelfEntry = bookshelfEntryRepository
                                  .findByAccountAndMediaItem(account.id(), command.mediaItemId())
-                                 .orElseGet(() -> addBookshelfEntryUseCase.execute(
-                                     new AddBookshelfEntryCommand(
-                                         command.accountId(),
-                                         command.name(),
-                                         command.password(),
-                                         command.mediaItemId(),
-                                         Set.of()
-                                     )
-                                 ));
+                                 .orElseThrow(() -> new IllegalArgumentException("Media item not in bookshelf"));
 
         var id = idService.generateId();
 

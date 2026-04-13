@@ -9,8 +9,6 @@
       provide and easy way of cleaning up Watchlists a use case has been added: RemoveWatchlistItemsByStateUseCase accepting a
       Set<ConsumptionState>
     - Book authors are unique (a set)
-    - If a Review is created for a media item that is not in the bookshelf, a new bookshelf entry for this media item is created. // TOOD:
-      model this in the domain
 - Should Media Item have the type attribute -> Matching on instanceof(mediaItem) is another possibility
 - JOIN Sql for fetching multiple tables (book (media items), review)
 - Deleting bookshelf affects watchlists and playlists as they reference the id
@@ -33,34 +31,34 @@
         - [x] ! Get account details -> id, username, email
         - [x] ! Get media items -> mediaItems
         - [x] ! Get reviews -> reviews
-    - [x] Bookshelf
-        - [x] ! Get bookshelf entries -> bookshelfEntries
-        - [x] ! Get playlists -> playlists
-        - [x] ! Get watchlists -> watchlists
-        - [x] BookshelfEntry
-            - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgressSnapshot], [labels]) // TODO: or make this a use
-              case on MediaItem -> Book.addToBookshelf
-            - [x] ! Update consumption progress (MediaItemConsumptionProgress)
-            - [x] ! Add label (label)
-            - [x] ! Remove label (label)
-            - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgressSnapshot, labels
-        - [x] Playlist
-            - [x] ! Create playlist (title, [items])
-            - [x] ! Delete playlist (playlistId)
-            - [x] ! Change title (newTitle)
-              // TODO: document that first items are added, then items are removed, then items are moved in update request
-            - [x] ! Add item (bookshelfEntryId)
-            - [x] ! Remove item (playlistItemId)
-            - [x] ! Move Item (oldPosition, newPosition)
-            - [x] ! Get playlist details -> id, title, items
-        - [x] Watchlist
-            - [x] ! Create watchlist (title, [items])
-            - [x] ! Delete watchlist (watchlistId)
-            - [x] ! Change title (newTitle)
-            - [x] ! Add item (bookshelfEntryId)
-            - [x] ! Remove item (watchlistItemId)
-            - [x] ! Remove items by consumption state (consumptionStates)
-            - [x] ! Get watchlist details -> id, title, items
+        - [x] Bookshelf
+            - [x] ! Get bookshelf entries -> bookshelfEntries
+            - [x] ! Get playlists -> playlists
+            - [x] ! Get watchlists -> watchlists
+            - [x] BookshelfEntry
+                - [x] ! Create bookshelf entry (mediaItemId, [consumptionProgressSnapshot], [labels]) // TODO: or make this a use
+                  case on MediaItem -> Book.addToBookshelf
+                - [x] ! Update consumption progress (MediaItemConsumptionProgress)
+                - [x] ! Add label (label)
+                - [x] ! Remove label (label)
+                - [x] ! Get bookshelf entry details -> id, mediaItemId, owner, consumptionProgressSnapshot, labels
+            - [x] Playlist
+                - [x] ! Create playlist (title, [items])
+                - [x] ! Delete playlist (playlistId)
+                - [x] ! Change title (newTitle)
+                  // TODO: document that first items are added, then items are removed, then items are moved in update request
+                - [x] ! Add item (bookshelfEntryId)
+                - [x] ! Remove item (playlistItemId)
+                - [x] ! Move Item (oldPosition, newPosition)
+                - [x] ! Get playlist details -> id, title, items
+            - [x] Watchlist
+                - [x] ! Create watchlist (title, [items])
+                - [x] ! Delete watchlist (watchlistId)
+                - [x] ! Change title (newTitle)
+                - [x] ! Add item (bookshelfEntryId)
+                - [x] ! Remove item (watchlistItemId)
+                - [x] ! Remove items by consumption state (consumptionStates)
+                - [x] ! Get watchlist details -> id, title, items
     - [ ] MediaItem
         - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
