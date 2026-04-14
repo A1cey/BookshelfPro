@@ -36,8 +36,7 @@
     <build>
         <pluginManagement>
             <plugins>
-
-                <!-- ==================== CHECKSTYLE ==================== -->
+                <!--                ==================== CHECKSTYLE ====================-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>

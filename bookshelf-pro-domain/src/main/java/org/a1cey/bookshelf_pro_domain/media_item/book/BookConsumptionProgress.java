@@ -51,8 +51,8 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
     }
 
     @Override
-    public BookConsumptionProgress update(long newCurrent) {
-        return new BookConsumptionProgress(new PageCount((int) newCurrent), total);
+    public BookConsumptionProgress update(int newCurrent) {
+        return new BookConsumptionProgress(new PageCount(newCurrent), total);
     }
 
     /**

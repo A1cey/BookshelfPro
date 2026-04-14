@@ -14,6 +14,8 @@ import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.BookConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.Duration;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.MovieConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.review.Comment;
 import org.a1cey.bookshelf_pro_domain.media_item.review.Rating;
 import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
@@ -173,6 +175,10 @@ public class JooqReviewRepository implements ReviewRepository {
                           case MediaItemType.BOOK -> BookConsumptionProgress.reconstruct(
                               new PageCount(consumptionProgressSnapshotRecord.getCurrentPage()),
                               new PageCount(consumptionProgressSnapshotRecord.getTotalPages())
+                          );
+                          case MediaItemType.MOVIE -> MovieConsumptionProgress.reconstruct(
+                              Duration.of(consumptionProgressSnapshotRecord.getCurrentDurationSeconds()),
+                              Duration.of(consumptionProgressSnapshotRecord.getTotalDurationSeconds())
                           );
                       };
 

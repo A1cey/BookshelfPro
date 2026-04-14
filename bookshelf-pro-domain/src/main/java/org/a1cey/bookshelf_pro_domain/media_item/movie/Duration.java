@@ -10,7 +10,7 @@ public record Duration(java.time.Duration time) {
         }
     }
 
-    public static Duration of(long millis) {
-        return new Duration(java.time.Duration.ofMillis(millis));
+    public static Duration of(int seconds) {
+        return new Duration(java.time.Duration.ofSeconds(seconds));
     }
 }

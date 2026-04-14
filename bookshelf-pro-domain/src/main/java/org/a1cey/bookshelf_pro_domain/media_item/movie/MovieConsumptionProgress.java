@@ -29,7 +29,7 @@ public final class MovieConsumptionProgress implements MediaItemConsumptionProgr
 
     @Override
     public double percentage() {
-        return (double) watched.time().toMillis() / total.time().toMillis();
+        return (double) watched.time().toSeconds() / total.time().toSeconds();
     }
 
     @Override
@@ -48,8 +48,8 @@ public final class MovieConsumptionProgress implements MediaItemConsumptionProgr
     }
 
     @Override
-    public MovieConsumptionProgress update(long newWatchedInMillis) {
-        return new MovieConsumptionProgress(Duration.of(newWatchedInMillis), total);
+    public MovieConsumptionProgress update(int newWatchedInSeconds) {
+        return new MovieConsumptionProgress(Duration.of(newWatchedInSeconds), total);
     }
 
     /**

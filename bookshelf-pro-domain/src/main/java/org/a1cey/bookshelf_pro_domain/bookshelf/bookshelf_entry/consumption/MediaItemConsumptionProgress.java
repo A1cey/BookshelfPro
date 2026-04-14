@@ -14,5 +14,5 @@ public interface MediaItemConsumptionProgress {
      * Create a new MediaItemConsumptionProgress that is valid for the same media item.
      * Provide the new current consumption time.
      */
-    MediaItemConsumptionProgress update(long newCurrent);
+    MediaItemConsumptionProgress update(int newCurrent);
 }
