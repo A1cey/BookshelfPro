@@ -9,4 +9,8 @@ public record Duration(java.time.Duration time) {
             throw new IllegalArgumentException("Duration cannot be negative");
         }
     }
+
+    public static Duration of(long millis) {
+        return new Duration(java.time.Duration.ofMillis(millis));
+    }
 }

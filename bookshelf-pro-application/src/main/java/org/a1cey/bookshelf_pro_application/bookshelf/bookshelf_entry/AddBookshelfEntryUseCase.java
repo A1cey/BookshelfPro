@@ -13,6 +13,8 @@ import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.Cons
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.Duration;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.Movie;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,6 +50,7 @@ public class AddBookshelfEntryUseCase {
         var consumptionProgressId = new ConsumptionProgressId(idService.generateId());
         var mediaConsumptionProgress = switch (mediaItem) {
             case Book book -> book.createProgress(new PageCount(0));
+            case Movie movie -> movie.createProgress(Duration.of(0));
             default -> throw new IllegalStateException("Unexpected media item type: " + mediaItem);
         };
         var consumptionProgress = new ConsumptionProgress(consumptionProgressId, mediaConsumptionProgress, ConsumptionState.NOT_STARTED);

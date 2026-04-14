@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.jspecify.annotations.Nullable;
 
-public sealed interface MediaItemDto permits BookDto {
+public sealed interface MediaItemDto permits BookDto, MovieDto {
     UUID mediaItemId();
 
     UUID ownerId();

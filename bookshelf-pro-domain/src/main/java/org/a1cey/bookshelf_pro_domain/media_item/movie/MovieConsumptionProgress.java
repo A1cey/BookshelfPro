@@ -49,7 +49,7 @@ public final class MovieConsumptionProgress implements MediaItemConsumptionProgr
 
     @Override
     public MovieConsumptionProgress update(long newWatchedInMillis) {
-        return new MovieConsumptionProgress(new Duration(java.time.Duration.ofMillis(newWatchedInMillis)), total);
+        return new MovieConsumptionProgress(Duration.of(newWatchedInMillis), total);
     }
 
     /**
