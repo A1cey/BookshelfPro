@@ -17,6 +17,8 @@ import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.BookConsumptionProgress;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.Duration;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.MovieConsumptionProgress;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -207,6 +209,10 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             case BookConsumptionProgress bookConsumptionProgress ->
                 statement.set(CONSUMPTION_PROGRESS.CURRENT_PAGE, bookConsumptionProgress.current().pageCount())
                          .set(CONSUMPTION_PROGRESS.TOTAL_PAGES, bookConsumptionProgress.total().pageCount()).execute();
+            case MovieConsumptionProgress movieConsumptionProgress ->
+                statement.set(CONSUMPTION_PROGRESS.CURRENT_DURATION_SECONDS, (int) movieConsumptionProgress.current().time().toSeconds())
+                         .set(CONSUMPTION_PROGRESS.TOTAL_DURATION_SECONDS, (int) movieConsumptionProgress.total().time().toSeconds())
+                         .execute();
             default ->
                 throw new IllegalStateException("Unexpected consumption progress type: " + bookshelfEntry.consumptionProgress().progress());
         }
@@ -220,6 +226,8 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
         statement = switch (progress.progress()) {
             case BookConsumptionProgress bookConsumptionProgress ->
                 statement.set(CONSUMPTION_PROGRESS.CURRENT_PAGE, bookConsumptionProgress.current().pageCount());
+            case MovieConsumptionProgress movieConsumptionProgress ->
+                statement.set(CONSUMPTION_PROGRESS.CURRENT_DURATION_SECONDS, (int) movieConsumptionProgress.current().time().toSeconds());
             default -> throw new IllegalStateException("Unexpected consumption progress type: " + progress.progress());
         };
 
@@ -245,6 +253,10 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
                 new PageCount(record.getCurrentPage()),
                 new PageCount(record.getTotalPages())
             );
+            case MediaItemType.MOVIE -> MovieConsumptionProgress.reconstruct(
+                Duration.of(record.getCurrentDurationSeconds()),
+                Duration.of(record.getTotalDurationSeconds())
+            );
         };
 
         return new ConsumptionProgress(
@@ -267,6 +279,14 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
                          .set(CONSUMPTION_PROGRESS_SNAPSHOT.TOTAL_PAGES, bookConsumptionProgress.total().pageCount())
                          .set(CONSUMPTION_PROGRESS_SNAPSHOT.TYPE, MediaItemType.BOOK.name())
                          .execute();
+            case MovieConsumptionProgress movieConsumptionProgress -> {
+                var current = (int) movieConsumptionProgress.current().time().toSeconds();
+                var total = (int) movieConsumptionProgress.total().time().toSeconds();
+                statement.set(CONSUMPTION_PROGRESS_SNAPSHOT.CURRENT_DURATION_SECONDS, current)
+                         .set(CONSUMPTION_PROGRESS_SNAPSHOT.TOTAL_DURATION_SECONDS, total)
+                         .set(CONSUMPTION_PROGRESS_SNAPSHOT.TYPE, MediaItemType.MOVIE.name())
+                         .execute();
+            }
             default -> throw new IllegalStateException("Unexpected media consumption progress type: " + consumptionProgress.progress());
         }
     }

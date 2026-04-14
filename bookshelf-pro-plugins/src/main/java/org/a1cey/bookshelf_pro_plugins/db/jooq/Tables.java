@@ -13,6 +13,10 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Movie;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieActor;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieDirector;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieStudio;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
@@ -71,6 +75,26 @@ public class Tables {
      * The table <code>public.media_item_language</code>.
      */
     public static final MediaItemLanguage MEDIA_ITEM_LANGUAGE = MediaItemLanguage.MEDIA_ITEM_LANGUAGE;
+
+    /**
+     * The table <code>public.movie</code>.
+     */
+    public static final Movie MOVIE = Movie.MOVIE;
+
+    /**
+     * The table <code>public.movie_actor</code>.
+     */
+    public static final MovieActor MOVIE_ACTOR = MovieActor.MOVIE_ACTOR;
+
+    /**
+     * The table <code>public.movie_director</code>.
+     */
+    public static final MovieDirector MOVIE_DIRECTOR = MovieDirector.MOVIE_DIRECTOR;
+
+    /**
+     * The table <code>public.movie_studio</code>.
+     */
+    public static final MovieStudio MOVIE_STUDIO = MovieStudio.MOVIE_STUDIO;
 
     /**
      * The table <code>public.playlist_items</code>.

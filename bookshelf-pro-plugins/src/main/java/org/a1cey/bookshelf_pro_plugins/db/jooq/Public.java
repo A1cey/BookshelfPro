@@ -16,6 +16,10 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgress;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItem;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Movie;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieActor;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieDirector;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MovieStudio;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.PlaylistItems;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Playlists;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review;
@@ -86,6 +90,26 @@ public class Public extends SchemaImpl {
     public final MediaItemLanguage MEDIA_ITEM_LANGUAGE = MediaItemLanguage.MEDIA_ITEM_LANGUAGE;
 
     /**
+     * The table <code>public.movie</code>.
+     */
+    public final Movie MOVIE = Movie.MOVIE;
+
+    /**
+     * The table <code>public.movie_actor</code>.
+     */
+    public final MovieActor MOVIE_ACTOR = MovieActor.MOVIE_ACTOR;
+
+    /**
+     * The table <code>public.movie_director</code>.
+     */
+    public final MovieDirector MOVIE_DIRECTOR = MovieDirector.MOVIE_DIRECTOR;
+
+    /**
+     * The table <code>public.movie_studio</code>.
+     */
+    public final MovieStudio MOVIE_STUDIO = MovieStudio.MOVIE_STUDIO;
+
+    /**
      * The table <code>public.playlist_items</code>.
      */
     public final PlaylistItems PLAYLIST_ITEMS = PlaylistItems.PLAYLIST_ITEMS;
@@ -140,6 +164,10 @@ public class Public extends SchemaImpl {
             ConsumptionProgressSnapshot.CONSUMPTION_PROGRESS_SNAPSHOT,
             MediaItem.MEDIA_ITEM,
             MediaItemLanguage.MEDIA_ITEM_LANGUAGE,
+            Movie.MOVIE,
+            MovieActor.MOVIE_ACTOR,
+            MovieDirector.MOVIE_DIRECTOR,
+            MovieStudio.MOVIE_STUDIO,
             PlaylistItems.PLAYLIST_ITEMS,
             Playlists.PLAYLISTS,
             Review.REVIEW,

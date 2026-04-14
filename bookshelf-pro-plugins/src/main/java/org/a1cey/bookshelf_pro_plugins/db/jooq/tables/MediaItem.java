@@ -15,6 +15,7 @@ import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Account.AccountPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Book.BookPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.BookshelfEntry.BookshelfEntryPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.MediaItemLanguage.MediaItemLanguagePath;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Movie.MoviePath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.ReviewPath;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
 import org.jooq.Check;
@@ -222,6 +223,18 @@ public class MediaItem extends TableImpl<MediaItemRecord> {
             _mediaItemLanguage = new MediaItemLanguagePath(this, null, Keys.MEDIA_ITEM_LANGUAGE__MEDIA_ITEM_LANGUAGE_MEDIA_ITEM_ID_FKEY.getInverseKey());
 
         return _mediaItemLanguage;
+    }
+
+    private transient MoviePath _movie;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.movie</code> table
+     */
+    public MoviePath movie() {
+        if (_movie == null)
+            _movie = new MoviePath(this, null, Keys.MOVIE__MOVIE_ID_FKEY.getInverseKey());
+
+        return _movie;
     }
 
     private transient ReviewPath _review;
