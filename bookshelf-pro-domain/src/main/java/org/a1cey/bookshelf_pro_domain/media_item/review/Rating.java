@@ -12,7 +12,7 @@ public record Rating(@PositiveOrZero float rating) {
     }
 
     /**
-     * Normalizes a rating value to lay in the interval [0.0, 10.0] rounded to one decimal place.
+     * Normalizes a rating time to lay in the interval [0.0, 10.0] rounded to one decimal place.
      **/
     private static float normalizeRating(float rating) {
         var clampedRating = Math.clamp(rating, 0.0, 10.0);

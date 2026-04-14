@@ -47,8 +47,8 @@ public final class Book extends MediaItem {
         Publisher publisher,
         PublishPlace publishPlace,
         @Valid PageCount pageCount,
-        Set<Language> languages) {
-
+        Set<Language> languages
+    ) {
         super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, languages);
         this.isbn = isbn;
         this.authors = new HashSet<>(authors); // prevent modification from outside

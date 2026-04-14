@@ -32,7 +32,7 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
 
     @Override
     public double percentage() {
-        return (double) current.pageCount() / (double) total.pageCount();
+        return (double) current.pageCount() / total.pageCount();
     }
 
     @Override
@@ -51,8 +51,8 @@ public final class BookConsumptionProgress implements MediaItemConsumptionProgre
     }
 
     @Override
-    public BookConsumptionProgress update(int newCurrent) {
-        return new BookConsumptionProgress(new PageCount(newCurrent), total);
+    public BookConsumptionProgress update(long newCurrent) {
+        return new BookConsumptionProgress(new PageCount((int) newCurrent), total);
     }
 
     /**

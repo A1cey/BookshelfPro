@@ -12,7 +12,7 @@ public record Isbn(@NotBlank @org.hibernate.validator.constraints.ISBN String va
 
     public Isbn(@NotBlank @org.hibernate.validator.constraints.ISBN String value) {
         if (value.isBlank()) {
-            throw new IllegalArgumentException("ISBN value cannot be blank");
+            throw new IllegalArgumentException("ISBN time cannot be blank");
         }
         String validIsbn = validator.validate(value);
         if (validIsbn == null) {

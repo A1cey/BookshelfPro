@@ -238,7 +238,7 @@ public class JooqBookshelfEntryRepository implements BookshelfEntryRepository {
             throw new IllegalStateException("No ConsumptionProgress found for BookshelfEntry with id: " + bookshelfEntryId.value());
         }
 
-        // SAFETY: Creating a MediaItemConsumptionProgress via its constructor is safe because the total value comes from the DB and
+        // SAFETY: Creating a MediaItemConsumptionProgress via its constructor is safe because the total time comes from the DB and
         // was already checked when the row was created.
         var mediaItemConsumptionProgress = switch (MediaItemType.valueOf(record.getType())) {
             case MediaItemType.BOOK -> BookConsumptionProgress.reconstruct(

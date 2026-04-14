@@ -165,7 +165,7 @@ public class JooqReviewRepository implements ReviewRepository {
                           consumptionProgressSnapshotRecord.getConsumptionState()
                       );
 
-                      // SAFETY: Creating a MediaItemConsumptionProgress via its constructor is safe because the total value comes from
+                      // SAFETY: Creating a MediaItemConsumptionProgress via its constructor is safe because the total time comes from
                       // the DB and was already checked when the row was created.
                       var mediaItemConsumptionProgress = switch (MediaItemType.valueOf(
                           consumptionProgressSnapshotRecord.getType()
