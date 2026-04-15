@@ -143,7 +143,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
             </plugins>
 
         </pluginManagement>
@@ -162,6 +161,7 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
             </plugin>
+            
         </plugins>
     </build>
 </project>

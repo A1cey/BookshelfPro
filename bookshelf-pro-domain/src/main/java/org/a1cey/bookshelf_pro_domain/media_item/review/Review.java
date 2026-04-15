@@ -10,6 +10,8 @@ import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
 
@@ -22,6 +24,7 @@ import jakarta.validation.Valid;
 @AggregateRoot
 public final class Review {
 
+    private static final Log log = LogFactory.getLog(Review.class);
     @Identity
     private final ReviewId id;
     private final MediaItemId mediaItemId;
@@ -64,7 +67,6 @@ public final class Review {
         validateConsumptionState(consumptionProgressSnapshot);
 
         var reviewChange = new ReviewChange(rating, comment, consumptionProgressSnapshot);
-
         return new Review(id, mediaItemId, accountId, reviewChange);
     }
 
