@@ -9,12 +9,10 @@
       provide and easy way of cleaning up Watchlists a use case has been added: RemoveWatchlistItemsByStateUseCase accepting a
       Set<ConsumptionState>
     - Book authors are unique (a set)
+    - Bookshelf entries cannot be deleted (no problems with watchlists and playlists, users can just delete their acoount)
+    - Deleting account means setting deleted flag in account. This account cannot authenticate themselves anymore.
 - Should Media Item have the type attribute -> Matching on instanceof(mediaItem) is another possibility
 - JOIN Sql for fetching multiple tables (book (media items), review)
-- Deleting bookshelf affects watchlists and playlists as they reference the id
-    - Either do not allow deletion of bookshelf entries by user (reasonable as it tracks consumption and labels and the user has so good use
-      case to remove this data)
-    - Or remove all watchlist/playlist items referencing the entry, when the entry is deleted (this can be quite some work)
 - Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate checks authorization
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case

@@ -5,7 +5,7 @@ import java.util.Set;
 
 public record MediaItemSearchCriteria(
     Optional<String> titleFragment,
-    Optional<Subtitle> subtitleFragment,
+    Optional<String> subtitleFragment,
     Optional<Set<Language>> languages,
     Optional<MediaItemType> mediaItemType,
     Optional<SpecificSearchCriteria> typeCriteria
