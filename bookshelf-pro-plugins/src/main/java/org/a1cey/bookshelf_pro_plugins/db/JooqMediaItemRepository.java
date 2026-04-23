@@ -19,6 +19,7 @@ import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.Subtitle;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Author;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
+import org.a1cey.bookshelf_pro_domain.media_item.book.BookSearchCriteria;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Isbn;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PageCount;
 import org.a1cey.bookshelf_pro_domain.media_item.book.PublishDate;
@@ -29,11 +30,13 @@ import org.a1cey.bookshelf_pro_domain.media_item.movie.Director;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.Duration;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.ImdbTitleId;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.Movie;
+import org.a1cey.bookshelf_pro_domain.media_item.movie.MovieSearchCriteria;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.OriginCountry;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.ReleaseDate;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.Studio;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
 import org.jooq.DSLContext;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,8 +142,42 @@ public class JooqMediaItemRepository implements MediaItemRepository {
 
     @Override
     public Set<? extends MediaItem> search(MediaItemSearchCriteria searchCriteria) {
-        // TODO:
-        return Set.of();
+
+    }
+
+    private SelectConditionStep createSearchConditions(MediaItemSearchCriteria searchCriteria) {
+        var stmt = dsl.select(MEDIA_ITEM);
+
+        if (searchCriteria.titleFragment().isPresent()) {
+            stmt = stmt.where(MEDIA_ITEM.TITLE.contains(searchCriteria.titleFragment().get()));
+        }
+
+        if (searchCriteria.subtitleFragment().isPresent()) {
+            stmt = stmt.where(MEDIA_ITEM.SUBTITLE.contains(searchCriteria.subtitleFragment().get()));
+        }
+
+        if (searchCriteria.languages().isPresent()) {
+            var ids = dsl.select(MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID)
+                         .from(MEDIA_ITEM_LANGUAGE)
+                         .where(MEDIA_ITEM_LANGUAGE.ISO_CODE.in(searchCriteria.languages().get().stream().map(Language::isoCode).toList()))
+                         .fetchArray(MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID);
+
+            stmt = stmt.where(MEDIA_ITEM.ID.in(ids));
+        }
+
+        if (searchCriteria.mediaItemType().isPresent()) {
+            stmt = stmt.where(MEDIA_ITEM.TYPE.eq(searchCriteria.mediaItemType().get().name()));
+        }
+
+        if (searchCriteria.typeCriteria().isPresent()) {
+            stmt = switch (searchCriteria.typeCriteria().get()) {
+                case BookSearchCriteria bookSearchCriteria -> addBookSearchConditions(stmt, bookSearchCriteria);
+                case MovieSearchCriteria movieSearchCriteria -> addMovieSearchConditions(stmt, movieSearchCriteria);
+                default -> throw new IllegalStateException("Unexpected search criteria type: " + searchCriteria.typeCriteria().get());
+            };
+        }
+
+        return stmt;
     }
 
     private void saveLanguages(MediaItemId id, Set<Language> languages) {
