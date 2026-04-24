@@ -24,7 +24,8 @@ public class AccountUserDetailsService implements UserDetailsService {
                    .map(account -> new AccountUserDetails(
                        account.id().value(),
                        account.name().name(),
-                       account.password().hashedPassword()
+                       account.password().hashedPassword(),
+                       account.isDeleted()
                    ))
                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }

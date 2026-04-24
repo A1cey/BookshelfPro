@@ -8,6 +8,7 @@ import org.a1cey.bookshelf_pro_domain.account.AccountRepository;
 import org.a1cey.bookshelf_pro_domain.account.Email;
 import org.a1cey.bookshelf_pro_domain.account.Password;
 import org.a1cey.bookshelf_pro_domain.account.Username;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.AccountRecord;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 
@@ -23,54 +24,36 @@ public class JooqAccountRepository implements AccountRepository {
 
     @Override
     public Optional<Account> findById(AccountId id) {
-        var accountRecord = dsl.fetchOne(ACCOUNT, ACCOUNT.ID.eq(id.value()));
-
-        if (accountRecord == null) {
-            return Optional.empty();
-        }
-
-        var emailStr = accountRecord.getEmail();
-
-        Email email = null;
-
-        if (emailStr != null) {
-            email = new Email(emailStr);
-        }
-
-        var account = new Account(
-            id,
-            new Username(accountRecord.getUsername()),
-            email,
-            new Password(accountRecord.getPassword())
-        );
-
-        return Optional.of(account);
+        var record = dsl.fetchOne(ACCOUNT, ACCOUNT.ID.eq(id.value()));
+        return Optional.ofNullable(record).map(this::mapRecord);
     }
 
     @Override
     public Optional<Account> findByUsername(Username username) {
         var record = dsl.fetchOne(ACCOUNT, ACCOUNT.USERNAME.eq(username.name()));
+        return Optional.ofNullable(record).map(this::mapRecord);
+    }
 
-        if (record == null) {
-            return Optional.empty();
-        }
-
+    private Account mapRecord(AccountRecord record) {
         var emailStr = record.getEmail();
 
         Email email = null;
-
         if (emailStr != null) {
             email = new Email(emailStr);
         }
 
-        var account = new Account(
-            new AccountId(record.getId()),
-            username,
-            email,
-            new Password(record.getPassword())
-        );
+        var deleted = record.getDeleted();
+        if (deleted == null) {
+            deleted = false;
+        }
 
-        return Optional.of(account);
+        return new Account(
+            new AccountId(record.getId()),
+            new Username(record.getUsername()),
+            email,
+            new Password(record.getPassword()),
+            deleted
+        );
     }
 
     @Override
@@ -80,6 +63,7 @@ public class JooqAccountRepository implements AccountRepository {
            .set(ACCOUNT.USERNAME, account.name().name())
            .set(ACCOUNT.PASSWORD, account.password().hashedPassword())
            .set(ACCOUNT.EMAIL, account.email().map(Email::email).orElse(null))
+           .set(ACCOUNT.DELETED, account.isDeleted())
            .execute();
     }
 
@@ -89,13 +73,15 @@ public class JooqAccountRepository implements AccountRepository {
            .set(ACCOUNT.USERNAME, account.name().name())
            .set(ACCOUNT.PASSWORD, account.password().hashedPassword())
            .set(ACCOUNT.EMAIL, account.email().map(Email::email).orElse(null))
+           .set(ACCOUNT.DELETED, account.isDeleted())
            .where(ACCOUNT.ID.eq(account.id().value()))
            .execute();
     }
 
     @Override
     public void delete(AccountId id) {
-        dsl.deleteFrom(ACCOUNT)
+        dsl.update(ACCOUNT)
+           .set(ACCOUNT.DELETED, true)
            .where(ACCOUNT.ID.eq(id.value()))
            .execute();
     }

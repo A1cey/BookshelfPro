@@ -12,13 +12,15 @@ public final class AccountUserDetails implements UserDetails {
     private final UUID accountId;
     private final String username;
     private final String hashedPassword;
+    private final boolean deleted;
 
-    public AccountUserDetails(UUID accountId, String username, String hashedPassword) {
+    public AccountUserDetails(UUID accountId, String username, String hashedPassword, boolean deleted) {
         this.accountId = accountId;
         this.username = username;
         this.hashedPassword = hashedPassword;
+        this.deleted = deleted;
     }
-
+    
     public UUID accountId() {
         return accountId;
     }
@@ -36,5 +38,15 @@ public final class AccountUserDetails implements UserDetails {
     @Override
     public @NonNull String getUsername() {
         return username;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !deleted;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !deleted;
     }
 }

@@ -15,6 +15,7 @@ import org.a1cey.bookshelf_pro_domain.account.Username;
 import org.a1cey.bookshelf_pro_plugins.rest.account.request.CreateAccountRequest;
 import org.a1cey.bookshelf_pro_plugins.rest.account.request.UpdateAccountRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,11 +61,10 @@ public class AccountController {
         updateAccountUseCase.execute(command);
     }
 
-    // TODO: check how this is should affect foreign keys: media-items, bookshelf
-    //    @DeleteMapping
-    //    public void deleteAccount() {
-    //        deleteAccountUseCase.execute();
-    //    }
+    @DeleteMapping
+    public void deleteAccount() {
+        deleteAccountUseCase.execute();
+    }
 
     @GetMapping
     public ResponseEntity<GetAccountResult> getAccount() {

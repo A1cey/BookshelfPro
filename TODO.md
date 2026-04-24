@@ -18,8 +18,7 @@
   Note: Individual change*/add*/remove* use cases are combined into one patch request update use case
     - [x] Account
         - [x] Create account (username, password, [email])
-        - [ ] ! Delete account (accountId) TODO: should this delete the bookshelf and/or comments, also what to do with owner of
-          mediaItems?, just set Account to deleted? (this would mean also checking if account is not deleted when checking request)
+        - [x] ! Delete account (accountId)
         - [x] ! Change username (newUsername)
         - [x] ! Change email (newEmail)
         - [x] ! Change password (newPassword)
@@ -55,7 +54,7 @@
                 - [x] ! Remove items by consumption state (consumptionStates)
                 - [x] ! Get watchlist details -> id, title, items
     - [ ] MediaItem
-        - [ ] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
+        - [x] Search ([titleFragment], [subtitleFragment], [languages], [mediaItemType],
           [isbn], [pageCount], [authors], [publishDate], [publisher], [publishPlace], ...) -> media items
         - [x] Get all media items -> media items
         - [x] Book

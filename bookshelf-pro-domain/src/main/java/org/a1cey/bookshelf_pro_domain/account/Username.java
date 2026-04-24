@@ -9,6 +9,9 @@ import jakarta.validation.constraints.NotBlank;
 public record Username(@NonNull @NotBlank String name) {
 
     public Username {
+        if (name == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        }
         if (name.isBlank()) {
             throw new IllegalArgumentException("Username cannot be blank");
         }

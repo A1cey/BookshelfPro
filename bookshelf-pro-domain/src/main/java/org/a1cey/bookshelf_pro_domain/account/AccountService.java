@@ -16,7 +16,7 @@ public final class AccountService {
 
     public Account createAccount(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
         validateUserNameIsUnique(name);
-        return new Account(id, name, email, password);
+        return new Account(id, name, email, password, true);
     }
 
     public void changeUsername(Account account, Username newUsername, AccountId userRequestingChange) {

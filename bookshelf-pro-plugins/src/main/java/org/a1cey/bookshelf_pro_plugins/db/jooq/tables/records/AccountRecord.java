@@ -75,6 +75,20 @@ public class AccountRecord extends UpdatableRecordImpl<AccountRecord> {
         return (String) get(3);
     }
 
+    /**
+     * Setter for <code>public.account.deleted</code>.
+     */
+    public void setDeleted(Boolean value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.account.deleted</code>.
+     */
+    public Boolean getDeleted() {
+        return (Boolean) get(4);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -98,13 +112,14 @@ public class AccountRecord extends UpdatableRecordImpl<AccountRecord> {
     /**
      * Create a detached, initialised AccountRecord
      */
-    public AccountRecord(UUID id, String username, String email, String password) {
+    public AccountRecord(UUID id, String username, String email, String password, Boolean deleted) {
         super(Account.ACCOUNT);
 
         setId(id);
         setUsername(username);
         setEmail(email);
         setPassword(password);
+        setDeleted(deleted);
         resetChangedOnNotNull();
     }
 }

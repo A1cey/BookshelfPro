@@ -15,7 +15,12 @@ public final class DeleteAccountUseCase {
     }
 
     public void execute() {
-        var account = currentUserProvider.currentUser();
+        var currentUser = currentUserProvider.currentUser();
+
+        var account = accountRepository.findById(currentUser.id())
+                                       .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        account.delete(account.id());
         accountRepository.delete(account.id());
     }
 

@@ -21,16 +21,18 @@ public final class Account {
     private Email email;
     @Valid
     private Password password;
+    private boolean deleted;
 
     /**
      * NEVER use this constructor when creating a NEW Account. Only use it to create an Account object if the account already exists.
      * Use AccountService.createAccount instead.
      */
-    public Account(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password) {
+    public Account(AccountId id, @Valid Username name, @Nullable @Valid Email email, @Valid Password password, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.deleted = deleted;
     }
 
     public AccountId id() {
@@ -63,6 +65,15 @@ public final class Account {
     public void changePassword(@Valid Password newPassword, AccountId userRequestingChange) {
         OwnershipPolicy.validate(id, userRequestingChange, id);
         password = newPassword;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete(AccountId userRequestingChange) {
+        OwnershipPolicy.validate(id, userRequestingChange, id);
+        deleted = true;
     }
 
 }

@@ -20,9 +20,17 @@ public class SpringSecurityCurrentUserProvider implements CurrentUserProvider {
                                                             .getAuthentication())
                                                     .getPrincipal();
         assert principal != null;
+
+        var deleted = !principal.isEnabled();
+
+        if (deleted) {
+            throw new SecurityException("This account is deleted.");
+        }
+
         var accountId = new AccountId(principal.accountId());
         var username = new Username(principal.getUsername());
         var password = new Password(principal.getPassword());
-        return new Account(accountId, username, null, password);
+
+        return new Account(accountId, username, null, password, false);
     }
 }
