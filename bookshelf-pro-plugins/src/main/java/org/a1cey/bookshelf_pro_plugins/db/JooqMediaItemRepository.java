@@ -1,6 +1,8 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -35,8 +37,8 @@ import org.a1cey.bookshelf_pro_domain.media_item.movie.OriginCountry;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.ReleaseDate;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.Studio;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.MediaItemRecord;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,42 +144,134 @@ public class JooqMediaItemRepository implements MediaItemRepository {
 
     @Override
     public Set<? extends MediaItem> search(MediaItemSearchCriteria searchCriteria) {
-
+        return dsl.selectFrom(MEDIA_ITEM)
+                  .where(createSearchCondition(searchCriteria))
+                  .stream()
+                  .map(record -> switch (MediaItemType.valueOf(record.getType())) {
+                      case BOOK -> fetchBook(record);
+                      case MOVIE -> fetchMovie(record);
+                  })
+                  .collect(Collectors.toSet());
     }
 
-    private SelectConditionStep createSearchConditions(MediaItemSearchCriteria searchCriteria) {
-        var stmt = dsl.select(MEDIA_ITEM);
+    private Condition createSearchCondition(MediaItemSearchCriteria searchCriteria) {
+        Condition cond = DSL.trueCondition();
 
         if (searchCriteria.titleFragment().isPresent()) {
-            stmt = stmt.where(MEDIA_ITEM.TITLE.contains(searchCriteria.titleFragment().get()));
+            cond = cond.and(MEDIA_ITEM.TITLE.contains(searchCriteria.titleFragment().get()));
         }
 
         if (searchCriteria.subtitleFragment().isPresent()) {
-            stmt = stmt.where(MEDIA_ITEM.SUBTITLE.contains(searchCriteria.subtitleFragment().get()));
+            cond = cond.and(MEDIA_ITEM.SUBTITLE.contains(searchCriteria.subtitleFragment().get()));
         }
 
         if (searchCriteria.languages().isPresent()) {
             var ids = dsl.select(MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID)
                          .from(MEDIA_ITEM_LANGUAGE)
-                         .where(MEDIA_ITEM_LANGUAGE.ISO_CODE.in(searchCriteria.languages().get().stream().map(Language::isoCode).toList()))
-                         .fetchArray(MEDIA_ITEM_LANGUAGE.MEDIA_ITEM_ID);
+                         .where(MEDIA_ITEM_LANGUAGE.ISO_CODE.in(searchCriteria.languages().get().stream().map(Language::isoCode).toList()));
 
-            stmt = stmt.where(MEDIA_ITEM.ID.in(ids));
+            cond = cond.and(MEDIA_ITEM.ID.in(ids));
         }
 
         if (searchCriteria.mediaItemType().isPresent()) {
-            stmt = stmt.where(MEDIA_ITEM.TYPE.eq(searchCriteria.mediaItemType().get().name()));
+            cond = cond.and(MEDIA_ITEM.TYPE.eq(searchCriteria.mediaItemType().get().name()));
         }
 
         if (searchCriteria.typeCriteria().isPresent()) {
-            stmt = switch (searchCriteria.typeCriteria().get()) {
-                case BookSearchCriteria bookSearchCriteria -> addBookSearchConditions(stmt, bookSearchCriteria);
-                case MovieSearchCriteria movieSearchCriteria -> addMovieSearchConditions(stmt, movieSearchCriteria);
+            cond = switch (searchCriteria.typeCriteria().get()) {
+                case BookSearchCriteria bookSearchCriteria -> addBookSearchConditions(cond, bookSearchCriteria);
+                case MovieSearchCriteria movieSearchCriteria -> addMovieSearchConditions(cond, movieSearchCriteria);
                 default -> throw new IllegalStateException("Unexpected search criteria type: " + searchCriteria.typeCriteria().get());
             };
         }
 
-        return stmt;
+        return cond;
+    }
+
+    private Condition addBookSearchConditions(Condition cond, BookSearchCriteria searchCriteria) {
+        List<Condition> conds = new ArrayList<>();
+
+        if (searchCriteria.isbn().isPresent()) {
+            conds.add(BOOK.ISBN.eq(searchCriteria.isbn().get().value()));
+        }
+        if (searchCriteria.publishDate().isPresent()) {
+            conds.add(BOOK.PUBLISH_DATE.eq(searchCriteria.publishDate().get().publishDate()));
+        }
+        if (searchCriteria.publisher().isPresent()) {
+            conds.add(BOOK.PUBLISHER.eq(searchCriteria.publisher().get().publisher()));
+        }
+        if (searchCriteria.publishPlace().isPresent()) {
+            conds.add(BOOK.PUBLISH_PLACE.eq(searchCriteria.publishPlace().get().publishPlace()));
+        }
+        if (searchCriteria.pageCount().isPresent()) {
+            conds.add(BOOK.PAGE_COUNT.eq(searchCriteria.pageCount().get().pageCount()));
+        }
+
+        if (!conds.isEmpty()) {
+            cond = cond.and(MEDIA_ITEM.ID.in(dsl.select(BOOK.ID).from(BOOK).where(DSL.and(conds))));
+        }
+
+        if (searchCriteria.authors().isPresent()) {
+            var ids = dsl.select(BOOK_AUTHOR.BOOK_ID)
+                         .from(BOOK_AUTHOR)
+                         .where(BOOK_AUTHOR.NAME.in(searchCriteria.authors().get().stream().map(Author::name).toList()));
+
+            cond = cond.and(MEDIA_ITEM.ID.in(ids));
+        }
+
+        return cond;
+    }
+
+    private Condition addMovieSearchConditions(Condition cond, MovieSearchCriteria searchCriteria) {
+        List<Condition> conds = new ArrayList<>();
+
+        if (searchCriteria.imdbTitleId().isPresent()) {
+            conds.add(MOVIE.IMDB_TITLE_ID.eq(searchCriteria.imdbTitleId().get().value()));
+        }
+        if (searchCriteria.releaseDate().isPresent()) {
+            conds.add(MOVIE.RELEASE_DATE.eq(searchCriteria.releaseDate().get().date()));
+        }
+        if (searchCriteria.originCountry().isPresent()) {
+            conds.add(MOVIE.ORIGIN_COUNTRY.eq(searchCriteria.originCountry().get().country()));
+        }
+        if (searchCriteria.duration().isPresent()) {
+            conds.add(MOVIE.DURATION.eq((int) searchCriteria.duration().get().time().toSeconds()));
+        }
+
+        if (!conds.isEmpty()) {
+            cond = cond.and(MEDIA_ITEM.ID.in(dsl.select(MOVIE.ID).from(MOVIE).where(DSL.and(conds))));
+        }
+
+        if (searchCriteria.actors().isPresent()) {
+            var ids = dsl.select(MOVIE_ACTOR.MOVIE_ID)
+                         .from(MOVIE_ACTOR)
+                         .where(DSL.row(MOVIE_ACTOR.NAME, MOVIE_ACTOR.ROLE).in(searchCriteria.actors()// Name and role
+                                                                                             .get()
+                                                                                             .stream()
+                                                                                             .map(actor -> DSL.row(
+                                                                                                 actor.name(),
+                                                                                                 actor.role()
+                                                                                             ))
+                                                                                             .toList()));
+
+            cond = cond.and(MEDIA_ITEM.ID.in(ids));
+        }
+        if (searchCriteria.directors().isPresent()) {
+            var ids = dsl.select(MOVIE_DIRECTOR.MOVIE_ID)
+                         .from(MOVIE_DIRECTOR)
+                         .where(MOVIE_DIRECTOR.NAME.in(searchCriteria.directors().get().stream().map(Director::name).toList()));
+
+            cond = cond.and(MEDIA_ITEM.ID.in(ids));
+        }
+        if (searchCriteria.studios().isPresent()) {
+            var ids = dsl.select(MOVIE_STUDIO.MOVIE_ID)
+                         .from(MOVIE_STUDIO)
+                         .where(MOVIE_STUDIO.NAME.in(searchCriteria.studios().get().stream().map(Studio::name).toList()));
+
+            cond = cond.and(MEDIA_ITEM.ID.in(ids));
+        }
+
+        return cond;
     }
 
     private void saveLanguages(MediaItemId id, Set<Language> languages) {
