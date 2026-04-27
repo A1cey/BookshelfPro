@@ -24,14 +24,12 @@ public class JooqAccountRepository implements AccountRepository {
 
     @Override
     public Optional<Account> findById(AccountId id) {
-        var record = dsl.fetchOne(ACCOUNT, ACCOUNT.ID.eq(id.value()));
-        return Optional.ofNullable(record).map(this::mapRecord);
+        return dsl.fetchOptional(ACCOUNT, ACCOUNT.ID.eq(id.value())).map(this::mapRecord);
     }
 
     @Override
     public Optional<Account> findByUsername(Username username) {
-        var record = dsl.fetchOne(ACCOUNT, ACCOUNT.USERNAME.eq(username.name()));
-        return Optional.ofNullable(record).map(this::mapRecord);
+        return dsl.fetchOptional(ACCOUNT, ACCOUNT.USERNAME.eq(username.name())).map(this::mapRecord);
     }
 
     private Account mapRecord(AccountRecord record) {

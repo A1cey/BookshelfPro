@@ -2,8 +2,10 @@ package org.a1cey.bookshelf_pro_plugins.db;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,8 +14,10 @@ import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.Playlist;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistId;
+import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistPosition;
 import org.a1cey.bookshelf_pro_domain.bookshelf.playlist.PlaylistRepository;
 import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.PlaylistItemsRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.PlaylistsRecord;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -62,48 +66,49 @@ public class JooqPlaylistRepository implements PlaylistRepository {
            .execute();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Playlist> findById(PlaylistId playlistId) {
-        var record = dsl.fetchOne(PLAYLISTS, PLAYLISTS.ID.eq(playlistId.value()));
-
-        if (record == null) {
-            return Optional.empty();
-        }
-        var owner = new AccountId(record.getOwner());
-        var title = new Title(record.getTitle());
-        var items = fetchPlaylistItems(playlistId);
-
-        return Optional.of(new Playlist(playlistId, owner, title, items));
+        return dsl.fetchOptional(PLAYLISTS, PLAYLISTS.ID.eq(playlistId.value()))
+                  .map(record -> new Playlist(
+                      playlistId,
+                      new AccountId(record.getOwner()),
+                      new Title(record.getTitle()),
+                      fetchPlaylistItems(playlistId)
+                  ));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Playlist> findByIdAndOwner(PlaylistId playlistId, AccountId owner) {
-        var record = dsl.fetchOne(
-            PLAYLISTS, PLAYLISTS.ID.eq(playlistId.value())
-                                   .and(PLAYLISTS.OWNER.eq(owner.value()))
-        );
-
-        if (record == null) {
-            return Optional.empty();
-        }
-        var title = new Title(record.getTitle());
-        var items = fetchPlaylistItems(playlistId);
-
-        return Optional.of(new Playlist(playlistId, owner, title, items));
+        return dsl.fetchOptional(PLAYLISTS, PLAYLISTS.ID.eq(playlistId.value()).and(PLAYLISTS.OWNER.eq(owner.value())))
+                  .map(record -> new Playlist(
+                      playlistId,
+                      owner,
+                      new Title(record.getTitle()),
+                      fetchPlaylistItems(playlistId)
+                  ));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Set<Playlist> findByOwner(AccountId owner) {
-        return dsl.fetch(PLAYLISTS, PLAYLISTS.OWNER.eq(owner.value()))
-                  .stream()
-                  .map(record -> {
-                      var playlistId = new PlaylistId(record.getId());
-                      var title = new Title(record.getTitle());
-                      var items = fetchPlaylistItems(playlistId);
+        var records = dsl.fetch(PLAYLISTS, PLAYLISTS.OWNER.eq(owner.value()));
+        var ids = records.stream().map(PlaylistsRecord::getId).collect(Collectors.toSet());
 
-                      return new Playlist(playlistId, owner, title, items);
-                  })
-                  .collect(Collectors.toSet());
+        var playlistItems = fetchPlaylistItemsBatch(ids);
+
+        return records.stream().map(record -> {
+            var items = playlistItems.get(record.getId());
+
+            var sortedItems =
+                items.stream().sorted(Comparator.comparing(PlaylistEntry::pos)).map(PlaylistEntry::bookshelfEntryId).toList();
+
+            var playlistId = new PlaylistId(record.getId());
+            var title = new Title(record.getTitle());
+
+            return new Playlist(playlistId, owner, title, sortedItems);
+        }).collect(Collectors.toSet());
     }
 
     private List<BookshelfEntryId> fetchPlaylistItems(PlaylistId playlistId) {
@@ -113,6 +118,15 @@ public class JooqPlaylistRepository implements PlaylistRepository {
                   .map(PlaylistItemsRecord::getBookshelfEntryId)
                   .map(BookshelfEntryId::new)
                   .toList();
+    }
+
+    private Map<UUID, List<PlaylistEntry>> fetchPlaylistItemsBatch(Set<UUID> playlistIds) {
+        return dsl.fetch(PLAYLIST_ITEMS, PLAYLIST_ITEMS.PLAYLIST_ID.in(playlistIds))
+                  .stream()
+                  .collect(Collectors.groupingBy(
+                      PlaylistItemsRecord::getPlaylistId,
+                      Collectors.mapping(PlaylistEntry::from, Collectors.toList())
+                  ));
     }
 
     private void updatePlaylistItems(Playlist playlist) {
@@ -138,5 +152,12 @@ public class JooqPlaylistRepository implements PlaylistRepository {
                    .mapToObj(idx -> DSL.row(playlist.id().value(), playlist.items().get(idx).value(), idx))
                    .toList()
            ).execute();
+    }
+
+    private record PlaylistEntry(BookshelfEntryId bookshelfEntryId, PlaylistPosition pos) {
+
+        public static PlaylistEntry from(PlaylistItemsRecord record) {
+            return new PlaylistEntry(new BookshelfEntryId(record.getBookshelfEntryId()), new PlaylistPosition(record.getPosition()));
+        }
     }
 }

@@ -1,13 +1,15 @@
 package org.a1cey.bookshelf_pro_plugins.db;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.a1cey.bookshelf_pro_domain.account.AccountId;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntry;
-import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.BookshelfEntryRepository;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionProgressSnapshot;
 import org.a1cey.bookshelf_pro_domain.bookshelf.bookshelf_entry.consumption.ConsumptionState;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemId;
@@ -22,7 +24,11 @@ import org.a1cey.bookshelf_pro_domain.media_item.review.Review;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewChange;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewId;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewRepository;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ConsumptionProgressSnapshotRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewChangeRecord;
+import org.a1cey.bookshelf_pro_plugins.db.jooq.tables.records.ReviewRecord;
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,68 +38,44 @@ import static org.a1cey.bookshelf_pro_plugins.db.jooq.tables.Review.REVIEW;
 
 @Repository
 public class JooqReviewRepository implements ReviewRepository {
-    private final DSLContext dsl;
-    private final BookshelfEntryRepository bookshelfEntryRepository;
 
-    public JooqReviewRepository(DSLContext dsl, BookshelfEntryRepository bookshelfEntryRepository) {
+    private final DSLContext dsl;
+
+    public JooqReviewRepository(DSLContext dsl) {
         this.dsl = dsl;
-        this.bookshelfEntryRepository = bookshelfEntryRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Optional<Review> findById(ReviewId id) {
-        var record = dsl.fetchOne(REVIEW, REVIEW.ID.eq(id.value()));
+        return dsl.fetchOptional(REVIEW, REVIEW.ID.eq(id.value()))
+                  .map(record -> {
+                      var reviewId = new ReviewId(record.getId());
+                      var mediaItemId = new MediaItemId(record.getMediaItemId());
+                      var owner = new AccountId(record.getOwner());
+                      var reviewChanges = fetchReviewChanges(List.of(reviewId.value())).getOrDefault(reviewId.value(), List.of());
 
-        if (record == null) {
-            return Optional.empty();
-        }
-
-        var reviewId = new ReviewId(record.getId());
-        var mediaItemId = new MediaItemId(record.getMediaItemId());
-        var owner = new AccountId(record.getOwner());
-        var reviewChanges = fetchReviewChanges(reviewId);
-
-        return Optional.of(Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges));
+                      return Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges);
+                  });
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Set<Review> findByOwner(AccountId owner) {
-        return dsl.fetch(REVIEW, REVIEW.OWNER.eq(owner.value()))
-                  .stream()
-                  .map(reviewRecord -> {
-                      var reviewId = new ReviewId(reviewRecord.getId());
-                      var mediaItemId = new MediaItemId(reviewRecord.getMediaItemId());
-                      var reviewChanges = fetchReviewChanges(reviewId);
-
-                      return Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges);
-                  })
-                  .collect(Collectors.toSet());
+        var records = dsl.fetch(REVIEW, REVIEW.OWNER.eq(owner.value()));
+        return recreateReviews(records);
     }
 
+    @Transactional(readOnly = true) // FIX: was missing @Transactional entirely
     @Override
     public Set<Review> findByMediaItemId(MediaItemId mediaItemId) {
-        return dsl.fetch(REVIEW, REVIEW.MEDIA_ITEM_ID.eq(mediaItemId.value()))
-                  .stream()
-                  .map(reviewRecord -> {
-                      var reviewId = new ReviewId(reviewRecord.getId());
-                      var owner = new AccountId(reviewRecord.getOwner());
-                      var reviewChanges = fetchReviewChanges(reviewId);
-
-                      return Review.reconstruct(reviewId, mediaItemId, owner, reviewChanges);
-                  })
-                  .collect(Collectors.toSet());
+        var records = dsl.fetch(REVIEW, REVIEW.MEDIA_ITEM_ID.eq(mediaItemId.value()));
+        return recreateReviews(records);
     }
 
     @Override
     public boolean existsByUserAndMediaItem(AccountId accountId, MediaItemId mediaItemId) {
-        return dsl.fetchExists(
-            REVIEW,
-            REVIEW.MEDIA_ITEM_ID
-                .eq(mediaItemId.value())
-                .and(REVIEW.OWNER.eq(accountId.value()))
-        );
+        return dsl.fetchExists(REVIEW, REVIEW.MEDIA_ITEM_ID.eq(mediaItemId.value()).and(REVIEW.OWNER.eq(accountId.value())));
     }
 
     @Transactional
@@ -121,69 +103,113 @@ public class JooqReviewRepository implements ReviewRepository {
         dsl.delete(REVIEW).where(REVIEW.ID.eq(reviewId.value())).execute();
     }
 
-    // TODO: this shouldnt take bookshelfEntry -> violation of concerns
+    private Set<Review> recreateReviews(List<? extends ReviewRecord> reviewRecords) {
+        if (reviewRecords.isEmpty()) {
+            return Set.of();
+        }
+
+        var reviewIds = reviewRecords.stream().map(ReviewRecord::getId).toList();
+        var changesByReviewId = fetchReviewChanges(reviewIds);
+
+        return reviewRecords.stream().map(record -> {
+            var reviewId = new ReviewId(record.getId());
+            return Review.reconstruct(
+                reviewId,
+                new MediaItemId(record.getMediaItemId()),
+                new AccountId(record.getOwner()),
+                changesByReviewId.getOrDefault(record.getId(), List.of())
+            );
+        }).collect(Collectors.toSet());
+    }
+
     private void saveReviewChange(Review review, BookshelfEntry bookshelfEntry) {
-        var creationDate = bookshelfEntryRepository
-                               .findLatestConsumptionProgressSnapshotCreationDate(bookshelfEntry.consumptionProgress().id())
-                               .orElseThrow(() -> new IllegalStateException(
-                                   "No snapshot creation date for consumption progress with id" + bookshelfEntry.consumptionProgress().id()
-                               ));
+        var progressId = bookshelfEntry.consumptionProgress().id().value();
+
+        var creationDate = dsl
+                               .select(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT))
+                               .from(CONSUMPTION_PROGRESS_SNAPSHOT)
+                               .where(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID.eq(progressId))
+                               .fetchOne(DSL.max(CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT));
+
+        if (creationDate == null) {
+            throw new IllegalStateException("No snapshot creation date for consumption progress with id: " + progressId);
+        }
 
         dsl.insertInto(REVIEW_CHANGE)
            .set(REVIEW_CHANGE.REVIEW_ID, review.id().value())
            .set(REVIEW_CHANGE.COMMENT, review.comment().comment())
            .set(REVIEW_CHANGE.RATING, (double) review.rating().rating())
            .set(REVIEW_CHANGE.REVIEW_DATE, review.reviewDate())
-           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID, bookshelfEntry.consumptionProgress().id().value())
+           .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CONSUMPTION_PROGRESS_ID, progressId)
            .set(REVIEW_CHANGE.CONSUMPTION_PROGRESS_SNAPSHOT_CREATED_AT, creationDate)
            .execute();
     }
 
-    private List<ReviewChange> fetchReviewChanges(ReviewId reviewId) {
-        return dsl.fetch(REVIEW_CHANGE, REVIEW_CHANGE.REVIEW_ID.eq(reviewId.value()))
-                  .stream()
-                  .map(reviewChangeRecord -> {
-                      var rating = new Rating(reviewChangeRecord.getRating().floatValue());
-                      var comment = new Comment(reviewChangeRecord.getComment());
-                      var reviewDate = reviewChangeRecord.getReviewDate();
-                      var consumptionProgressSnapshotRecord = dsl.fetchOne(
-                          CONSUMPTION_PROGRESS_SNAPSHOT,
-                          CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID
-                              .eq(reviewChangeRecord.getConsumptionProgressSnapshotConsumptionProgressId())
-                              .and(
-                                  CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT.eq(reviewChangeRecord.getConsumptionProgressSnapshotCreatedAt())
-                              )
-                      );
+    private Map<UUID, List<ReviewChange>> fetchReviewChanges(List<UUID> reviewIds) {
+        var reviewHistory = dsl.fetch(REVIEW_CHANGE, REVIEW_CHANGE.REVIEW_ID.in(reviewIds));
 
-                      if (consumptionProgressSnapshotRecord == null) {
-                          throw new IllegalStateException(
-                              "No Consumption Progress Snapshot found for consumption progress with id: "
-                                  + reviewChangeRecord.getConsumptionProgressSnapshotConsumptionProgressId()
-                                  + " and creation time: " + reviewChangeRecord.getConsumptionProgressSnapshotCreatedAt()
-                          );
-                      }
+        if (reviewHistory.isEmpty()) {
+            return Map.of();
+        }
 
-                      var consumptionState = ConsumptionState.valueOf(
-                          consumptionProgressSnapshotRecord.getConsumptionState()
-                      );
+        var snapshotKeys = reviewHistory.stream()
+                                        .map(record -> DSL.row(
+                                            record.getConsumptionProgressSnapshotConsumptionProgressId(),
+                                            record.getConsumptionProgressSnapshotCreatedAt()
+                                        ))
+                                        .toList();
 
-                      // SAFETY: Creating a MediaItemConsumptionProgress via its constructor is safe because the total time comes from
-                      // the DB and was already checked when the row was created.
-                      var mediaItemConsumptionProgress = switch (MediaItemType.valueOf(
-                          consumptionProgressSnapshotRecord.getType()
-                      )) {
-                          case MediaItemType.BOOK -> BookConsumptionProgress.reconstruct(
-                              new PageCount(consumptionProgressSnapshotRecord.getCurrentPage()),
-                              new PageCount(consumptionProgressSnapshotRecord.getTotalPages())
-                          );
-                          case MediaItemType.MOVIE -> MovieConsumptionProgress.reconstruct(
-                              Duration.of(consumptionProgressSnapshotRecord.getCurrentDurationSeconds()),
-                              Duration.of(consumptionProgressSnapshotRecord.getTotalDurationSeconds())
-                          );
-                      };
+        var snapshotMap = dsl.fetch(
+                                 CONSUMPTION_PROGRESS_SNAPSHOT,
+                                 DSL.row(CONSUMPTION_PROGRESS_SNAPSHOT.CONSUMPTION_PROGRESS_ID, CONSUMPTION_PROGRESS_SNAPSHOT.CREATED_AT)
+                                    .in(snapshotKeys)
+                             ).stream()
+                             .collect(Collectors.toMap(
+                                 record -> new SnapshotKey(record.getConsumptionProgressId(), record.getCreatedAt()),
+                                 record -> record
+                             ));
 
-                      var consumptionProgressSnapshot = new ConsumptionProgressSnapshot(consumptionState, mediaItemConsumptionProgress);
-                      return new ReviewChange(rating, comment, reviewDate, consumptionProgressSnapshot);
-                  }).toList();
+        return reviewHistory.stream().collect(Collectors.groupingBy(
+            ReviewChangeRecord::getReviewId,
+            Collectors.mapping(
+                reviewChangeRecord -> {
+                    var key = new SnapshotKey(
+                        reviewChangeRecord.getConsumptionProgressSnapshotConsumptionProgressId(),
+                        reviewChangeRecord.getConsumptionProgressSnapshotCreatedAt()
+                    );
+                    var snapshot = snapshotMap.get(key);
+                    if (snapshot == null) {
+                        throw new IllegalStateException("No snapshot found for progress id: " + key.progressId());
+                    }
+                    return toReviewChange(reviewChangeRecord, snapshot);
+                },
+                Collectors.toList()
+            )
+        ));
     }
+
+    private ReviewChange toReviewChange(ReviewChangeRecord changeRecord, ConsumptionProgressSnapshotRecord snapshotRecord) {
+        var consumptionState = ConsumptionState.valueOf(snapshotRecord.getConsumptionState());
+
+        // SAFETY: reconstruct() is ok, because values come from DB and were validated on write
+        var mediaItemConsumptionProgress = switch (MediaItemType.valueOf(snapshotRecord.getType())) {
+            case BOOK -> BookConsumptionProgress.reconstruct(
+                new PageCount(snapshotRecord.getCurrentPage()),
+                new PageCount(snapshotRecord.getTotalPages())
+            );
+            case MOVIE -> MovieConsumptionProgress.reconstruct(
+                Duration.of(snapshotRecord.getCurrentDurationSeconds()),
+                Duration.of(snapshotRecord.getTotalDurationSeconds())
+            );
+        };
+
+        return new ReviewChange(
+            new Rating(changeRecord.getRating().floatValue()),
+            new Comment(changeRecord.getComment()),
+            changeRecord.getReviewDate(),
+            new ConsumptionProgressSnapshot(consumptionState, mediaItemConsumptionProgress)
+        );
+    }
+
+    private record SnapshotKey(UUID progressId, LocalDateTime createdAt) {}
 }
