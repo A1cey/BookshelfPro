@@ -11,7 +11,6 @@
     - Book authors are unique (a set)
     - Bookshelf entries cannot be deleted (no problems with watchlists and playlists, users can just delete their acoount)
     - Deleting account means setting deleted flag in account. This account cannot authenticate themselves anymore.
-- Should Media Item have the type attribute -> Matching on instanceof(mediaItem) is another possibility
 - JOIN Sql for fetching multiple tables (book (media items), review)
 - Is checking owner a domain rule or other layer? -> OwnershipPolicy.validate checks authorization
 - Use Cases (!: authentication needed, (): values in the request, -> : return values, []: optional value)

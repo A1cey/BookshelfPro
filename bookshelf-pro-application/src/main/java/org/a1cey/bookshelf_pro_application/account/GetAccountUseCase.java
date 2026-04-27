@@ -8,7 +8,6 @@ import org.a1cey.bookshelf_pro_application.dto.MovieDto;
 import org.a1cey.bookshelf_pro_application.dto.ReviewDto;
 import org.a1cey.bookshelf_pro_application.security.CurrentUserProvider;
 import org.a1cey.bookshelf_pro_domain.media_item.MediaItemRepository;
-import org.a1cey.bookshelf_pro_domain.media_item.MediaItemType;
 import org.a1cey.bookshelf_pro_domain.media_item.book.Book;
 import org.a1cey.bookshelf_pro_domain.media_item.movie.Movie;
 import org.a1cey.bookshelf_pro_domain.media_item.review.ReviewRepository;
@@ -34,9 +33,10 @@ public final class GetAccountUseCase {
         var account = currentUserProvider.currentUser();
         var reviews = reviewRepository.findByOwner(account.id()).stream().map(ReviewDto::from).collect(Collectors.toSet());
         var mediaItems = mediaItemRepository.findByOwner(account.id()).stream().map(
-            mediaItem -> switch (mediaItem.type()) {
-                case MediaItemType.BOOK -> BookDto.from((Book) mediaItem);
-                case MediaItemType.MOVIE -> MovieDto.from((Movie) mediaItem);
+            mediaItem -> switch (mediaItem) {
+                case Book book -> BookDto.from(book);
+                case Movie movie -> MovieDto.from(movie);
+                default -> throw new IllegalStateException("Unexpected media item instance: " + mediaItem);
             }).collect(Collectors.toSet());
 
         return new GetAccountResult(account.id(), account.name(), account.email(), reviews, mediaItems);

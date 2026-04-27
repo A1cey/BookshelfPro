@@ -31,6 +31,36 @@ public final class Movie extends MediaItem {
     private OriginCountry originCountry;
     private Duration duration;
 
+    Movie(
+        @Valid MediaItemId id,
+        @Valid Title title,
+        Subtitle subtitle,
+        @Nullable URI coverImageUrl,
+        Description description,
+        @Valid AccountId owner,
+        Set<@Valid Language> languages,
+        @Valid ImdbTitleId imdbTitleId,
+        Set<@Valid Actor> actors,
+        Set<@Valid Director> directors,
+        @Nullable ReleaseDate releaseDate,
+        Set<@Valid Studio> studios,
+        OriginCountry originCountry,
+        Duration duration
+    ) {
+        super(id, title, subtitle, coverImageUrl, description, owner, languages);
+        this.imdbTitleId = imdbTitleId;
+        this.actors = new HashSet<>(actors);
+        this.directors = new HashSet<>(directors);
+        this.releaseDate = releaseDate;
+        this.studios = new HashSet<>(studios);
+        this.originCountry = originCountry;
+        this.duration = duration;
+    }
+
+    public MediaItemType type() {
+        return MediaItemType.MOVIE;
+    }
+
     public ImdbTitleId imdbTitleId() {
         return imdbTitleId;
     }
@@ -94,32 +124,6 @@ public final class Movie extends MediaItem {
 
     public MovieConsumptionProgress createProgress(Duration watchedDuration) {
         return new MovieConsumptionProgress(watchedDuration, duration);
-    }
-
-    Movie(
-        @Valid MediaItemId id,
-        @Valid Title title,
-        Subtitle subtitle,
-        @Nullable URI coverImageUrl,
-        Description description,
-        @Valid AccountId owner,
-        Set<@Valid Language> languages,
-        @Valid ImdbTitleId imdbTitleId,
-        Set<@Valid Actor> actors,
-        Set<@Valid Director> directors,
-        @Nullable ReleaseDate releaseDate,
-        Set<@Valid Studio> studios,
-        OriginCountry originCountry,
-        Duration duration
-    ) {
-        super(id, MediaItemType.MOVIE, title, subtitle, coverImageUrl, description, owner, languages);
-        this.imdbTitleId = imdbTitleId;
-        this.actors = new HashSet<>(actors);
-        this.directors = new HashSet<>(directors);
-        this.releaseDate = releaseDate;
-        this.studios = new HashSet<>(studios);
-        this.originCountry = originCountry;
-        this.duration = duration;
     }
 
     public static MovieBuilder builder(

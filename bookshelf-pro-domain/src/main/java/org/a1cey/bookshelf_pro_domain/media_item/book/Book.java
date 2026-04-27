@@ -49,13 +49,17 @@ public final class Book extends MediaItem {
         @Valid PageCount pageCount,
         Set<Language> languages
     ) {
-        super(id, MediaItemType.BOOK, title, subtitle, coverImageUrl, description, owner, languages);
+        super(id, title, subtitle, coverImageUrl, description, owner, languages);
         this.isbn = isbn;
         this.authors = new HashSet<>(authors); // prevent modification from outside
         this.publishDate = publishDate;
         this.publisher = publisher;
         this.publishPlace = publishPlace;
         this.pageCount = pageCount;
+    }
+
+    public MediaItemType type() {
+        return MediaItemType.BOOK;
     }
 
     public static BookBuilder builder(MediaItemId id, AccountId owner, @Valid Title title, @Valid Isbn isbn, @Valid PageCount pageCount) {

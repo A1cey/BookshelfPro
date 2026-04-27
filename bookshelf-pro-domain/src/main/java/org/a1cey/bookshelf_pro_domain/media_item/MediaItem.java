@@ -18,7 +18,6 @@ public abstract class MediaItem {
 
     @Identity
     protected final MediaItemId id;
-    protected final MediaItemType type;
     protected final AccountId owner;
     protected Title title;
     protected Subtitle subtitle;
@@ -29,7 +28,6 @@ public abstract class MediaItem {
 
     protected MediaItem(
         MediaItemId id,
-        MediaItemType type,
         @Valid Title title,
         Subtitle subtitle,
         @Nullable URI coverImageUrl,
@@ -38,7 +36,6 @@ public abstract class MediaItem {
         Set<Language> languages
     ) {
         this.id = id;
-        this.type = type;
         this.title = title;
         this.subtitle = subtitle;
         this.coverImageUrl = coverImageUrl;
@@ -87,9 +84,7 @@ public abstract class MediaItem {
         description = newDescription;
     }
 
-    public MediaItemType type() {
-        return type;
-    }
+    public abstract MediaItemType type();
 
     public AccountId owner() {
         return owner;
