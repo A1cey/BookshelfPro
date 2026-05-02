@@ -17,10 +17,6 @@ import org.jmolecules.ddd.annotation.Identity;
 
 import jakarta.validation.Valid;
 
-// TODO: Das Rating einer Playlist, Serie oder Season ergibt sich aus dem durchschnittlichen Rating der darin enthaltenen Media Items + der
-//  direkten Reviews. Z.B.: Das Rating einer Season ergibt sich aus dem Durchschnitt der Episoden-Ratings und den direkten Ratings der
-//  Season ((SummerEpisodenRatings + SummeDirekteRatings) / (AnzahlEpisodenRatings + AnzahlDirekterRatings)).
-
 @AggregateRoot
 public final class Review {
 

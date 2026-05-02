@@ -17,7 +17,6 @@ public final class Watchlist {
     @Identity
     private final WatchlistId id;
     private final AccountId owner;
-    // TODO: Watchlists are not unsorted, but defined by insertion order, they cannot be rearranged
     private final LinkedHashSet<BookshelfEntryId> items;
     private Title title;
 

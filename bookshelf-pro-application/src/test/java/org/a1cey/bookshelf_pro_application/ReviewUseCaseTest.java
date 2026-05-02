@@ -73,7 +73,7 @@ class ReviewUseCaseTest {
     private final AccountId ownerId = new AccountId(UUID.randomUUID());
     private final Username username = new Username("alice");
     private final Password password = new Password("hash");
-    private final Account account = new Account(ownerId, username, null, password);
+    private final Account account = new Account(ownerId, username, null, password, false);
     private final MediaItemId mediaItemId = new MediaItemId(UUID.randomUUID());
 
     private BookshelfEntry stubEntry() {

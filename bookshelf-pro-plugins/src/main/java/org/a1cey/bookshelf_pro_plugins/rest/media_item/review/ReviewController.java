@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: How to structure review endpoint?
-
 @RestController
 @RequestMapping("/media-item/{mediaItemId}/review")
 public class ReviewController {
