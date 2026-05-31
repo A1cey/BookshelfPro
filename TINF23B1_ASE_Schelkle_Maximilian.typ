@@ -12,8 +12,8 @@
   show-outline: true,
   compact-mode: false,
   heading-color: black,
-  heading-font: "Lato", // recommended alternatives: "Fira Sans", "Lato", "Source Sans Pro"
-  body-font: "Vollkorn",
+  heading-font: "Vollkorn", // recommended alternatives: "Fira Sans", "Lato", "Source Sans Pro"
+  body-font: "Lato",
   datetime-fmt: "[day].[month].[year]",
   it,
 )
@@ -276,7 +276,7 @@ Im Projekt sind alle drei Schichten zu großen Teilen umgesetzt.
 
 = Programming Principles
 
-== Analyse und Begründung für SOLID, GRASP, DRY
+== Analyse und Begründung
 
 === Single Responsibility Principle (SRP)
 
@@ -421,4 +421,4 @@ Book book = Book.builder(id, owner, title, isbn, pageCount)
     .publishDate(new PublishDate(LocalDate.now()))
     .build();
 ```
-*Begründung:* Das `Book`-Objekt hat einige Pflichtparameter (wie ID, Titel, etc.), aber auch viele optionale Parameter (Autor, Verlag, Erscheinungsdatum, Cover-Bild). Der Builder vereinfacht die Erstellung des Objekts, indem er eine flüssige API bereitstellt und die Notwendigkeit eines Konstruktors mit zu vielen Parametern (oder Teleskopkonstruktoren) vermeidet. Dies verbessert die Lesbarkeit und verringert die Fehleranfälligkeit.
+*Begründung:* Das `Book`-Objekt hat einige Pflichtparameter (wie ID, Titel, etc.), aber auch viele optionale Parameter (Autor, Verlag, Erscheinungsdatum, Cover-Bild). Der Builder vereinfacht die Erstellung des Objekts, indem er eine flüssige API bereitstellt und die Notwendigkeit eines Konstruktors mit zu vielen Parametern vermeidet. Dies verbessert die Lesbarkeit und verringert die Fehleranfälligkeit.
